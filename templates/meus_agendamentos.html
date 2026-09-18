@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Meus agendamentos | Rayssa Lima Nail Designer</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <header class="header">
+
+        <div class="container header-content">
+
+            <a href="/" class="logo">
+
+                <span>Rayssa Lima</span>
+
+                <small>Nail Designer</small>
+
+            </a>
+
+
+            <nav class="nav">
+
+                <a href="/">
+                    Início
+                </a>
+
+                <a href="/#servicos">
+                    Serviços
+                </a>
+
+                <a href="/#sobre">
+                    Sobre
+                </a>
+
+                <a href="/agendar">
+                    Agendar
+                </a>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+
+    <main>
+
+        <section class="booking-section">
+
+            <div class="container booking-container">
+
+                <div class="section-heading">
+
+                    <span class="eyebrow">
+                        Seus horários
+                    </span>
+
+                    <h1>
+                        Meus agendamentos
+                    </h1>
+
+                    <p>
+                        Consulte seus agendamentos informando
+                        o número de WhatsApp cadastrado.
+                    </p>
+
+                </div>
+
+
+                <form class="booking-form"
+                      method="GET"
+                      action="/meus-agendamentos">
+
+                    <div class="form-group">
+
+                        <label for="telefone">
+                            WhatsApp / Telefone
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="telefone"
+                            name="telefone"
+                            placeholder="(00) 00000-0000"
+                            required
+                        >
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary booking-button"
+                    >
+                        Consultar agendamentos
+                    </button>
+
+                </form>
+
+
+                <div class="agendamentos-vazio">
+
+                    <p>
+                        Seus agendamentos aparecerão aqui
+                        após a consulta.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer class="footer">
+
+        <div class="container">
+
+            <p>
+                © 2026 Rayssa Lima Nail Designer
+            </p>
+
+        </div>
+
+    </footer>
+
+</body>
+
+</html>
