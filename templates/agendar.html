@@ -1,0 +1,775 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Agendar horário | Rayssa Lima Nail Designer</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+    <!-- ======================================================
+         CABEÇALHO
+         ====================================================== -->
+
+    <header class="header">
+
+        <div class="container header-content">
+
+            <a href="/" class="logo">
+                <span>Rayssa Lima</span>
+                <small>Nail Designer</small>
+            </a>
+
+            <nav class="nav">
+
+                <a href="/">
+                    Início
+                </a>
+
+                <a href="/#servicos">
+                    Serviços
+                </a>
+
+                <a href="/#sobre">
+                    Sobre
+                </a>
+
+                <a href="/agendar" class="active">
+                    Agendar
+                </a>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+
+    <!-- ======================================================
+         CONTEÚDO PRINCIPAL
+         ====================================================== -->
+
+    <main>
+
+        <section class="booking-section">
+
+            <div class="container booking-container">
+
+
+                <!-- TÍTULO -->
+
+                <div class="section-heading">
+
+                    <span class="eyebrow">
+                        Seu momento
+                    </span>
+
+                    <h1>
+                        Agende seu horário
+                    </h1>
+
+                    <p>
+                        Preencha seus dados abaixo para escolher
+                        o serviço e o melhor horário para você.
+                    </p>
+
+                </div>
+
+
+                <!-- ==================================================
+                     FORMULÁRIO
+                     ================================================== -->
+
+                <form class="booking-form" method="POST" action="/agendar">
+
+
+                    <!-- NOME -->
+
+                    <div class="form-group">
+
+                        <label for="nome">
+                            Nome completo
+                        </label>
+
+                        <input
+                            type="text"
+                            id="nome"
+                            name="nome"
+                            placeholder="Digite seu nome"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- TELEFONE -->
+
+                    <div class="form-group">
+
+                        <label for="telefone">
+                            WhatsApp / Telefone
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="telefone"
+                            name="telefone"
+                            placeholder="(00) 00000-0000"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- SERVIÇO -->
+
+                    <div class="form-group">
+
+                        <label for="servico">
+                            Escolha o serviço
+                        </label>
+
+                        <select
+                            id="servico"
+                            name="servico"
+                            required
+                        >
+
+                            <option value="">
+                                Selecione um serviço
+                            </option>
+
+                            <option
+                                value="Esmaltação simples"
+                                data-duracao="30"
+                            >
+                                Esmaltação simples — 30 min — R$ 30,00
+                            </option>
+
+                            <option
+                                value="Esmaltação em Gel"
+                                data-duracao="90"
+                            >
+                                Esmaltação em Gel — 90 min — R$ 45,00
+                            </option>
+
+                            <option
+                                value="Blindagem de unhas"
+                                data-duracao="60"
+                            >
+                                Blindagem de unhas — 60 min — R$ 30,00
+                            </option>
+
+                            <option
+                                value="Pedicure"
+                                data-duracao="45"
+                            >
+                                Pedicure — 45 min — R$ 30,00
+                            </option>
+
+                            <option
+                                value="Manicure + Pedicure"
+                                data-duracao="60"
+                            >
+                                Manicure + Pedicure — 60 min — R$ 50,00
+                            </option>
+
+                            <option
+                                value="Alongamento de unhas"
+                                data-duracao="120"
+                            >
+                                Alongamento de unhas — 120 min — R$ 60,00
+                            </option>
+
+                            <option
+                                value="Plano mensal"
+                                data-duracao="90"
+                            >
+                                Plano mensal — 90 min — R$ 150,00
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- DATA -->
+
+                    <div class="form-group">
+
+                        <label for="data">
+                            Escolha a data
+                        </label>
+
+                        <input
+                            type="date"
+                            id="data"
+                            name="data"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- HORÁRIO -->
+
+                    <div class="form-group">
+
+                        <label for="horario">
+                            Escolha o horário
+                        </label>
+
+                        <select
+                            id="horario"
+                            name="horario"
+                            required
+                        >
+
+                            <option value="">
+                                Selecione primeiro a data
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- OBSERVAÇÕES -->
+
+                    <div class="form-group">
+
+                        <label for="observacoes">
+                            Observações
+                        </label>
+
+                        <textarea
+                            id="observacoes"
+                            name="observacoes"
+                            rows="4"
+                            placeholder="Alguma observação? (opcional)"
+                        ></textarea>
+
+                    </div>
+
+
+                    <!-- BOTÃO -->
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary booking-button"
+                    >
+                        Continuar agendamento
+                    </button>
+
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ======================================================
+         RODAPÉ
+         ====================================================== -->
+
+    <footer class="footer">
+
+        <div class="container">
+
+            <p>
+                © 2026 Rayssa Lima Nail Designer
+            </p>
+
+        </div>
+
+    </footer>
+
+
+    <!-- ======================================================
+         JAVASCRIPT
+         HORÁRIOS + DURAÇÃO DOS SERVIÇOS
+         ====================================================== -->
+
+    <script>
+
+        /* ======================================================
+           ELEMENTOS DA PÁGINA
+           ====================================================== */
+
+        const servico =
+            document.getElementById("servico");
+
+        const data =
+            document.getElementById("data");
+
+        const horario =
+            document.getElementById("horario");
+
+
+        /* ======================================================
+           DATA ATUAL
+           ====================================================== */
+
+        const hoje =
+            new Date();
+
+
+        const ano =
+            hoje.getFullYear();
+
+
+        const mes =
+            String(
+                hoje.getMonth() + 1
+            ).padStart(2, "0");
+
+
+        const dia =
+            String(
+                hoje.getDate()
+            ).padStart(2, "0");
+
+
+        const hojeTexto =
+            `${ano}-${mes}-${dia}`;
+
+
+        /* Não permite escolher datas passadas */
+
+        data.min =
+            hojeTexto;
+
+
+        /* ======================================================
+           QUANDO O SERVIÇO FOR ALTERADO
+           ====================================================== */
+
+        servico.addEventListener(
+            "change",
+            function () {
+
+                /*
+                 * Se já existe uma data escolhida,
+                 * atualiza os horários automaticamente.
+                 */
+
+                if (data.value) {
+
+                    atualizarHorarios();
+
+                }
+
+            }
+        );
+
+
+        /* ======================================================
+           QUANDO A DATA FOR ALTERADA
+           ====================================================== */
+
+        data.addEventListener(
+            "change",
+            function () {
+
+                atualizarHorarios();
+
+            }
+        );
+
+
+        /* ======================================================
+           FUNÇÃO PRINCIPAL DOS HORÁRIOS
+           ====================================================== */
+
+        function atualizarHorarios() {
+
+            /* Limpa os horários atuais */
+
+            horario.innerHTML = "";
+
+
+            /* ==================================================
+               VERIFICA SE A DATA FOI ESCOLHIDA
+               ================================================== */
+
+            if (!data.value) {
+
+                horario.innerHTML = `
+                    <option value="">
+                        Selecione primeiro a data
+                    </option>
+                `;
+
+                return;
+
+            }
+
+
+            /* ==================================================
+               VERIFICA SE O SERVIÇO FOI ESCOLHIDO
+               ================================================== */
+
+            if (!servico.value) {
+
+                horario.innerHTML = `
+                    <option value="">
+                        Selecione primeiro o serviço
+                    </option>
+                `;
+
+                return;
+
+            }
+
+
+            /* ==================================================
+               PEGA A DURAÇÃO DO SERVIÇO
+               ================================================== */
+
+            const opcaoSelecionada =
+                servico.options[
+                    servico.selectedIndex
+                ];
+
+
+            const duracao =
+                parseInt(
+                    opcaoSelecionada.dataset.duracao
+                );
+
+
+            /* ==================================================
+               DESCOBRE O DIA DA SEMANA
+               ================================================== */
+
+            const dataEscolhida =
+                new Date(
+                    data.value + "T00:00:00"
+                );
+
+
+            const diaSemana =
+                dataEscolhida.getDay();
+
+
+            /* ==================================================
+               DOMINGO
+               ================================================== */
+
+            if (diaSemana === 0) {
+
+                horario.innerHTML = `
+                    <option value="">
+                        Não atendemos aos domingos
+                    </option>
+                `;
+
+                return;
+
+            }
+
+
+            /* ==================================================
+               DEFINE OS PERÍODOS DE ATENDIMENTO
+               ================================================== */
+
+            let periodos = [];
+
+
+            /*
+             * Segunda, terça, quinta e sexta
+             */
+
+            if (
+                diaSemana === 1 ||
+                diaSemana === 2 ||
+                diaSemana === 4 ||
+                diaSemana === 5
+            ) {
+
+                periodos = [
+
+                    ["07:30", "11:00"],
+
+                    ["13:30", "20:00"]
+
+                ];
+
+            }
+
+
+            /*
+             * Quarta-feira
+             */
+
+            else if (diaSemana === 3) {
+
+                periodos = [
+
+                    ["07:30", "11:00"],
+
+                    ["13:30", "15:00"]
+
+                ];
+
+            }
+
+
+            /*
+             * Sábado
+             */
+
+            else if (diaSemana === 6) {
+
+                periodos = [
+
+                    ["09:00", "16:00"]
+
+                ];
+
+            }
+
+
+            /* ==================================================
+               CRIA OS HORÁRIOS POSSÍVEIS
+               ================================================== */
+
+            let horariosDisponiveis = [];
+
+
+            periodos.forEach(
+                function (periodo) {
+
+                    const inicioPeriodo =
+                        converterMinutos(
+                            periodo[0]
+                        );
+
+
+                    const fimPeriodo =
+                        converterMinutos(
+                            periodo[1]
+                        );
+
+
+                    /*
+                     * Testamos cada horário de 30 em 30 minutos.
+                     */
+
+                    for (
+                        let inicio = inicioPeriodo;
+                        inicio < fimPeriodo;
+                        inicio += 30
+                    ) {
+
+                        /*
+                         * Calcula quando o atendimento terminaria.
+                         */
+
+                        const fimAtendimento =
+                            inicio + duracao;
+
+
+                        /*
+                         * O serviço precisa terminar
+                         * dentro do período.
+                         */
+
+                        if (
+                            fimAtendimento <=
+                            fimPeriodo
+                        ) {
+
+                            const hora =
+                                minutosParaHora(
+                                    inicio
+                                );
+
+
+                            horariosDisponiveis.push(
+                                hora
+                            );
+
+                        }
+
+                    }
+
+                }
+            );
+
+
+            /* ==================================================
+               SE FOR HOJE
+               REMOVE HORÁRIOS QUE JÁ PASSARAM
+               ================================================== */
+
+            if (
+                data.value === hojeTexto
+            ) {
+
+                const agora =
+                    new Date();
+
+
+                const minutosAgora =
+                    agora.getHours() * 60
+                    + agora.getMinutes();
+
+
+                horariosDisponiveis =
+                    horariosDisponiveis.filter(
+                        function (hora) {
+
+                            const minutosHorario =
+                                converterMinutos(
+                                    hora
+                                );
+
+
+                            return (
+                                minutosHorario >=
+                                minutosAgora
+                            );
+
+                        }
+                    );
+
+            }
+
+
+            /* ==================================================
+               SE NÃO SOBROU NENHUM HORÁRIO
+               ================================================== */
+
+            if (
+                horariosDisponiveis.length === 0
+            ) {
+
+                horario.innerHTML = `
+                    <option value="">
+                        Não há horários disponíveis
+                    </option>
+                `;
+
+                return;
+
+            }
+
+
+            /* ==================================================
+               PRIMEIRA OPÇÃO
+               ================================================== */
+
+            horario.innerHTML = `
+                <option value="">
+                    Selecione um horário
+                </option>
+            `;
+
+
+            /* ==================================================
+               COLOCA OS HORÁRIOS NO SELECT
+               ================================================== */
+
+            horariosDisponiveis.forEach(
+                function (hora) {
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+
+                    option.value =
+                        hora;
+
+
+                    option.textContent =
+                        hora;
+
+
+                    horario.appendChild(
+                        option
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* ======================================================
+           CONVERTE HH:MM PARA MINUTOS
+           ====================================================== */
+
+        function converterMinutos(hora) {
+
+            const partes =
+                hora.split(":");
+
+
+            const horas =
+                parseInt(
+                    partes[0]
+                );
+
+
+            const minutos =
+                parseInt(
+                    partes[1]
+                );
+
+
+            return (
+                horas * 60 +
+                minutos
+            );
+
+        }
+
+
+        /* ======================================================
+           CONVERTE MINUTOS PARA HH:MM
+           ====================================================== */
+
+        function minutosParaHora(minutos) {
+
+            const horas =
+                Math.floor(
+                    minutos / 60
+                );
+
+
+            const minutosRestantes =
+                minutos % 60;
+
+
+            return (
+                String(horas).padStart(2, "0")
+                + ":"
+                + String(minutosRestantes).padStart(2, "0")
+            );
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>
+```
