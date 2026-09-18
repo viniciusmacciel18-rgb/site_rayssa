@@ -61,10 +61,6 @@ def agendar():
 
         # --------------------------------------------------
         # FORMATAR A DATA
-        # Exemplo:
-        # 2026-09-18
-        # vira:
-        # 18/09/2026
         # --------------------------------------------------
 
         data_formatada = datetime.strptime(
@@ -93,6 +89,18 @@ def agendar():
     # ------------------------------------------------------
 
     return render_template("agendar.html")
+
+
+# ==========================================================
+# MEUS AGENDAMENTOS
+# ==========================================================
+
+@app.route("/meus-agendamentos")
+def meus_agendamentos():
+
+    return render_template(
+        "meus_agendamentos.html"
+    )
 
 
 # ==========================================================
