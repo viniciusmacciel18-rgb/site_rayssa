@@ -1,0 +1,1611 @@
+/* ==========================================================
+CONFIGURAÇÕES GERAIS
+========================================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  }
+
+html {
+scroll-behavior: smooth;
+}
+
+body {
+font-family: Georgia, "Times New Roman", serif;
+background: #faf7f5;
+color: #3f3435;
+line-height: 1.6;
+}
+
+a {
+text-decoration: none;
+color: inherit;
+}
+
+.container {
+width: min(1120px, 92%);
+margin: 0 auto;
+}
+
+/* ==========================================================
+CABEÇALHO
+========================================================== */
+
+.topo {
+position: sticky;
+top: 0;
+z-index: 1000;
+
+```
+background: rgba(250, 247, 245, 0.96);
+border-bottom: 1px solid #eadfdc;
+backdrop-filter: blur(10px);
+```
+
+}
+
+.topo-conteudo {
+min-height: 82px;
+
+```
+display: flex;
+align-items: center;
+justify-content: space-between;
+
+gap: 30px;
+```
+
+}
+
+.marca {
+display: flex;
+flex-direction: column;
+
+```
+line-height: 1.1;
+```
+
+}
+
+.marca-nome {
+font-size: 25px;
+letter-spacing: 1px;
+color: #8f5f67;
+}
+
+.marca-subtitulo {
+margin-top: 5px;
+
+```
+font-family: Arial, sans-serif;
+font-size: 10px;
+letter-spacing: 4px;
+text-transform: uppercase;
+
+color: #8b7779;
+```
+
+}
+
+.menu {
+display: flex;
+align-items: center;
+gap: 28px;
+
+```
+font-family: Arial, sans-serif;
+font-size: 13px;
+```
+
+}
+
+.menu a {
+position: relative;
+color: #5c4d4f;
+transition: 0.3s;
+}
+
+.menu a:hover {
+color: #8f5f67;
+}
+
+.menu a::after {
+content: "";
+
+```
+position: absolute;
+left: 0;
+bottom: -7px;
+
+width: 0;
+height: 1px;
+
+background: #8f5f67;
+
+transition: 0.3s;
+```
+
+}
+
+.menu a:hover::after {
+width: 100%;
+}
+
+/* ==========================================================
+HERO
+========================================================== */
+
+.hero {
+min-height: 650px;
+
+```
+display: flex;
+align-items: center;
+
+background:
+    radial-gradient(
+        circle at 80% 20%,
+        #f1e2df 0,
+        transparent 35%
+    ),
+    linear-gradient(
+        135deg,
+        #faf7f5,
+        #f4ebe8
+    );
+```
+
+}
+
+.hero-conteudo {
+display: grid;
+grid-template-columns: 1.15fr 0.85fr;
+align-items: center;
+
+```
+gap: 70px;
+
+padding: 80px 0;
+```
+
+}
+
+.pequeno-titulo,
+.titulo-pequeno {
+display: block;
+
+```
+margin-bottom: 18px;
+
+font-family: Arial, sans-serif;
+font-size: 11px;
+font-weight: 600;
+
+letter-spacing: 3px;
+text-transform: uppercase;
+
+color: #a16f77;
+```
+
+}
+
+.hero h1 {
+max-width: 650px;
+
+```
+font-size: clamp(48px, 6vw, 76px);
+font-weight: 400;
+line-height: 1.05;
+
+color: #45383a;
+```
+
+}
+
+.hero h1 strong {
+display: block;
+
+```
+color: #8f5f67;
+font-weight: 400;
+```
+
+}
+
+.hero-texto > p {
+max-width: 540px;
+
+```
+margin-top: 25px;
+
+font-family: Arial, sans-serif;
+font-size: 16px;
+
+color: #766567;
+```
+
+}
+
+.hero-botoes {
+display: flex;
+flex-wrap: wrap;
+
+```
+gap: 14px;
+
+margin-top: 35px;
+```
+
+}
+
+/* ==========================================================
+BOTÕES
+========================================================== */
+
+.botao {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+
+```
+min-height: 50px;
+
+padding: 0 28px;
+
+border-radius: 3px;
+
+font-family: Arial, sans-serif;
+font-size: 12px;
+font-weight: 600;
+
+letter-spacing: 1px;
+text-transform: uppercase;
+
+transition:
+    transform 0.3s,
+    box-shadow 0.3s,
+    background 0.3s;
+```
+
+}
+
+.botao:hover {
+transform: translateY(-2px);
+}
+
+.botao-principal {
+background: #8f5f67;
+color: white;
+
+```
+box-shadow: 0 12px 25px rgba(88, 54, 61, 0.16);
+```
+
+}
+
+.botao-principal:hover {
+background: #7e5058;
+}
+
+.botao-secundario {
+border: 1px solid #cdbabc;
+color: #765b60;
+background: transparent;
+}
+
+.botao-secundario:hover {
+background: #eee1de;
+}
+
+/* ==========================================================
+CARTÃO DESTAQUE
+========================================================== */
+
+.hero-destaque {
+display: flex;
+justify-content: center;
+}
+
+.cartao-destaque {
+width: min(370px, 100%);
+min-height: 420px;
+
+```
+padding: 45px;
+
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+
+position: relative;
+
+background:
+    linear-gradient(
+        145deg,
+        #ead8d5,
+        #cba9aa
+    );
+
+border-radius: 190px 190px 15px 15px;
+
+box-shadow:
+    0 25px 55px rgba(74, 49, 53, 0.15);
+```
+
+}
+
+.cartao-destaque::before {
+content: "";
+
+```
+position: absolute;
+
+top: 35px;
+left: 50%;
+
+width: 130px;
+height: 130px;
+
+transform: translateX(-50%);
+
+border: 1px solid rgba(255, 255, 255, 0.65);
+
+border-radius: 50%;
+```
+
+}
+
+.icone-destaque {
+position: absolute;
+
+```
+top: 75px;
+left: 50%;
+
+transform: translateX(-50%);
+
+font-size: 34px;
+
+color: white;
+```
+
+}
+
+.cartao-destaque p {
+position: relative;
+
+```
+font-size: 28px;
+line-height: 1.15;
+
+color: white;
+```
+
+}
+
+.cartao-destaque span:last-child {
+position: relative;
+
+```
+margin-top: 12px;
+
+font-family: Arial, sans-serif;
+font-size: 11px;
+
+letter-spacing: 2px;
+text-transform: uppercase;
+
+color: rgba(255, 255, 255, 0.8);
+```
+
+}
+
+/* ==========================================================
+SEÇÕES
+========================================================== */
+
+.secao {
+padding: 110px 0;
+}
+
+.titulo-secao {
+max-width: 650px;
+
+```
+margin: 0 auto 55px;
+
+text-align: center;
+```
+
+}
+
+.titulo-secao > span {
+font-family: Arial, sans-serif;
+font-size: 11px;
+font-weight: 600;
+
+```
+letter-spacing: 3px;
+text-transform: uppercase;
+
+color: #a16f77;
+```
+
+}
+
+.titulo-secao h2,
+.sobre-texto h2,
+.cta h2 {
+margin-top: 12px;
+
+```
+font-size: clamp(34px, 4vw, 48px);
+font-weight: 400;
+line-height: 1.15;
+
+color: #493a3d;
+```
+
+}
+
+.titulo-secao p {
+margin-top: 17px;
+
+```
+font-family: Arial, sans-serif;
+font-size: 15px;
+
+color: #806f71;
+```
+
+}
+
+/* ==========================================================
+SERVIÇOS
+========================================================== */
+
+.servicos {
+background: #fffdfc;
+}
+
+.servicos-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+
+```
+gap: 20px;
+```
+
+}
+
+.servico-card {
+min-height: 290px;
+
+```
+padding: 30px;
+
+position: relative;
+
+background: #faf7f5;
+
+border: 1px solid #eadedb;
+
+transition:
+    transform 0.3s,
+    box-shadow 0.3s;
+```
+
+}
+
+.servico-card:hover {
+transform: translateY(-5px);
+
+```
+box-shadow:
+    0 18px 35px rgba(72, 48, 53, 0.09);
+```
+
+}
+
+.servico-numero {
+font-family: Arial, sans-serif;
+font-size: 10px;
+letter-spacing: 2px;
+
+```
+color: #b08a8f;
+```
+
+}
+
+.servico-card h3 {
+margin-top: 30px;
+
+```
+font-size: 24px;
+font-weight: 400;
+
+color: #514144;
+```
+
+}
+
+.servico-card p {
+margin-top: 14px;
+
+```
+font-family: Arial, sans-serif;
+font-size: 13px;
+
+color: #7d6c6e;
+```
+
+}
+
+.servico-info {
+display: flex;
+align-items: center;
+justify-content: space-between;
+
+```
+margin-top: 30px;
+padding-top: 18px;
+
+border-top: 1px solid #e4d6d3;
+
+font-family: Arial, sans-serif;
+font-size: 12px;
+
+color: #806e70;
+```
+
+}
+
+.servico-info strong {
+color: #8f5f67;
+font-size: 15px;
+}
+
+.servico-destaque {
+background: #f0e3e0;
+border-color: #ddc6c4;
+}
+
+/* ==========================================================
+SOBRE
+========================================================== */
+
+.sobre {
+background: #f2e7e4;
+}
+
+.sobre-conteudo {
+display: grid;
+grid-template-columns: 0.7fr 1.3fr;
+
+```
+align-items: center;
+
+gap: 80px;
+```
+
+}
+
+.sobre-marca {
+display: flex;
+align-items: center;
+justify-content: center;
+
+```
+width: 260px;
+height: 260px;
+
+margin: auto;
+
+border: 1px solid #cdaeb0;
+border-radius: 50%;
+```
+
+}
+
+.sobre-marca span {
+font-size: 75px;
+font-weight: 400;
+
+```
+color: #8f5f67;
+```
+
+}
+
+.sobre-texto {
+max-width: 620px;
+}
+
+.sobre-texto p {
+margin-top: 20px;
+
+```
+font-family: Arial, sans-serif;
+font-size: 15px;
+
+color: #756365;
+```
+
+}
+
+/* ==========================================================
+CTA
+========================================================== */
+
+.cta {
+padding: 100px 0;
+
+```
+text-align: center;
+
+background: #8f5f67;
+color: white;
+```
+
+}
+
+.cta-conteudo > span {
+font-family: Arial, sans-serif;
+font-size: 11px;
+letter-spacing: 3px;
+text-transform: uppercase;
+
+```
+color: rgba(255, 255, 255, 0.75);
+```
+
+}
+
+.cta h2 {
+margin-bottom: 30px;
+
+```
+color: white;
+```
+
+}
+
+.botao-claro {
+background: white;
+color: #8f5f67;
+}
+
+.botao-claro:hover {
+background: #f8efed;
+}
+
+/* ==========================================================
+RODAPÉ
+========================================================== */
+
+.rodape {
+padding: 35px 0;
+
+```
+background: #3f3435;
+
+color: white;
+```
+
+}
+
+.rodape-conteudo {
+display: flex;
+align-items: center;
+justify-content: space-between;
+
+```
+gap: 30px;
+```
+
+}
+
+.rodape strong {
+display: block;
+
+```
+font-size: 20px;
+font-weight: 400;
+```
+
+}
+
+.rodape span {
+font-family: Arial, sans-serif;
+font-size: 10px;
+letter-spacing: 3px;
+text-transform: uppercase;
+
+```
+color: #cbb5b7;
+```
+
+}
+
+.rodape p {
+font-family: Arial, sans-serif;
+font-size: 11px;
+
+```
+color: #bda9ab;
+```
+
+}
+
+/* ==========================================================
+CELULAR
+========================================================== */
+
+@media (max-width: 850px) {
+
+```
+.topo-conteudo {
+    min-height: 75px;
+}
+
+.menu {
+    gap: 15px;
+    font-size: 11px;
+}
+
+.menu a:nth-child(3) {
+    display: none;
+}
+
+.hero {
+    min-height: auto;
+}
+
+.hero-conteudo {
+    grid-template-columns: 1fr;
+
+    gap: 55px;
+
+    padding: 70px 0;
+}
+
+.hero h1 {
+    font-size: clamp(43px, 12vw, 62px);
+}
+
+.hero-destaque {
+    order: -1;
+}
+
+.cartao-destaque {
+    min-height: 330px;
+}
+
+.servicos-grid {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.sobre-conteudo {
+    grid-template-columns: 1fr;
+
+    gap: 50px;
+
+    text-align: center;
+}
+
+.sobre-texto {
+    margin: auto;
+}
+```
+
+}
+
+@media (max-width: 560px) {
+
+```
+.container {
+    width: min(92%, 430px);
+}
+
+.topo-conteudo {
+    align-items: flex-start;
+
+    padding: 18px 0;
+}
+
+.marca-nome {
+    font-size: 21px;
+}
+
+.menu {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+
+    gap: 8px 14px;
+}
+
+.menu a:nth-child(2) {
+    display: none;
+}
+
+.hero-conteudo {
+    padding: 55px 0 70px;
+}
+
+.hero h1 {
+    font-size: 44px;
+}
+
+.hero-botoes {
+    flex-direction: column;
+}
+
+.botao {
+    width: 100%;
+}
+
+.cartao-destaque {
+    min-height: 300px;
+    padding: 30px;
+}
+
+.secao {
+    padding: 75px 0;
+}
+
+.titulo-secao {
+    margin-bottom: 40px;
+}
+
+.servicos-grid {
+    grid-template-columns: 1fr;
+}
+
+.servico-card {
+    min-height: auto;
+}
+
+.sobre-marca {
+    width: 200px;
+    height: 200px;
+}
+
+.sobre-marca span {
+    font-size: 58px;
+}
+
+.cta {
+    padding: 75px 0;
+}
+
+.rodape-conteudo {
+    flex-direction: column;
+
+    text-align: center;
+}
+```
+
+}
+```css
+/* ==========================================================
+   PÁGINA DE AGENDAMENTO
+   ========================================================== */
+
+.booking-section {
+    padding: 90px 0 100px;
+    min-height: calc(100vh - 160px);
+}
+
+.booking-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.booking-section .section-heading {
+    text-align: center;
+    max-width: 650px;
+    margin: 0 auto 50px;
+}
+
+.booking-section .section-heading h1 {
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.booking-section .section-heading p {
+    margin: 0 auto;
+    max-width: 600px;
+}
+
+
+/* FORMULÁRIO */
+
+.booking-form {
+    background: #ffffff;
+    padding: 45px;
+    border-radius: 24px;
+    box-shadow: 0 15px 45px rgba(74, 50, 55, 0.08);
+    border: 1px solid #eee4e2;
+}
+
+
+/* GRUPO DE CADA CAMPO */
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4e3b3f;
+}
+
+
+/* CAMPOS */
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 15px 16px;
+    border: 1px solid #dfd2d0;
+    border-radius: 12px;
+    background: #fcfaf9;
+    color: #3f3034;
+    font-family: inherit;
+    font-size: 15px;
+    outline: none;
+    transition: 0.25s ease;
+    box-sizing: border-box;
+}
+
+
+/* EFEITO AO CLICAR NO CAMPO */
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #8f5f67;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(143, 95, 103, 0.10);
+}
+
+
+/* PLACEHOLDER */
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #a89b9d;
+}
+
+
+/* TEXTAREA */
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+
+/* BOTÃO */
+
+.booking-button {
+    width: 100%;
+    margin-top: 10px;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 15px;
+}
+
+
+/* RODAPÉ */
+
+.booking-section + .footer {
+    margin-top: 0;
+}
+
+
+/* ==========================================================
+   RESPONSIVIDADE
+   ========================================================== */
+
+@media (max-width: 700px) {
+
+    .booking-section {
+        padding: 60px 0 70px;
+    }
+
+    .booking-form {
+        padding: 28px 20px;
+        border-radius: 18px;
+    }
+
+    .booking-section .section-heading {
+        margin-bottom: 35px;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .booking-section {
+        padding: 45px 0 55px;
+    }
+
+    .booking-form {
+        padding: 24px 16px;
+        border-radius: 16px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 14px;
+    }
+
+}
+```
+```css
+/* ==========================================================
+   CORES E ACABAMENTO — AGENDAMENTO
+   ========================================================== */
+
+.booking-section {
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(143, 95, 103, 0.10),
+            transparent 35%
+        ),
+        linear-gradient(
+            180deg,
+            #faf7f5 0%,
+            #f6eeec 100%
+        );
+}
+
+
+/* PEQUENO TEXTO ACIMA DO TÍTULO */
+
+.booking-section .eyebrow {
+    color: #8f5f67;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+
+/* TÍTULO */
+
+.booking-section h1 {
+    color: #4e3b3f;
+    font-size: 42px;
+    font-weight: 600;
+}
+
+
+/* TEXTO ABAIXO DO TÍTULO */
+
+.booking-section .section-heading p {
+    color: #7c6b6e;
+    line-height: 1.8;
+}
+
+
+/* CARTÃO DO FORMULÁRIO */
+
+.booking-form {
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(143, 95, 103, 0.16);
+    box-shadow:
+        0 20px 50px rgba(93, 61, 68, 0.10);
+}
+
+
+/* NOMES DOS CAMPOS */
+
+.form-group label {
+    color: #5a4247;
+}
+
+
+/* CAMPOS */
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    background: #fffafa;
+    border-color: #dfcfd0;
+    color: #4e3b3f;
+}
+
+
+/* QUANDO CLICAR */
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #8f5f67;
+    box-shadow:
+        0 0 0 4px rgba(143, 95, 103, 0.10);
+}
+
+
+/* BOTÃO */
+
+.booking-button {
+    background: #8f5f67;
+    color: #ffffff;
+    padding: 16px 24px;
+    border-radius: 12px;
+    transition: all 0.25s ease;
+}
+
+
+/* BOTÃO AO PASSAR O MOUSE */
+
+.booking-button:hover {
+    background: #754b54;
+    transform: translateY(-2px);
+    box-shadow:
+        0 10px 25px rgba(117, 75, 84, 0.20);
+}
+
+
+/* CAMPOS EM CELULAR */
+
+@media (max-width: 480px) {
+
+    .booking-section h1 {
+        font-size: 32px;
+    }
+
+}
+```
+```css
+/* ==========================================================
+   FUNDO MAIS VIVO — PÁGINA DE AGENDAMENTO
+   ========================================================== */
+
+.booking-section {
+    background:
+        radial-gradient(
+            circle at 15% 15%,
+            rgba(143, 95, 103, 0.35),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 85% 80%,
+            rgba(190, 117, 132, 0.30),
+            transparent 35%
+        ),
+        linear-gradient(
+            135deg,
+            #edc5ca 0%,
+            #dbaeb5 50%,
+            #f0d0d0 100%
+        );
+}
+```
+```css
+/* ==========================================================
+   PÁGINA DE CONFIRMAÇÃO
+   ========================================================== */
+
+.confirmation-section {
+
+    min-height: calc(100vh - 160px);
+
+    padding: 80px 0 100px;
+
+    display: flex;
+
+    align-items: center;
+
+    background:
+        radial-gradient(
+            circle at 15% 15%,
+            rgba(143, 95, 103, 0.28),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 85% 80%,
+            rgba(190, 117, 132, 0.24),
+            transparent 35%
+        ),
+        linear-gradient(
+            135deg,
+            #edc5ca 0%,
+            #dbaeb5 50%,
+            #f0d0d0 100%
+        );
+
+}
+
+
+.confirmation-container {
+
+    max-width: 760px;
+
+    margin: 0 auto;
+
+    text-align: center;
+
+}
+
+
+/* ==========================================================
+   ÍCONE
+   ========================================================== */
+
+.confirmation-icon {
+
+    width: 72px;
+
+    height: 72px;
+
+    margin: 0 auto 22px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #8f5f67;
+
+    color: #ffffff;
+
+    font-size: 34px;
+
+    font-weight: 600;
+
+    box-shadow:
+        0 12px 30px
+        rgba(117, 75, 84, 0.25);
+
+}
+
+
+/* ==========================================================
+   TÍTULO
+   ========================================================== */
+
+.confirmation-section .eyebrow {
+
+    display: block;
+
+    margin-bottom: 10px;
+
+    color: #754b54;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+
+    text-transform: uppercase;
+
+}
+
+
+.confirmation-section h1 {
+
+    margin: 0 0 15px;
+
+    color: #4e3b3f;
+
+    font-size: 42px;
+
+    font-weight: 600;
+
+}
+
+
+.confirmation-intro {
+
+    max-width: 590px;
+
+    margin: 0 auto 35px;
+
+    color: #6f5b60;
+
+    line-height: 1.8;
+
+}
+
+
+/* ==========================================================
+   CARD DOS DADOS
+   ========================================================== */
+
+.confirmation-card {
+
+    padding: 12px 35px;
+
+    margin-bottom: 22px;
+
+    background: rgba(255, 255, 255, 0.94);
+
+    border: 1px solid
+        rgba(143, 95, 103, 0.15);
+
+    border-radius: 22px;
+
+    box-shadow:
+        0 20px 50px
+        rgba(93, 61, 68, 0.12);
+
+    text-align: left;
+
+}
+
+
+.confirmation-item {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 25px;
+
+    padding: 19px 0;
+
+    border-bottom: 1px solid #eee3e1;
+
+}
+
+
+.confirmation-item:last-child {
+
+    border-bottom: none;
+
+}
+
+
+.confirmation-item span {
+
+    color: #8b777b;
+
+    font-size: 14px;
+
+}
+
+
+.confirmation-item strong {
+
+    color: #4e3b3f;
+
+    font-size: 15px;
+
+    text-align: right;
+
+}
+
+
+/* ==========================================================
+   AVISO
+   ========================================================== */
+
+.confirmation-notice {
+
+    margin-bottom: 30px;
+
+    padding: 20px 24px;
+
+    border-radius: 16px;
+
+    background: rgba(255, 248, 249, 0.90);
+
+    border: 1px solid
+        rgba(143, 95, 103, 0.18);
+
+    text-align: left;
+
+}
+
+
+.confirmation-notice strong {
+
+    color: #754b54;
+
+}
+
+
+.confirmation-notice p {
+
+    margin: 8px 0 0;
+
+    color: #6f5b60;
+
+    font-size: 14px;
+
+    line-height: 1.7;
+
+}
+
+
+/* ==========================================================
+   BOTÕES
+   ========================================================== */
+
+.confirmation-actions {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 15px;
+
+    flex-wrap: wrap;
+
+}
+
+
+.confirmation-actions .btn {
+
+    min-width: 210px;
+
+    text-align: center;
+
+}
+
+
+.confirmation-secondary-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 210px;
+
+    padding: 15px 24px;
+
+    border-radius: 12px;
+
+    border: 1px solid
+        rgba(117, 75, 84, 0.35);
+
+    color: #754b54;
+
+    background: rgba(255, 255, 255, 0.70);
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition: all 0.25s ease;
+
+}
+
+
+.confirmation-secondary-button:hover {
+
+    background: #ffffff;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px
+        rgba(117, 75, 84, 0.12);
+
+}
+
+
+/* ==========================================================
+   CELULAR
+   ========================================================== */
+
+@media (max-width: 600px) {
+
+    .confirmation-section {
+
+        padding: 55px 0 70px;
+
+    }
+
+
+    .confirmation-section h1 {
+
+        font-size: 32px;
+
+    }
+
+
+    .confirmation-intro {
+
+        font-size: 14px;
+
+        margin-bottom: 28px;
+
+    }
+
+
+    .confirmation-card {
+
+        padding: 8px 20px;
+
+        border-radius: 18px;
+
+    }
+
+
+    .confirmation-item {
+
+        display: block;
+
+        padding: 16px 0;
+
+    }
+
+
+    .confirmation-item span {
+
+        display: block;
+
+        margin-bottom: 5px;
+
+    }
+
+
+    .confirmation-item strong {
+
+        display: block;
+
+        text-align: left;
+
+    }
+
+
+    .confirmation-notice {
+
+        padding: 18px;
+
+    }
+
+
+    .confirmation-actions {
+
+        flex-direction: column;
+
+    }
+
+
+    .confirmation-actions .btn,
+
+    .confirmation-secondary-button {
+
+        width: 100%;
+
+        min-width: 0;
+
+        box-sizing: border-box;
+
+    }
+
+}
+```
