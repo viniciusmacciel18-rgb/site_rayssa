@@ -1,0 +1,267 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Agendamento confirmado | Rayssa Lima Nail Designer</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+    <!-- ======================================================
+         CABEÇALHO
+         ====================================================== -->
+
+    <header class="header">
+
+        <div class="container header-content">
+
+            <a href="/" class="logo">
+
+                <span>
+                    Rayssa Lima
+                </span>
+
+                <small>
+                    Nail Designer
+                </small>
+
+            </a>
+
+
+            <nav class="nav">
+
+                <a href="/">
+                    Início
+                </a>
+
+                <a href="/#servicos">
+                    Serviços
+                </a>
+
+                <a href="/#sobre">
+                    Sobre
+                </a>
+
+                <a href="/agendar">
+                    Agendar
+                </a>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+
+    <!-- ======================================================
+         CONFIRMAÇÃO
+         ====================================================== -->
+
+    <main>
+
+        <section class="confirmation-section">
+
+            <div class="container confirmation-container">
+
+
+                <!-- ÍCONE -->
+
+                <div class="confirmation-icon">
+                    ✓
+                </div>
+
+
+                <!-- TÍTULO -->
+
+                <span class="eyebrow">
+                    Tudo certo
+                </span>
+
+
+                <h1>
+                    Agendamento recebido!
+                </h1>
+
+
+                <p class="confirmation-intro">
+                    Seu pedido de agendamento foi recebido
+                    com sucesso. Confira os detalhes abaixo.
+                </p>
+
+
+                <!-- ==================================================
+                     DETALHES
+                     ================================================== -->
+
+                <div class="confirmation-card">
+
+
+                    <div class="confirmation-item">
+
+                        <span>
+                            Nome
+                        </span>
+
+                        <strong>
+                            {{ nome }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="confirmation-item">
+
+                        <span>
+                            WhatsApp / Telefone
+                        </span>
+
+                        <strong>
+                            {{ telefone }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="confirmation-item">
+
+                        <span>
+                            Serviço
+                        </span>
+
+                        <strong>
+                            {{ servico }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="confirmation-item">
+
+                        <span>
+                            Data
+                        </span>
+
+                        <strong>
+                            {{ data_formatada }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="confirmation-item">
+
+                        <span>
+                            Horário
+                        </span>
+
+                        <strong>
+                            {{ horario }}
+                        </strong>
+
+                    </div>
+
+
+                    {% if observacoes %}
+
+                    <div class="confirmation-item">
+
+                        <span>
+                            Observações
+                        </span>
+
+                        <strong>
+                            {{ observacoes }}
+                        </strong>
+
+                    </div>
+
+                    {% endif %}
+
+
+                </div>
+
+
+                <!-- ==================================================
+                     AVISO
+                     ================================================== -->
+
+                <div class="confirmation-notice">
+
+                    <strong>
+                        Importante
+                    </strong>
+
+                    <p>
+                        Caso precise cancelar ou alterar o serviço
+                        ou a data do seu agendamento, entre em
+                        contato com a Rayssa com pelo menos
+                        <strong>3 horas de antecedência</strong>.
+                    </p>
+
+                </div>
+
+
+                <!-- ==================================================
+                     BOTÕES
+                     ================================================== -->
+
+                <div class="confirmation-actions">
+
+                    <a
+                        href="/"
+                        class="btn btn-primary"
+                    >
+                        Voltar para o início
+                    </a>
+
+
+                    <a
+                        href="/agendar"
+                        class="confirmation-secondary-button"
+                    >
+                        Fazer outro agendamento
+                    </a>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ======================================================
+         RODAPÉ
+         ====================================================== -->
+
+    <footer class="footer">
+
+        <div class="container">
+
+            <p>
+                © 2026 Rayssa Lima Nail Designer
+            </p>
+
+        </div>
+
+    </footer>
+
+
+</body>
+
+</html>
+```
