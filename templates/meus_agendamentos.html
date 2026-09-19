@@ -78,6 +78,10 @@
                 </div>
 
 
+                <!-- ==================================================
+                     FORMULÁRIO DE CONSULTA
+                     ================================================== -->
+
                 <form class="booking-form"
                       method="GET"
                       action="/meus-agendamentos">
@@ -92,6 +96,7 @@
                             type="tel"
                             id="telefone"
                             name="telefone"
+                            value="{{ telefone or '' }}"
                             placeholder="(00) 00000-0000"
                             required
                         >
@@ -109,14 +114,164 @@
                 </form>
 
 
-                <div class="agendamentos-vazio">
+                <!-- ==================================================
+                     RESULTADOS
+                     ================================================== -->
 
-                    <p>
-                        Seus agendamentos aparecerão aqui
-                        após a consulta.
-                    </p>
+                {% if telefone %}
 
-                </div>
+                    {% if agendamentos %}
+
+                        <div class="meus-agendamentos-lista">
+
+                            <div class="resultados-titulo">
+
+                                <span>
+                                    Agendamentos encontrados
+                                </span>
+
+                                <small>
+                                    {{ agendamentos|length }}
+                                    {% if agendamentos|length == 1 %}
+                                        agendamento
+                                    {% else %}
+                                        agendamentos
+                                    {% endif %}
+                                </small>
+
+                            </div>
+
+
+                            {% for agendamento in agendamentos %}
+
+                                <div class="agendamento-card">
+
+                                    <div class="agendamento-card-topo">
+
+                                        <span class="agendamento-status">
+                                            Confirmado
+                                        </span>
+
+                                        <span class="agendamento-id">
+                                            #{{ agendamento.id }}
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="agendamento-servico">
+
+                                        <span>
+                                            Serviço
+                                        </span>
+
+                                        <strong>
+                                            {{ agendamento.servico }}
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div class="agendamento-detalhes">
+
+                                        <div>
+
+                                            <span>
+                                                Data
+                                            </span>
+
+                                            <strong>
+                                                {{ agendamento.data }}
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <span>
+                                                Horário
+                                            </span>
+
+                                            <strong>
+                                                {{ agendamento.horario }}
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    {% if agendamento.observacoes %}
+
+                                        <div class="agendamento-observacoes">
+
+                                            <span>
+                                                Observações
+                                            </span>
+
+                                            <p>
+                                                {{ agendamento.observacoes }}
+                                            </p>
+
+                                        </div>
+
+                                    {% endif %}
+
+
+                                    <div class="agendamento-aviso">
+
+                                        Para cancelar ou solicitar alteração
+                                        de serviço ou horário, entre em contato
+                                        com a Rayssa com pelo menos 3 horas
+                                        de antecedência.
+
+                                    </div>
+
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                    {% else %}
+
+                        <div class="agendamentos-vazio">
+
+                            <strong>
+                                Nenhum agendamento encontrado
+                            </strong>
+
+                            <p>
+                                Não encontramos agendamentos para
+                                este número de WhatsApp/telefone.
+                            </p>
+
+                            <a href="/agendar"
+                               class="btn btn-primary booking-button">
+
+                                Agendar horário
+
+                            </a>
+
+                        </div>
+
+                    {% endif %}
+
+
+                {% else %}
+
+                    <div class="agendamentos-vazio">
+
+                        <p>
+                            Seus agendamentos aparecerão aqui
+                            após a consulta.
+                        </p>
+
+                    </div>
+
+                {% endif %}
 
             </div>
 
@@ -136,6 +291,327 @@
         </div>
 
     </footer>
+
+
+    <!-- ==========================================================
+         ESTILO DOS RESULTADOS
+         ========================================================== -->
+
+    <style>
+
+        .meus-agendamentos-lista {
+
+            width: min(760px, 100%);
+
+            margin: 28px auto 0;
+
+        }
+
+
+        .resultados-titulo {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 14px;
+
+            padding: 0 4px;
+
+            color: #6f4a50;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            letter-spacing: .5px;
+
+        }
+
+
+        .resultados-titulo small {
+
+            color: #9b6871;
+
+            font-size: 11px;
+
+            font-weight: 500;
+
+        }
+
+
+        .agendamento-card {
+
+            margin-bottom: 18px;
+
+            padding: 24px;
+
+            background: rgba(255, 255, 255, .86);
+
+            border: 1px solid rgba(143, 95, 103, .14);
+
+            border-radius: 20px;
+
+            box-shadow: 0 14px 35px rgba(74, 49, 53, .08);
+
+        }
+
+
+        .agendamento-card-topo {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding-bottom: 15px;
+
+            margin-bottom: 18px;
+
+            border-bottom: 1px solid rgba(143, 95, 103, .10);
+
+        }
+
+
+        .agendamento-status {
+
+            padding: 6px 11px;
+
+            border-radius: 20px;
+
+            background: #f0e2df;
+
+            color: #8f5f67;
+
+            font-family: Arial, sans-serif;
+
+            font-size: 10px;
+
+            font-weight: 600;
+
+            letter-spacing: 1px;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .agendamento-id {
+
+            color: #b09599;
+
+            font-family: Arial, sans-serif;
+
+            font-size: 10px;
+
+        }
+
+
+        .agendamento-servico {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 5px;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .agendamento-servico span,
+
+        .agendamento-detalhes span,
+
+        .agendamento-observacoes span {
+
+            color: #9b7b80;
+
+            font-family: Arial, sans-serif;
+
+            font-size: 10px;
+
+            font-weight: 600;
+
+            letter-spacing: 1.2px;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .agendamento-servico strong {
+
+            color: #4a3135;
+
+            font-family: Georgia, "Times New Roman", serif;
+
+            font-size: 21px;
+
+            font-weight: 500;
+
+        }
+
+
+        .agendamento-detalhes {
+
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 20px;
+
+            padding: 17px 0;
+
+            border-top: 1px solid rgba(143, 95, 103, .10);
+
+            border-bottom: 1px solid rgba(143, 95, 103, .10);
+
+        }
+
+
+        .agendamento-detalhes div {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 5px;
+
+        }
+
+
+        .agendamento-detalhes strong {
+
+            color: #6f4a50;
+
+            font-size: 15px;
+
+        }
+
+
+        .agendamento-observacoes {
+
+            margin-top: 18px;
+
+        }
+
+
+        .agendamento-observacoes p {
+
+            margin: 7px 0 0;
+
+            color: #766064;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+
+        }
+
+
+        .agendamento-aviso {
+
+            margin-top: 18px;
+
+            padding: 13px 15px;
+
+            background: #faf1ee;
+
+            border-radius: 11px;
+
+            color: #806a6e;
+
+            font-family: Arial, sans-serif;
+
+            font-size: 11px;
+
+            line-height: 1.6;
+
+        }
+
+
+        .agendamentos-vazio {
+
+            width: min(760px, 100%);
+
+            margin: 28px auto 0;
+
+            padding: 25px;
+
+            box-sizing: border-box;
+
+            text-align: center;
+
+            background: rgba(255, 255, 255, .65);
+
+            border: 1px solid rgba(143, 95, 103, .12);
+
+            border-radius: 18px;
+
+        }
+
+
+        .agendamentos-vazio strong {
+
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #6f4a50;
+
+            font-family: Georgia, "Times New Roman", serif;
+
+            font-size: 19px;
+
+            font-weight: 500;
+
+        }
+
+
+        .agendamentos-vazio p {
+
+            margin: 0;
+
+            color: #806a6e;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+
+        }
+
+
+        .agendamentos-vazio .booking-button {
+
+            margin-top: 18px;
+
+            text-decoration: none;
+
+        }
+
+
+        @media (max-width: 560px) {
+
+            .agendamento-card {
+
+                padding: 19px;
+
+            }
+
+            .agendamento-servico strong {
+
+                font-size: 18px;
+
+            }
+
+        }
+
+    </style>
 
 </body>
 
