@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Painel | Rayssa Lima Nail Designer</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <header class="header">
+
+        <div class="container header-content">
+
+            <a href="/" class="logo">
+
+                <span>Rayssa Lima</span>
+
+                <small>Nail Designer</small>
+
+            </a>
+
+
+            <nav class="nav">
+
+                <a href="/">
+                    Site
+                </a>
+
+                <a href="/agendar">
+                    Agendar
+                </a>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+
+    <main>
+
+        <section class="booking-section">
+
+            <div class="container booking-container">
+
+                <div class="section-heading">
+
+                    <span class="eyebrow">
+                        Área administrativa
+                    </span>
+
+                    <h1>
+                        Painel da Rayssa
+                    </h1>
+
+                    <p>
+                        Acompanhe os agendamentos realizados
+                        pelo site.
+                    </p>
+
+                </div>
+
+
+                <div class="admin-vazio">
+
+                    <span class="admin-icone">
+                        ✦
+                    </span>
+
+                    <h2>
+                        Nenhum agendamento carregado
+                    </h2>
+
+                    <p>
+                        Nesta área vamos mostrar os agendamentos
+                        salvos no sistema.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer class="footer">
+
+        <div class="container">
+
+            <p>
+                © 2026 Rayssa Lima Nail Designer
+            </p>
+
+        </div>
+
+    </footer>
+
+
+    <style>
+
+        .admin-vazio {
+
+            width: min(760px, 100%);
+
+            margin: 30px auto 0;
+
+            padding: 45px 25px;
+
+            box-sizing: border-box;
+
+            text-align: center;
+
+            background: rgba(255, 255, 255, .82);
+
+            border: 1px solid rgba(143, 95, 103, .14);
+
+            border-radius: 22px;
+
+            box-shadow: 0 18px 45px rgba(74, 49, 53, .08);
+
+        }
+
+
+        .admin-icone {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            width: 55px;
+
+            height: 55px;
+
+            margin: 0 auto 18px;
+
+            border-radius: 50%;
+
+            background: #f0e2df;
+
+            color: #8f5f67;
+
+            font-size: 22px;
+
+        }
+
+
+        .admin-vazio h2 {
+
+            margin: 0 0 10px;
+
+            color: #4a3135;
+
+            font-family: Georgia, "Times New Roman", serif;
+
+            font-size: 24px;
+
+            font-weight: 500;
+
+        }
+
+
+        .admin-vazio p {
+
+            margin: 0;
+
+            color: #766064;
+
+            font-size: 13px;
+
+            line-height: 1.7;
+
+        }
+
+    </style>
+
+</body>
+
+</html>
