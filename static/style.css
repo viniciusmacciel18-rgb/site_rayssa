@@ -1762,12 +1762,13 @@ CELULAR
 }
 .foto-atendimento {
     position: absolute;
-    top: 35px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 130px;
-    height: 130px;
+    top: 12px;
+    left: 12px;
+    width: calc(100% - 24px);
+    height: calc(100% - 24px);
     object-fit: cover;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.8);
+    object-position: center;
+    border-radius: 175px 175px 10px 10px;
+    border: 5px solid #6f4a50;
+    box-sizing: border-box;
 }
