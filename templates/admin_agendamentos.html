@@ -120,7 +120,6 @@ def agendar():
         horario = request.form.get("horario")
         observacoes = request.form.get("observacoes")
 
-
         # --------------------------------------------------
         # SALVAR NO POSTGRESQL
         # --------------------------------------------------
@@ -155,7 +154,6 @@ def agendar():
         cursor.close()
         conexao.close()
 
-
         # --------------------------------------------------
         # LOG
         # --------------------------------------------------
@@ -173,7 +171,6 @@ def agendar():
         print("AGENDAMENTO SALVO NO POSTGRESQL")
         print("==============================\n")
 
-
         # --------------------------------------------------
         # FORMATAR DATA
         # --------------------------------------------------
@@ -182,7 +179,6 @@ def agendar():
             data,
             "%Y-%m-%d"
         ).strftime("%d/%m/%Y")
-
 
         # --------------------------------------------------
         # CONFIRMAÇÃO
@@ -197,7 +193,6 @@ def agendar():
             horario=horario,
             observacoes=observacoes
         )
-
 
     return render_template("agendar.html")
 
@@ -232,7 +227,6 @@ def login():
         usuario = request.form.get("usuario")
         senha = request.form.get("senha")
 
-
         usuario_correto = os.environ.get(
             "ADMIN_USERNAME"
         )
@@ -240,7 +234,6 @@ def login():
         senha_correta = os.environ.get(
             "ADMIN_PASSWORD"
         )
-
 
         if (
             usuario == usuario_correto
@@ -253,12 +246,10 @@ def login():
                 url_for("admin")
             )
 
-
         return render_template(
             "login.html",
             erro="Usuário ou senha incorretos."
         )
-
 
     return render_template(
         "login.html"
@@ -308,7 +299,6 @@ def admin_agendamentos():
     cursor.close()
     conexao.close()
 
-
     # ------------------------------------------------------
     # TRANSFORMAR OS RESULTADOS
     # ------------------------------------------------------
@@ -336,7 +326,6 @@ def admin_agendamentos():
             "status": agendamento[7] or "Confirmado"
 
         })
-
 
     return render_template(
         "admin_agendamentos.html",
@@ -369,7 +358,6 @@ def cancelar_agendamento(agendamento_id):
     cursor.close()
     conexao.close()
 
-
     return redirect(
         url_for("admin_agendamentos")
     )
@@ -398,7 +386,6 @@ def meus_agendamentos():
 
     telefone = request.args.get("telefone")
 
-
     # ------------------------------------------------------
     # SE NÃO INFORMOU TELEFONE
     # ------------------------------------------------------
@@ -409,7 +396,6 @@ def meus_agendamentos():
             "meus_agendamentos.html",
             agendamentos=[]
         )
-
 
     # ------------------------------------------------------
     # BUSCAR AGENDAMENTOS
@@ -433,12 +419,10 @@ def meus_agendamentos():
         ORDER BY data ASC, horario ASC
     """, (telefone,))
 
-
     resultados = cursor.fetchall()
 
     cursor.close()
     conexao.close()
-
 
     # ------------------------------------------------------
     # TRANSFORMAR RESULTADOS
@@ -467,7 +451,6 @@ def meus_agendamentos():
             "status": agendamento[7] or "Confirmado"
 
         })
-
 
     # ------------------------------------------------------
     # MOSTRAR RESULTADOS
