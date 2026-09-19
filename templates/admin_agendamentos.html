@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Agendamentos | Rayssa Lima Nail Designer</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <header class="header">
+
+        <div class="container header-content">
+
+            <a href="/" class="logo">
+
+                <span>Rayssa Lima</span>
+
+                <small>Nail Designer</small>
+
+            </a>
+
+            <nav class="nav">
+
+                <a href="/admin">
+                    Painel
+                </a>
+
+                <a href="/agendar">
+                    Agendar
+                </a>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+
+    <main>
+
+        <section class="booking-section">
+
+            <div class="container booking-container">
+
+
+                <!-- CABEÇALHO -->
+
+                <div class="section-heading">
+
+                    <span class="eyebrow">
+                        Área administrativa
+                    </span>
+
+                    <h1>
+                        Agendamentos
+                    </h1>
+
+                    <p>
+                        Clientes e serviços agendados pelo site.
+                    </p>
+
+                </div>
+
+
+                {% if agendamentos %}
+
+                    <div class="admin-lista">
+
+
+                        <!-- TOPO DA LISTA -->
+
+                        <div class="admin-lista-topo">
+
+                            <span>
+                                Agendamentos
+                            </span>
+
+                            <strong>
+                                {{ agendamentos|length }}
+                            </strong>
+
+                        </div>
+
+
+                        <!-- AGENDAMENTOS -->
+
+                        {% for agendamento in agendamentos %}
+
+                            <div class="admin-card">
+
+
+                                <div class="admin-card-topo">
+
+                                    <div>
+
+                                        <span class="admin-label">
+                                            Cliente
+                                        </span>
+
+                                        <h2>
+                                            {{ agendamento.nome }}
+                                        </h2>
+
+                                    </div>
+
+                                    <span class="admin-status">
+                                        Confirmado
+                                    </span>
+
+                                </div>
+
+
+                                <div class="admin-detalhes">
+
+
+                                    <div>
+
+                                        <span>
+                                            Data
+                                        </span>
+
+                                        <strong>
+                                            {{ agendamento.data }}
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            Horário
+                                        </span>
+
+                                        <strong>
+                                            {{ agendamento.horario }}
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            Serviço
+                                        </span>
+
+                                        <strong>
+                                            {{ agendamento.servico }}
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            WhatsApp / Telefone
+                                        </span>
+
+                                        <strong>
+                                            {{ agendamento.telefone }}
+                                        </strong>
+
+                                    </div>
+
+
+                                </div>
+
+
+                                {% if agendamento.observacoes %}
+
+                                    <div class="admin-observacoes">
+
+                                        <span>
+                                            Observações
+                                        </span>
+
+                                        <p>
+                                            {{ agendamento.observacoes }}
+                                        </p>
+
+                                    </div>
+
+                                {% endif %}
+
+
+                                <!-- BOTÕES -->
+
+                                <div class="admin-acoes">
+
+                                    <button
+                                        type="button"
+                                        class="admin-btn admin-btn-alterar">
+
+                                        Alterar serviço
+
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        class="admin-btn admin-btn-cancelar">
+
+                                        Cancelar agendamento
+
+                                    </button>
+
+                                </div>
+
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                {% else %}
+
+
+                    <div class="admin-vazio">
+
+                        <span class="admin-icone">
+                            ✦
+                        </span>
+
+                        <h2>
+                            Nenhum agendamento encontrado
+                        </h2>
+
+                        <p>
+                            Ainda não existem agendamentos
+                            salvos no sistema.
+                        </p>
+
+                    </div>
+
+
+                {% endif %}
+
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer class="footer">
+
+        <div class="container">
+
+            <p>
+                © 2026 Rayssa Lima Nail Designer
+            </p>
+
+        </div>
+
+    </footer>
+
+
+    <style>
+
+        /* ==================================================
+           AÇÕES DOS AGENDAMENTOS
+           ================================================== */
+
+        .admin-acoes {
+
+            display: flex;
+
+            gap: 12px;
+
+            margin-top: 24px;
+
+            padding-top: 20px;
+
+            border-top:
+                1px solid
+                rgba(143, 95, 103, 0.10);
+
+        }
+
+
+        .admin-btn {
+
+            border: none;
+
+            border-radius: 10px;
+
+            padding: 12px 18px;
+
+            font-family:
+                Arial,
+                sans-serif;
+
+            font-size: 12px;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.2s ease,
+                opacity 0.2s ease;
+
+        }
+
+
+        .admin-btn:hover {
+
+            transform:
+                translateY(-2px);
+
+            opacity: 0.88;
+
+        }
+
+
+        .admin-btn-alterar {
+
+            background:
+                #f2e3e1;
+
+            color:
+                #7a5057;
+
+        }
+
+
+        .admin-btn-cancelar {
+
+            background:
+                #ead6d5;
+
+            color:
+                #8f4f59;
+
+        }
+
+
+        /* ==================================================
+           CELULAR
+           ================================================== */
+
+        @media (max-width: 600px) {
+
+            .admin-acoes {
+
+                flex-direction: column;
+
+            }
+
+
+            .admin-btn {
+
+                width: 100%;
+
+            }
+
+        }
+
+    </style>
+
+
+</body>
+
+</html>
