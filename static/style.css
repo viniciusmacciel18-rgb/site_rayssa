@@ -1772,3 +1772,32 @@ CELULAR
     border: 5px solid #6f4a50;
     box-sizing: border-box;
 }
+.cartao-destaque > p {
+    position: absolute;
+    bottom: 48px;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0 10px;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 24px;
+    line-height: 1.15;
+    color: white;
+    z-index: 5;
+}
+.cartao-destaque > span:last-child {
+    position: absolute;
+    bottom: 25px;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.9);
+    z-index: 5;
+}
