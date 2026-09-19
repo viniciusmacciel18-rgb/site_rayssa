@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
-
 from datetime import datetime
+import os
+import psycopg2
 
 
 # ==========================================================
@@ -8,6 +9,54 @@ from datetime import datetime
 # ==========================================================
 
 app = Flask(__name__)
+
+
+# ==========================================================
+# CONEXÃO COM O POSTGRESQL
+# ==========================================================
+
+def conectar_banco():
+
+    return psycopg2.connect(
+        os.environ.get("DATABASE_URL")
+    )
+
+
+# ==========================================================
+# CRIAR TABELA DE AGENDAMENTOS
+# ==========================================================
+
+def criar_tabela():
+
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS agendamentos (
+
+            id SERIAL PRIMARY KEY,
+
+            nome TEXT NOT NULL,
+
+            telefone TEXT NOT NULL,
+
+            servico TEXT NOT NULL,
+
+            data DATE NOT NULL,
+
+            horario TIME NOT NULL,
+
+            observacoes TEXT,
+
+            criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+        )
+    """)
+
+    conexao.commit()
+
+    cursor.close()
+    conexao.close()
 
 
 # ==========================================================
@@ -42,6 +91,39 @@ def agendar():
 
 
         # --------------------------------------------------
+        # SALVAR NO POSTGRESQL
+        # --------------------------------------------------
+
+        conexao = conectar_banco()
+        cursor = conexao.cursor()
+
+        cursor.execute("""
+            INSERT INTO agendamentos
+            (
+                nome,
+                telefone,
+                servico,
+                data,
+                horario,
+                observacoes
+            )
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """, (
+            nome,
+            telefone,
+            servico,
+            data,
+            horario,
+            observacoes
+        ))
+
+        conexao.commit()
+
+        cursor.close()
+        conexao.close()
+
+
+        # --------------------------------------------------
         # TESTE NO TERMINAL
         # --------------------------------------------------
 
@@ -55,6 +137,8 @@ def agendar():
         print("Data:", data)
         print("Horário:", horario)
         print("Observações:", observacoes)
+
+        print("AGENDAMENTO SALVO NO POSTGRESQL")
 
         print("==============================\n")
 
@@ -108,5 +192,7 @@ def meus_agendamentos():
 # ==========================================================
 
 if __name__ == "__main__":
+
+    criar_tabela()
 
     app.run(debug=True)
