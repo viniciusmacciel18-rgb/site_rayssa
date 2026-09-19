@@ -54,9 +54,38 @@ def criar_tabela():
 
             observacoes TEXT,
 
+            status TEXT DEFAULT 'Confirmado',
+
             criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
         )
+    """)
+
+    conexao.commit()
+
+    cursor.close()
+    conexao.close()
+
+
+# ==========================================================
+# ATUALIZAR TABELA EXISTENTE
+# ==========================================================
+
+def atualizar_tabela():
+
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+
+    cursor.execute("""
+        ALTER TABLE agendamentos
+        ADD COLUMN IF NOT EXISTS status
+        TEXT DEFAULT 'Confirmado'
+    """)
+
+    cursor.execute("""
+        UPDATE agendamentos
+        SET status = 'Confirmado'
+        WHERE status IS NULL
     """)
 
     conexao.commit()
@@ -107,16 +136,18 @@ def agendar():
                 servico,
                 data,
                 horario,
-                observacoes
+                observacoes,
+                status
             )
-            VALUES (%s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
         """, (
             nome,
             telefone,
             servico,
             data,
             horario,
-            observacoes
+            observacoes,
+            "Confirmado"
         ))
 
         conexao.commit()
@@ -138,6 +169,7 @@ def agendar():
         print("Data:", data)
         print("Horário:", horario)
         print("Observações:", observacoes)
+        print("Status: Confirmado")
         print("AGENDAMENTO SALVO NO POSTGRESQL")
         print("==============================\n")
 
@@ -232,6 +264,7 @@ def login():
         "login.html"
     )
 
+
 # ==========================================================
 # PAINEL ADMINISTRATIVO
 # ==========================================================
@@ -243,7 +276,8 @@ def admin():
     return render_template(
         "admin.html"
     )
-    
+
+
 # ==========================================================
 # AGENDAMENTOS DO PAINEL
 # ==========================================================
@@ -263,7 +297,8 @@ def admin_agendamentos():
             servico,
             data,
             horario,
-            observacoes
+            observacoes,
+            status
         FROM agendamentos
         ORDER BY data ASC, horario ASC
     """)
@@ -296,14 +331,47 @@ def admin_agendamentos():
 
             "horario": agendamento[5].strftime("%H:%M"),
 
-            "observacoes": agendamento[6]
+            "observacoes": agendamento[6],
+
+            "status": agendamento[7] or "Confirmado"
 
         })
 
-    
+
     return render_template(
         "admin_agendamentos.html",
         agendamentos=agendamentos
+    )
+
+
+# ==========================================================
+# CANCELAR AGENDAMENTO
+# ==========================================================
+
+@app.route(
+    "/admin/cancelar/<int:agendamento_id>",
+    methods=["POST"]
+)
+@login_obrigatorio
+def cancelar_agendamento(agendamento_id):
+
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+
+    cursor.execute("""
+        UPDATE agendamentos
+        SET status = 'Cancelado'
+        WHERE id = %s
+    """, (agendamento_id,))
+
+    conexao.commit()
+
+    cursor.close()
+    conexao.close()
+
+
+    return redirect(
+        url_for("admin_agendamentos")
     )
 
 
@@ -358,7 +426,8 @@ def meus_agendamentos():
             servico,
             data,
             horario,
-            observacoes
+            observacoes,
+            status
         FROM agendamentos
         WHERE telefone = %s
         ORDER BY data ASC, horario ASC
@@ -393,7 +462,9 @@ def meus_agendamentos():
 
             "horario": agendamento[5].strftime("%H:%M"),
 
-            "observacoes": agendamento[6]
+            "observacoes": agendamento[6],
+
+            "status": agendamento[7] or "Confirmado"
 
         })
 
@@ -414,6 +485,7 @@ def meus_agendamentos():
 # ==========================================================
 
 criar_tabela()
+atualizar_tabela()
 
 
 # ==========================================================
