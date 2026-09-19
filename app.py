@@ -163,7 +163,16 @@ def agendar():
 
     return render_template("agendar.html")
 
+# ==========================================================
+# PAINEL ADMINISTRATIVO
+# ==========================================================
 
+@app.route("/admin")
+def admin():
+
+    return render_template(
+        "admin.html"
+    )
 # ==========================================================
 # MEUS AGENDAMENTOS
 # ==========================================================
