@@ -170,8 +170,58 @@ def agendar():
 @app.route("/admin")
 def admin():
 
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+
+    cursor.execute("""
+        SELECT
+            id,
+            nome,
+            telefone,
+            servico,
+            data,
+            horario,
+            observacoes
+        FROM agendamentos
+        ORDER BY data ASC, horario ASC
+    """)
+
+    resultados = cursor.fetchall()
+
+    cursor.close()
+    conexao.close()
+
+
+    # ------------------------------------------------------
+    # TRANSFORMAR OS RESULTADOS
+    # ------------------------------------------------------
+
+    agendamentos = []
+
+    for agendamento in resultados:
+
+        agendamentos.append({
+
+            "id": agendamento[0],
+
+            "nome": agendamento[1],
+
+            "telefone": agendamento[2],
+
+            "servico": agendamento[3],
+
+            "data": agendamento[4].strftime("%d/%m/%Y"),
+
+            "horario": agendamento[5].strftime("%H:%M"),
+
+            "observacoes": agendamento[6]
+
+        })
+
+
     return render_template(
-        "admin.html"
+        "admin.html",
+        agendamentos=agendamentos
     )
 # ==========================================================
 # MEUS AGENDAMENTOS
