@@ -71,22 +71,148 @@
                 </div>
 
 
-                <div class="admin-vazio">
+                {% if agendamentos %}
 
-                    <span class="admin-icone">
-                        ✦
-                    </span>
+                    <div class="admin-lista">
 
-                    <h2>
-                        Nenhum agendamento carregado
-                    </h2>
+                        <div class="admin-lista-topo">
 
-                    <p>
-                        Nesta área vamos mostrar os agendamentos
-                        salvos no sistema.
-                    </p>
+                            <span>
+                                Agendamentos
+                            </span>
 
-                </div>
+                            <strong>
+                                {{ agendamentos|length }}
+                            </strong>
+
+                        </div>
+
+
+                        {% for agendamento in agendamentos %}
+
+                            <div class="admin-card">
+
+                                <div class="admin-card-topo">
+
+                                    <div>
+
+                                        <span class="admin-label">
+                                            Cliente
+                                        </span>
+
+                                        <h2>
+                                            {{ agendamento.nome }}
+                                        </h2>
+
+                                    </div>
+
+
+                                    <span class="admin-status">
+                                        Confirmado
+                                    </span>
+
+                                </div>
+
+
+                                <div class="admin-detalhes">
+
+                                    <div>
+
+                                        <span>
+                                            Data
+                                        </span>
+
+                                        <strong>
+                                            {{ agendamento.data }}
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            Horário
+                                        </span>
+
+                                        <strong>
+                                            {{ agendamento.horario }}
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            Serviço
+                                        </span>
+
+                                        <strong>
+                                            {{ agendamento.servico }}
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            WhatsApp / Telefone
+                                        </span>
+
+                                        <strong>
+                                            {{ agendamento.telefone }}
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+
+                                {% if agendamento.observacoes %}
+
+                                    <div class="admin-observacoes">
+
+                                        <span>
+                                            Observações
+                                        </span>
+
+                                        <p>
+                                            {{ agendamento.observacoes }}
+                                        </p>
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                {% else %}
+
+                    <div class="admin-vazio">
+
+                        <span class="admin-icone">
+                            ✦
+                        </span>
+
+                        <h2>
+                            Nenhum agendamento encontrado
+                        </h2>
+
+                        <p>
+                            Ainda não existem agendamentos
+                            salvos no sistema.
+                        </p>
+
+                    </div>
+
+                {% endif %}
 
             </div>
 
@@ -109,6 +235,238 @@
 
 
     <style>
+
+        .admin-lista {
+
+            width: min(900px, 100%);
+
+            margin: 30px auto 0;
+
+        }
+
+
+        .admin-lista-topo {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 15px;
+
+            padding: 0 5px;
+
+            color: #6f4a50;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            letter-spacing: 1px;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .admin-lista-topo strong {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            min-width: 30px;
+
+            height: 30px;
+
+            padding: 0 8px;
+
+            box-sizing: border-box;
+
+            border-radius: 50%;
+
+            background: #f0e2df;
+
+            color: #8f5f67;
+
+            font-size: 11px;
+
+        }
+
+
+        .admin-card {
+
+            margin-bottom: 18px;
+
+            padding: 25px;
+
+            background: rgba(255, 255, 255, .86);
+
+            border: 1px solid rgba(143, 95, 103, .14);
+
+            border-radius: 20px;
+
+            box-shadow: 0 14px 35px rgba(74, 49, 53, .08);
+
+        }
+
+
+        .admin-card-topo {
+
+            display: flex;
+
+            align-items: flex-start;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding-bottom: 18px;
+
+            border-bottom: 1px solid rgba(143, 95, 103, .10);
+
+        }
+
+
+        .admin-label {
+
+            display: block;
+
+            margin-bottom: 5px;
+
+            color: #9b7b80;
+
+            font-family: Arial, sans-serif;
+
+            font-size: 10px;
+
+            font-weight: 600;
+
+            letter-spacing: 1.2px;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .admin-card h2 {
+
+            margin: 0;
+
+            color: #4a3135;
+
+            font-family: Georgia, "Times New Roman", serif;
+
+            font-size: 24px;
+
+            font-weight: 500;
+
+        }
+
+
+        .admin-status {
+
+            padding: 7px 12px;
+
+            border-radius: 20px;
+
+            background: #f0e2df;
+
+            color: #8f5f67;
+
+            font-family: Arial, sans-serif;
+
+            font-size: 10px;
+
+            font-weight: 600;
+
+            letter-spacing: 1px;
+
+            text-transform: uppercase;
+
+            white-space: nowrap;
+
+        }
+
+
+        .admin-detalhes {
+
+            display: grid;
+
+            grid-template-columns: repeat(4, 1fr);
+
+            gap: 18px;
+
+            padding: 20px 0;
+
+        }
+
+
+        .admin-detalhes div {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 6px;
+
+        }
+
+
+        .admin-detalhes span,
+
+        .admin-observacoes span {
+
+            color: #9b7b80;
+
+            font-family: Arial, sans-serif;
+
+            font-size: 10px;
+
+            font-weight: 600;
+
+            letter-spacing: 1.1px;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .admin-detalhes strong {
+
+            color: #6f4a50;
+
+            font-size: 14px;
+
+            line-height: 1.4;
+
+        }
+
+
+        .admin-observacoes {
+
+            padding-top: 18px;
+
+            border-top: 1px solid rgba(143, 95, 103, .10);
+
+        }
+
+
+        .admin-observacoes p {
+
+            margin: 7px 0 0;
+
+            color: #766064;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+
+        }
+
 
         .admin-vazio {
 
@@ -182,6 +540,50 @@
             font-size: 13px;
 
             line-height: 1.7;
+
+        }
+
+
+        @media (max-width: 800px) {
+
+            .admin-detalhes {
+
+                grid-template-columns: repeat(2, 1fr);
+
+            }
+
+        }
+
+
+        @media (max-width: 560px) {
+
+            .admin-card {
+
+                padding: 19px;
+
+            }
+
+            .admin-card-topo {
+
+                flex-direction: column;
+
+                gap: 12px;
+
+            }
+
+            .admin-detalhes {
+
+                grid-template-columns: 1fr 1fr;
+
+                gap: 16px;
+
+            }
+
+            .admin-card h2 {
+
+                font-size: 21px;
+
+            }
 
         }
 
