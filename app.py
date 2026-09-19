@@ -76,10 +76,6 @@ def inicio():
 @app.route("/agendar", methods=["GET", "POST"])
 def agendar():
 
-    # ------------------------------------------------------
-    # Quando a cliente enviar o formulário
-    # ------------------------------------------------------
-
     if request.method == "POST":
 
         nome = request.form.get("nome")
@@ -124,27 +120,24 @@ def agendar():
 
 
         # --------------------------------------------------
-        # TESTE NO TERMINAL
+        # LOG
         # --------------------------------------------------
 
         print("\n==============================")
         print("NOVO AGENDAMENTO")
         print("==============================")
-
         print("Nome:", nome)
         print("Telefone:", telefone)
         print("Serviço:", servico)
         print("Data:", data)
         print("Horário:", horario)
         print("Observações:", observacoes)
-
         print("AGENDAMENTO SALVO NO POSTGRESQL")
-
         print("==============================\n")
 
 
         # --------------------------------------------------
-        # FORMATAR A DATA
+        # FORMATAR DATA
         # --------------------------------------------------
 
         data_formatada = datetime.strptime(
@@ -154,7 +147,7 @@ def agendar():
 
 
         # --------------------------------------------------
-        # MOSTRAR PÁGINA DE CONFIRMAÇÃO
+        # CONFIRMAÇÃO
         # --------------------------------------------------
 
         return render_template(
@@ -168,10 +161,6 @@ def agendar():
         )
 
 
-    # ------------------------------------------------------
-    # Quando apenas abrir a página
-    # ------------------------------------------------------
-
     return render_template("agendar.html")
 
 
@@ -182,8 +171,84 @@ def agendar():
 @app.route("/meus-agendamentos")
 def meus_agendamentos():
 
+    telefone = request.args.get("telefone")
+
+
+    # ------------------------------------------------------
+    # SE NÃO INFORMOU TELEFONE
+    # ------------------------------------------------------
+
+    if not telefone:
+
+        return render_template(
+            "meus_agendamentos.html",
+            agendamentos=[]
+        )
+
+
+    # ------------------------------------------------------
+    # BUSCAR AGENDAMENTOS
+    # ------------------------------------------------------
+
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+
+    cursor.execute("""
+        SELECT
+            id,
+            nome,
+            telefone,
+            servico,
+            data,
+            horario,
+            observacoes
+        FROM agendamentos
+        WHERE telefone = %s
+        ORDER BY data ASC, horario ASC
+    """, (telefone,))
+
+
+    resultados = cursor.fetchall()
+
+    cursor.close()
+    conexao.close()
+
+
+    # ------------------------------------------------------
+    # TRANSFORMAR RESULTADOS EM DADOS PARA O HTML
+    # ------------------------------------------------------
+
+    agendamentos = []
+
+    for agendamento in resultados:
+
+        agendamentos.append({
+
+            "id": agendamento[0],
+
+            "nome": agendamento[1],
+
+            "telefone": agendamento[2],
+
+            "servico": agendamento[3],
+
+            "data": agendamento[4].strftime("%d/%m/%Y"),
+
+            "horario": agendamento[5].strftime("%H:%M"),
+
+            "observacoes": agendamento[6]
+
+        })
+
+
+    # ------------------------------------------------------
+    # MOSTRAR RESULTADOS
+    # ------------------------------------------------------
+
     return render_template(
-        "meus_agendamentos.html"
+        "meus_agendamentos.html",
+        agendamentos=agendamentos,
+        telefone=telefone
     )
 
 
