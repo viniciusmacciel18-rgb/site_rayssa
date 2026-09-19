@@ -289,7 +289,7 @@ def admin_agendamentos():
 
         })
 
-
+    
     return render_template(
         "admin_agendamentos.html",
         agendamentos=agendamentos
