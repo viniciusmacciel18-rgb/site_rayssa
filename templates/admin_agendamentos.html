@@ -1,804 +1,497 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+from flask import Flask, render_template, request, redirect, url_for, session
+from datetime import datetime
+import os
+import psycopg2
+from functools import wraps
 
-<head>
 
-    <meta charset="UTF-8">
+# ==========================================================
+# APLICAÇÃO FLASK
+# ==========================================================
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+app = Flask(__name__)
 
-    <title>Agendamentos | Rayssa Lima Nail Designer</title>
+app.secret_key = os.environ.get(
+    "SECRET_KEY",
+    "chave-temporaria"
+)
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
 
-</head>
+# ==========================================================
+# CONEXÃO COM O POSTGRESQL
+# ==========================================================
 
-<body>
+def conectar_banco():
 
-    <header class="header">
+    return psycopg2.connect(
+        os.environ.get("DATABASE_URL")
+    )
 
-        <div class="container header-content">
 
-            <a href="/" class="logo">
+# ==========================================================
+# CRIAR TABELA DE AGENDAMENTOS
+# ==========================================================
 
-                <span>Rayssa Lima</span>
+def criar_tabela():
 
-                <small>Nail Designer</small>
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
 
-            </a>
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS agendamentos (
 
-            <nav class="nav">
+            id SERIAL PRIMARY KEY,
 
-                <a href="/admin">
-                    Painel
-                </a>
+            nome TEXT NOT NULL,
 
-                <a href="/agendar">
-                    Agendar
-                </a>
+            telefone TEXT NOT NULL,
 
-            </nav>
+            servico TEXT NOT NULL,
 
-        </div>
+            data DATE NOT NULL,
 
-    </header>
+            horario TIME NOT NULL,
 
+            observacoes TEXT,
 
-    <main>
+            status TEXT DEFAULT 'Confirmado',
 
-        <section class="booking-section">
+            criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
-            <div class="container booking-container">
+        )
+    """)
 
+    conexao.commit()
 
-                <!-- CABEÇALHO -->
+    cursor.close()
+    conexao.close()
 
-                <div class="section-heading">
 
-                    <span class="eyebrow">
-                        Área administrativa
-                    </span>
+# ==========================================================
+# ATUALIZAR TABELA EXISTENTE
+# ==========================================================
 
-                    <h1>
-                        Agendamentos
-                    </h1>
+def atualizar_tabela():
 
-                    <p>
-                        Clientes e serviços agendados pelo site.
-                    </p>
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
 
-                </div>
+    cursor.execute("""
+        ALTER TABLE agendamentos
+        ADD COLUMN IF NOT EXISTS status
+        TEXT DEFAULT 'Confirmado'
+    """)
 
+    cursor.execute("""
+        UPDATE agendamentos
+        SET status = 'Confirmado'
+        WHERE status IS NULL
+    """)
 
-                {% if agendamentos %}
+    conexao.commit()
 
-                    <div class="admin-lista">
+    cursor.close()
+    conexao.close()
 
 
-                        <!-- TOPO DA LISTA -->
+# ==========================================================
+# PÁGINA INICIAL
+# ==========================================================
 
-                        <div class="admin-lista-topo">
+@app.route("/")
+def inicio():
+
+    return render_template("index.html")
+
+
+# ==========================================================
+# PÁGINA DE AGENDAMENTO
+# ==========================================================
+
+@app.route("/agendar", methods=["GET", "POST"])
+def agendar():
+
+    if request.method == "POST":
+
+        nome = request.form.get("nome")
+        telefone = request.form.get("telefone")
+        servico = request.form.get("servico")
+        data = request.form.get("data")
+        horario = request.form.get("horario")
+        observacoes = request.form.get("observacoes")
 
-                            <span>
-                                Agendamentos
-                            </span>
 
-                            <strong>
-                                {{ agendamentos|length }}
-                            </strong>
+        # --------------------------------------------------
+        # SALVAR NO POSTGRESQL
+        # --------------------------------------------------
 
-                        </div>
+        conexao = conectar_banco()
+        cursor = conexao.cursor()
 
+        cursor.execute("""
+            INSERT INTO agendamentos
+            (
+                nome,
+                telefone,
+                servico,
+                data,
+                horario,
+                observacoes,
+                status
+            )
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (
+            nome,
+            telefone,
+            servico,
+            data,
+            horario,
+            observacoes,
+            "Confirmado"
+        ))
 
-                        <!-- AGENDAMENTOS -->
+        conexao.commit()
 
-                        {% for agendamento in agendamentos %}
+        cursor.close()
+        conexao.close()
 
-                            <div class="admin-card">
 
+        # --------------------------------------------------
+        # LOG
+        # --------------------------------------------------
 
-                                <div class="admin-card-topo">
+        print("\n==============================")
+        print("NOVO AGENDAMENTO")
+        print("==============================")
+        print("Nome:", nome)
+        print("Telefone:", telefone)
+        print("Serviço:", servico)
+        print("Data:", data)
+        print("Horário:", horario)
+        print("Observações:", observacoes)
+        print("Status: Confirmado")
+        print("AGENDAMENTO SALVO NO POSTGRESQL")
+        print("==============================\n")
 
-                                    <div>
 
-                                        <span class="admin-label">
-                                            Cliente
-                                        </span>
+        # --------------------------------------------------
+        # FORMATAR DATA
+        # --------------------------------------------------
 
-                                        <h2>
-                                            {{ agendamento.nome }}
-                                        </h2>
+        data_formatada = datetime.strptime(
+            data,
+            "%Y-%m-%d"
+        ).strftime("%d/%m/%Y")
 
-                                    </div>
 
-                                    <span class="admin-status">
-                                        Confirmado
-                                    </span>
+        # --------------------------------------------------
+        # CONFIRMAÇÃO
+        # --------------------------------------------------
 
-                                </div>
+        return render_template(
+            "confirmacao.html",
+            nome=nome,
+            telefone=telefone,
+            servico=servico,
+            data_formatada=data_formatada,
+            horario=horario,
+            observacoes=observacoes
+        )
 
 
-                                <div class="admin-detalhes">
+    return render_template("agendar.html")
 
 
-                                    <div>
+# ==========================================================
+# PROTEÇÃO DO PAINEL ADMINISTRATIVO
+# ==========================================================
 
-                                        <span>
-                                            Data
-                                        </span>
+def login_obrigatorio(funcao):
 
-                                        <strong>
-                                            {{ agendamento.data }}
-                                        </strong>
+    @wraps(funcao)
+    def verificar_login(*args, **kwargs):
 
-                                    </div>
+        if not session.get("admin_logado"):
 
+            return redirect(url_for("login"))
 
-                                    <div>
+        return funcao(*args, **kwargs)
 
-                                        <span>
-                                            Horário
-                                        </span>
+    return verificar_login
 
-                                        <strong>
-                                            {{ agendamento.horario }}
-                                        </strong>
 
-                                    </div>
+# ==========================================================
+# LOGIN ADMINISTRATIVO
+# ==========================================================
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
 
-                                    <div>
+    if request.method == "POST":
 
-                                        <span>
-                                            Serviço
-                                        </span>
+        usuario = request.form.get("usuario")
+        senha = request.form.get("senha")
 
-                                        <strong>
-                                            {{ agendamento.servico }}
-                                        </strong>
 
-                                    </div>
+        usuario_correto = os.environ.get(
+            "ADMIN_USERNAME"
+        )
 
+        senha_correta = os.environ.get(
+            "ADMIN_PASSWORD"
+        )
 
-                                    <div>
 
-                                        <span>
-                                            WhatsApp / Telefone
-                                        </span>
+        if (
+            usuario == usuario_correto
+            and senha == senha_correta
+        ):
 
-                                        <strong>
-                                            {{ agendamento.telefone }}
-                                        </strong>
+            session["admin_logado"] = True
 
-                                    </div>
+            return redirect(
+                url_for("admin")
+            )
 
 
-                                </div>
+        return render_template(
+            "login.html",
+            erro="Usuário ou senha incorretos."
+        )
 
 
-                                {% if agendamento.observacoes %}
+    return render_template(
+        "login.html"
+    )
 
-                                    <div class="admin-observacoes">
 
-                                        <span>
-                                            Observações
-                                        </span>
+# ==========================================================
+# PAINEL ADMINISTRATIVO
+# ==========================================================
 
-                                        <p>
-                                            {{ agendamento.observacoes }}
-                                        </p>
+@app.route("/admin")
+@login_obrigatorio
+def admin():
 
-                                    </div>
+    return render_template(
+        "admin.html"
+    )
 
-                                {% endif %}
 
+# ==========================================================
+# AGENDAMENTOS DO PAINEL
+# ==========================================================
 
-                                <!-- BOTÕES -->
+@app.route("/admin/agendamentos")
+@login_obrigatorio
+def admin_agendamentos():
 
-                                <div class="admin-acoes">
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
 
-                                    <button
-                                        type="button"
-                                        class="admin-btn admin-btn-alterar">
+    cursor.execute("""
+        SELECT
+            id,
+            nome,
+            telefone,
+            servico,
+            data,
+            horario,
+            observacoes,
+            status
+        FROM agendamentos
+        ORDER BY data ASC, horario ASC
+    """)
 
-                                        Alterar serviço
+    resultados = cursor.fetchall()
 
-                                    </button>
+    cursor.close()
+    conexao.close()
 
 
-                                    <button
-                                        type="button"
-                                        class="admin-btn admin-btn-cancelar">
+    # ------------------------------------------------------
+    # TRANSFORMAR OS RESULTADOS
+    # ------------------------------------------------------
 
-                                        Cancelar agendamento
+    agendamentos = []
 
-                                    </button>
+    for agendamento in resultados:
 
-                                </div>
+        agendamentos.append({
 
+            "id": agendamento[0],
 
-                            </div>
+            "nome": agendamento[1],
 
-                        {% endfor %}
+            "telefone": agendamento[2],
 
-                    </div>
+            "servico": agendamento[3],
 
+            "data": agendamento[4].strftime("%d/%m/%Y"),
 
-                {% else %}
+            "horario": agendamento[5].strftime("%H:%M"),
 
+            "observacoes": agendamento[6],
 
-                    <div class="admin-vazio">
+            "status": agendamento[7] or "Confirmado"
 
-                        <span class="admin-icone">
-                            ✦
-                        </span>
+        })
 
-                        <h2>
-                            Nenhum agendamento encontrado
-                        </h2>
 
-                        <p>
-                            Ainda não existem agendamentos
-                            salvos no sistema.
-                        </p>
+    return render_template(
+        "admin_agendamentos.html",
+        agendamentos=agendamentos
+    )
 
-                    </div>
 
+# ==========================================================
+# CANCELAR AGENDAMENTO
+# ==========================================================
 
-                {% endif %}
+@app.route(
+    "/admin/cancelar/<int:agendamento_id>",
+    methods=["POST"]
+)
+@login_obrigatorio
+def cancelar_agendamento(agendamento_id):
 
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
 
-            </div>
+    cursor.execute("""
+        UPDATE agendamentos
+        SET status = 'Cancelado'
+        WHERE id = %s
+    """, (agendamento_id,))
 
-        </section>
+    conexao.commit()
 
-    </main>
+    cursor.close()
+    conexao.close()
 
 
-    <footer class="footer">
+    return redirect(
+        url_for("admin_agendamentos")
+    )
 
-        <div class="container">
 
-            <p>
-                © 2026 Rayssa Lima Nail Designer
-            </p>
+# ==========================================================
+# SAIR DO PAINEL
+# ==========================================================
 
-        </div>
+@app.route("/logout")
+def logout():
 
-    </footer>
+    session.clear()
 
+    return redirect(
+        url_for("login")
+    )
 
-    <style>
 
-       /* ==================================================
-   LISTA DE AGENDAMENTOS
-   ================================================== */
+# ==========================================================
+# MEUS AGENDAMENTOS
+# ==========================================================
 
-.admin-lista {
+@app.route("/meus-agendamentos")
+def meus_agendamentos():
 
-    width: 100%;
-    max-width: 910px;
+    telefone = request.args.get("telefone")
 
-    margin: 55px auto 20px;
-}
 
+    # ------------------------------------------------------
+    # SE NÃO INFORMOU TELEFONE
+    # ------------------------------------------------------
 
-/* ==================================================
-   TOPO DA LISTA
-   ================================================== */
+    if not telefone:
 
-.admin-lista-topo {
+        return render_template(
+            "meus_agendamentos.html",
+            agendamentos=[]
+        )
 
-    display: flex;
 
-    align-items: center;
+    # ------------------------------------------------------
+    # BUSCAR AGENDAMENTOS
+    # ------------------------------------------------------
 
-    justify-content: space-between;
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
 
-    margin-bottom: 18px;
+    cursor.execute("""
+        SELECT
+            id,
+            nome,
+            telefone,
+            servico,
+            data,
+            horario,
+            observacoes,
+            status
+        FROM agendamentos
+        WHERE telefone = %s
+        ORDER BY data ASC, horario ASC
+    """, (telefone,))
 
-    padding: 0 6px;
 
-    color: #5d3b40;
+    resultados = cursor.fetchall()
 
-    font-family:
-        Georgia,
-        serif;
+    cursor.close()
+    conexao.close()
 
-    font-size: 18px;
 
-}
+    # ------------------------------------------------------
+    # TRANSFORMAR RESULTADOS
+    # ------------------------------------------------------
 
+    agendamentos = []
 
-.admin-lista-topo strong {
+    for agendamento in resultados:
 
-    display: flex;
+        agendamentos.append({
 
-    align-items: center;
+            "id": agendamento[0],
 
-    justify-content: center;
+            "nome": agendamento[1],
 
-    width: 38px;
+            "telefone": agendamento[2],
 
-    height: 38px;
+            "servico": agendamento[3],
 
-    border-radius: 50%;
+            "data": agendamento[4].strftime("%d/%m/%Y"),
 
-    background: #f2e3e1;
+            "horario": agendamento[5].strftime("%H:%M"),
 
-    color: #8f5f67;
+            "observacoes": agendamento[6],
 
-    font-family:
-        Arial,
-        sans-serif;
+            "status": agendamento[7] or "Confirmado"
 
-    font-size: 12px;
+        })
 
-}
 
+    # ------------------------------------------------------
+    # MOSTRAR RESULTADOS
+    # ------------------------------------------------------
 
-/* ==================================================
-   CARTÃO DO CLIENTE
-   ================================================== */
+    return render_template(
+        "meus_agendamentos.html",
+        agendamentos=agendamentos,
+        telefone=telefone
+    )
 
-.admin-card {
 
-    margin-bottom: 24px;
+# ==========================================================
+# PREPARA O BANCO DE DADOS
+# ==========================================================
 
-    padding: 30px;
+criar_tabela()
+atualizar_tabela()
 
-    background:
-        rgba(255, 255, 255, 0.94);
 
-    border:
-        1px solid
-        rgba(143, 95, 103, 0.10);
+# ==========================================================
+# INICIA O SERVIDOR LOCAL
+# ==========================================================
 
-    border-radius: 24px;
+if __name__ == "__main__":
 
-    box-shadow:
-        0 15px 35px
-        rgba(111, 74, 80, 0.08);
-
-    box-sizing: border-box;
-
-}
-
-
-/* ==================================================
-   CABEÇALHO DO CARTÃO
-   ================================================== */
-
-.admin-card-topo {
-
-    display: flex;
-
-    align-items: flex-start;
-
-    justify-content: space-between;
-
-    gap: 20px;
-
-    padding-bottom: 24px;
-
-    border-bottom:
-        1px solid
-        rgba(143, 95, 103, 0.10);
-
-}
-
-
-.admin-label {
-
-    display: block;
-
-    margin-bottom: 8px;
-
-    color: #9a7076;
-
-    font-family:
-        Arial,
-        sans-serif;
-
-    font-size: 12px;
-
-    letter-spacing: 1.2px;
-
-    text-transform: uppercase;
-
-}
-
-
-.admin-card h2 {
-
-    margin: 0;
-
-    color: #4d3035;
-
-    font-family:
-        Georgia,
-        serif;
-
-    font-size: 27px;
-
-    font-weight: 500;
-
-}
-
-
-/* ==================================================
-   STATUS
-   ================================================== */
-
-.admin-status {
-
-    flex-shrink: 0;
-
-    padding: 11px 17px;
-
-    border-radius: 30px;
-
-    background: #f0e2df;
-
-    color: #8f5f67;
-
-    font-family:
-        Arial,
-        sans-serif;
-
-    font-size: 11px;
-
-    font-weight: 500;
-
-    letter-spacing: 1px;
-
-    text-transform: uppercase;
-
-}
-
-
-/* ==================================================
-   DETALHES
-   ================================================== */
-
-.admin-detalhes {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(4, minmax(0, 1fr));
-
-    gap: 25px;
-
-    padding: 25px 0;
-
-    border-bottom:
-        1px solid
-        rgba(143, 95, 103, 0.10);
-
-}
-
-
-.admin-detalhes div {
-
-    min-width: 0;
-
-}
-
-
-.admin-detalhes span {
-
-    display: block;
-
-    margin-bottom: 8px;
-
-    color: #9a7076;
-
-    font-family:
-        Arial,
-        sans-serif;
-
-    font-size: 11px;
-
-    letter-spacing: 1px;
-
-    text-transform: uppercase;
-
-}
-
-
-.admin-detalhes strong {
-
-    display: block;
-
-    color: #4d3035;
-
-    font-family:
-        Georgia,
-        serif;
-
-    font-size: 16px;
-
-    line-height: 1.35;
-
-    word-break: break-word;
-
-}
-
-
-/* ==================================================
-   OBSERVAÇÕES
-   ================================================== */
-
-.admin-observacoes {
-
-    padding-top: 22px;
-
-}
-
-
-.admin-observacoes span {
-
-    display: block;
-
-    margin-bottom: 8px;
-
-    color: #9a7076;
-
-    font-family:
-        Arial,
-        sans-serif;
-
-    font-size: 11px;
-
-    letter-spacing: 1px;
-
-    text-transform: uppercase;
-
-}
-
-
-.admin-observacoes p {
-
-    margin: 0;
-
-    color: #65464b;
-
-    font-family:
-        Georgia,
-        serif;
-
-    font-size: 15px;
-
-    line-height: 1.6;
-
-}
-
-
-/* ==================================================
-   BOTÕES
-   ================================================== */
-
-.admin-acoes {
-
-    display: flex;
-
-    gap: 12px;
-
-    margin-top: 24px;
-
-    padding-top: 20px;
-
-    border-top:
-        1px solid
-        rgba(143, 95, 103, 0.10);
-
-}
-
-
-.admin-btn {
-
-    border: none;
-
-    border-radius: 10px;
-
-    padding: 12px 20px;
-
-    font-family:
-        Arial,
-        sans-serif;
-
-    font-size: 12px;
-
-    cursor: pointer;
-
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease,
-        opacity 0.2s ease;
-
-}
-
-
-.admin-btn:hover {
-
-    transform:
-        translateY(-2px);
-
-    box-shadow:
-        0 7px 15px
-        rgba(111, 74, 80, 0.10);
-
-    opacity: 0.9;
-
-}
-
-
-.admin-btn-alterar {
-
-    background: #f2e3e1;
-
-    color: #7a5057;
-
-}
-
-
-.admin-btn-cancelar {
-
-    background: #ead6d5;
-
-    color: #8f4f59;
-
-}
-
-
-/* ==================================================
-   SEM AGENDAMENTOS
-   ================================================== */
-
-.admin-vazio {
-
-    max-width: 700px;
-
-    margin: 55px auto;
-
-    padding: 55px 30px;
-
-    text-align: center;
-
-    background:
-        rgba(255, 255, 255, 0.88);
-
-    border-radius: 24px;
-
-}
-
-
-.admin-icone {
-
-    display: block;
-
-    margin-bottom: 18px;
-
-    color: #8f5f67;
-
-    font-size: 30px;
-
-}
-
-
-.admin-vazio h2 {
-
-    margin: 0 0 10px;
-
-    color: #4d3035;
-
-    font-family:
-        Georgia,
-        serif;
-
-    font-size: 25px;
-
-    font-weight: 500;
-
-}
-
-
-.admin-vazio p {
-
-    margin: 0;
-
-    color: #806166;
-
-    font-family:
-        Arial,
-        sans-serif;
-
-    font-size: 13px;
-
-    line-height: 1.6;
-
-}
-
-
-/* ==================================================
-   CELULAR
-   ================================================== */
-
-@media (max-width: 800px) {
-
-    .admin-detalhes {
-
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
-
-    }
-
-}
-
-
-@media (max-width: 600px) {
-
-    .admin-lista {
-
-        margin-top: 40px;
-
-    }
-
-
-    .admin-card {
-
-        padding: 22px;
-
-        border-radius: 20px;
-
-    }
-
-
-    .admin-card-topo {
-
-        flex-direction: column;
-
-        align-items: flex-start;
-
-    }
-
-
-    .admin-status {
-
-        padding: 9px 14px;
-
-    }
-
-
-    .admin-detalhes {
-
-        grid-template-columns: 1fr 1fr;
-
-        gap: 22px 15px;
-
-    }
-
-
-    .admin-acoes {
-
-        flex-direction: column;
-
-    }
-
-
-    .admin-btn {
-
-        width: 100%;
-
-    }
-
-}
-    </style>
-
-
-</body>
-
-</html>
+    app.run(debug=True)
