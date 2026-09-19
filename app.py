@@ -234,12 +234,12 @@ def login():
 
 
 # ==========================================================
-# PAINEL ADMINISTRATIVO
+# AGENDAMENTOS DO PAINEL
 # ==========================================================
 
-@app.route("/admin")
+@app.route("/admin/agendamentos")
 @login_obrigatorio
-def admin():
+def admin_agendamentos():
 
     conexao = conectar_banco()
     cursor = conexao.cursor()
@@ -291,7 +291,7 @@ def admin():
 
 
     return render_template(
-        "admin.html",
+        "admin_agendamentos.html",
         agendamentos=agendamentos
     )
 
