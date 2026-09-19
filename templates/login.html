@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Acesso administrativo | Rayssa Lima</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <header class="header">
+
+        <div class="container header-content">
+
+            <a href="/" class="logo">
+
+                <span>Rayssa Lima</span>
+
+                <small>Nail Designer</small>
+
+            </a>
+
+            <nav class="nav">
+
+                <a href="/">
+                    Voltar ao site
+                </a>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+
+    <main>
+
+        <section class="booking-section">
+
+            <div class="container booking-container">
+
+                <div class="section-heading">
+
+                    <span class="eyebrow">
+                        Área restrita
+                    </span>
+
+                    <h1>
+                        Acesso administrativo
+                    </h1>
+
+                    <p>
+                        Entre com seus dados para acessar
+                        os agendamentos.
+                    </p>
+
+                </div>
+
+
+                <form class="booking-form"
+                      method="POST"
+                      action="/login">
+
+                    {% if erro %}
+
+                        <div class="login-erro">
+                            {{ erro }}
+                        </div>
+
+                    {% endif %}
+
+
+                    <div class="form-group">
+
+                        <label for="usuario">
+                            Usuário
+                        </label>
+
+                        <input
+                            type="text"
+                            id="usuario"
+                            name="usuario"
+                            placeholder="Digite seu usuário"
+                            required
+                            autocomplete="username"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="senha">
+                            Senha
+                        </label>
+
+                        <input
+                            type="password"
+                            id="senha"
+                            name="senha"
+                            placeholder="Digite sua senha"
+                            required
+                            autocomplete="current-password"
+                        >
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary booking-button"
+                    >
+                        Entrar no painel
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer class="footer">
+
+        <div class="container">
+
+            <p>
+                © 2026 Rayssa Lima Nail Designer
+            </p>
+
+        </div>
+
+    </footer>
+
+
+    <style>
+
+        .login-erro {
+
+            margin-bottom: 20px;
+
+            padding: 13px 15px;
+
+            background: #f7e3e1;
+
+            border: 1px solid rgba(143, 95, 103, .18);
+
+            border-radius: 11px;
+
+            color: #8f4f59;
+
+            font-family: Arial, sans-serif;
+
+            font-size: 12px;
+
+            line-height: 1.5;
+
+            text-align: center;
+
+        }
+
+    </style>
+
+</body>
+
+</html>
