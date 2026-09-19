@@ -2236,3 +2236,259 @@ CELULAR
         max-width: 260px;
     }
 }
+/* ==========================================================
+   PÁGINA DE AGENDAMENTO
+   ========================================================== */
+
+.booking-section {
+    min-height: calc(100vh - 90px);
+    padding: 80px 20px 90px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #f8efec 0%,
+            #f5e7e4 100%
+        );
+}
+
+.booking-container {
+    width: min(760px, 100%);
+    margin: 0 auto;
+}
+
+/* TÍTULO */
+
+.section-heading {
+    margin-bottom: 42px;
+    text-align: center;
+}
+
+.section-heading .eyebrow {
+    display: block;
+    margin-bottom: 14px;
+
+    color: #9b6871;
+
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+.section-heading h1 {
+    margin: 0 0 16px;
+
+    color: #4a3135;
+
+    font-size: clamp(36px, 6vw, 52px);
+    line-height: 1.05;
+}
+
+.section-heading p {
+    max-width: 500px;
+    margin: 0 auto;
+
+    color: #766064;
+
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+/* FORMULÁRIO */
+
+.booking-form {
+    padding: 42px;
+
+    background: rgba(255, 255, 255, 0.82);
+
+    border: 1px solid rgba(143, 95, 103, 0.14);
+    border-radius: 28px;
+
+    box-shadow:
+        0 20px 55px rgba(74, 49, 53, 0.10);
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 9px;
+
+    color: #4a3135;
+
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+
+    letter-spacing: 0.8px;
+}
+
+.form-group label span {
+    color: #a78389;
+    font-weight: normal;
+}
+
+/* CAMPOS */
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 15px 16px;
+
+    box-sizing: border-box;
+
+    background: #fffdfc;
+
+    border: 1px solid rgba(143, 95, 103, 0.18);
+    border-radius: 13px;
+
+    color: #4a3135;
+
+    font-family: inherit;
+    font-size: 14px;
+
+    outline: none;
+
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #b19da0;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    background: white;
+
+    border-color: #8f5f67;
+
+    box-shadow:
+        0 0 0 3px rgba(143, 95, 103, 0.08);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 110px;
+}
+
+/* SELECT */
+
+.form-group select {
+    cursor: pointer;
+}
+
+/* BOTÃO */
+
+.booking-button {
+    width: 100%;
+    min-height: 54px;
+    margin-top: 8px;
+
+    border: none;
+    border-radius: 28px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #8f5f67,
+            #6f4a50
+        );
+
+    color: white;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+
+    letter-spacing: 1px;
+    text-transform: uppercase;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 12px 25px rgba(111, 74, 80, 0.18);
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.booking-button:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 16px 32px rgba(111, 74, 80, 0.25);
+}
+
+.booking-notice {
+    margin: 18px 0 0;
+
+    color: #9b888c;
+
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+
+    line-height: 1.6;
+    text-align: center;
+}
+
+/* RODAPÉ */
+
+.footer {
+    padding: 28px 20px;
+
+    background: #4a3135;
+
+    text-align: center;
+}
+
+.footer p {
+    margin: 0;
+
+    color: rgba(255, 255, 255, 0.65);
+
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+
+    letter-spacing: 1px;
+}
+
+/* ==========================================================
+   CELULAR
+   ========================================================== */
+
+@media (max-width: 600px) {
+
+    .booking-section {
+        padding: 55px 16px 65px;
+    }
+
+    .section-heading {
+        margin-bottom: 30px;
+    }
+
+    .section-heading h1 {
+        font-size: 36px;
+    }
+
+    .booking-form {
+        padding: 26px 20px;
+
+        border-radius: 22px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+}
