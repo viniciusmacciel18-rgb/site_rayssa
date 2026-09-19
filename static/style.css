@@ -1801,3 +1801,133 @@ CELULAR
     color: rgba(255, 255, 255, 0.9);
     z-index: 5;
 }
+/* ==========================================================
+   SOBRE O ATENDIMENTO
+   ========================================================== */
+
+.sobre-conteudo {
+    display: grid;
+    grid-template-columns: minmax(280px, 0.9fr) minmax(320px, 1.1fr);
+    align-items: center;
+    gap: 80px;
+}
+
+.sobre-marca {
+    position: relative;
+    width: min(100%, 390px);
+    aspect-ratio: 4 / 5;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 190px 190px 24px 24px;
+    border: 6px solid #6f4a50;
+    box-shadow: 0 22px 50px rgba(74, 49, 53, 0.16);
+}
+
+.sobre-marca img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: center;
+}
+
+.sobre-texto {
+    max-width: 570px;
+}
+
+.sobre-texto .titulo-pequeno {
+    display: inline-block;
+    margin-bottom: 14px;
+}
+
+.sobre-texto h2 {
+    margin-bottom: 22px;
+    color: #4a3135;
+    font-size: clamp(30px, 4vw, 46px);
+    line-height: 1.1;
+}
+
+.sobre-texto p {
+    margin-bottom: 16px;
+    color: #766064;
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+.sobre-detalhes {
+    display: flex;
+    gap: 28px;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(143, 95, 103, 0.15);
+}
+
+.sobre-detalhe {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.sobre-detalhe strong {
+    color: #8f5f67;
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.sobre-detalhe span {
+    color: #766064;
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    line-height: 1.5;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+/* RESPONSIVO */
+
+@media (max-width: 800px) {
+    .sobre-conteudo {
+        grid-template-columns: 1fr;
+        gap: 45px;
+    }
+
+    .sobre-marca {
+        width: min(100%, 330px);
+    }
+
+    .sobre-texto {
+        max-width: 100%;
+        text-align: center;
+    }
+
+    .sobre-detalhes {
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .sobre-detalhe {
+        justify-content: center;
+        text-align: left;
+    }
+}
+
+@media (max-width: 560px) {
+    .sobre-marca {
+        width: min(100%, 290px);
+        border-width: 4px;
+    }
+
+    .sobre-texto h2 {
+        font-size: 31px;
+    }
+
+    .sobre-detalhes {
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+    }
+
+    .sobre-detalhe {
+        width: 190px;
+    }
+}
