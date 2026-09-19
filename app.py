@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for, session
 from datetime import datetime
 import os
 import psycopg2
+from functools import wraps
 
 
 # ==========================================================
@@ -9,6 +10,11 @@ import psycopg2
 # ==========================================================
 
 app = Flask(__name__)
+
+app.secret_key = os.environ.get(
+    "SECRET_KEY",
+    "chave-temporaria"
+)
 
 
 # ==========================================================
@@ -163,11 +169,76 @@ def agendar():
 
     return render_template("agendar.html")
 
+
+# ==========================================================
+# PROTEÇÃO DO PAINEL ADMINISTRATIVO
+# ==========================================================
+
+def login_obrigatorio(funcao):
+
+    @wraps(funcao)
+    def verificar_login(*args, **kwargs):
+
+        if not session.get("admin_logado"):
+
+            return redirect(url_for("login"))
+
+        return funcao(*args, **kwargs)
+
+    return verificar_login
+
+
+# ==========================================================
+# LOGIN ADMINISTRATIVO
+# ==========================================================
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+
+    if request.method == "POST":
+
+        usuario = request.form.get("usuario")
+        senha = request.form.get("senha")
+
+
+        usuario_correto = os.environ.get(
+            "ADMIN_USERNAME"
+        )
+
+        senha_correta = os.environ.get(
+            "ADMIN_PASSWORD"
+        )
+
+
+        if (
+            usuario == usuario_correto
+            and senha == senha_correta
+        ):
+
+            session["admin_logado"] = True
+
+            return redirect(
+                url_for("admin")
+            )
+
+
+        return render_template(
+            "login.html",
+            erro="Usuário ou senha incorretos."
+        )
+
+
+    return render_template(
+        "login.html"
+    )
+
+
 # ==========================================================
 # PAINEL ADMINISTRATIVO
 # ==========================================================
 
 @app.route("/admin")
+@login_obrigatorio
 def admin():
 
     conexao = conectar_banco()
@@ -223,6 +294,22 @@ def admin():
         "admin.html",
         agendamentos=agendamentos
     )
+
+
+# ==========================================================
+# SAIR DO PAINEL
+# ==========================================================
+
+@app.route("/logout")
+def logout():
+
+    session.clear()
+
+    return redirect(
+        url_for("login")
+    )
+
+
 # ==========================================================
 # MEUS AGENDAMENTOS
 # ==========================================================
@@ -274,7 +361,7 @@ def meus_agendamentos():
 
 
     # ------------------------------------------------------
-    # TRANSFORMAR RESULTADOS EM DADOS PARA O HTML
+    # TRANSFORMAR RESULTADOS
     # ------------------------------------------------------
 
     agendamentos = []
