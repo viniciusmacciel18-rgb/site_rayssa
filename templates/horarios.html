@@ -52,6 +52,9 @@
 
             <div class="container booking-container">
 
+
+                <!-- CABEÇALHO -->
+
                 <div class="section-heading">
 
                     <span class="eyebrow">
@@ -69,12 +72,163 @@
                 </div>
 
 
-                <div class="horarios-container">
+                <!-- HORÁRIOS -->
 
-                    <p>
-                        Aqui serão configurados os horários
-                        de atendimento e os bloqueios.
-                    </p>
+                <div class="horarios-lista">
+
+
+                    <!-- SEGUNDA -->
+
+                    <div class="horario-card">
+
+                        <div class="horario-dia">
+                            <h2>Segunda-feira</h2>
+                        </div>
+
+                        <div class="horario-periodos">
+
+                            <span>
+                                07:30 às 11:00
+                            </span>
+
+                            <span>
+                                13:30 às 20:00
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TERÇA -->
+
+                    <div class="horario-card">
+
+                        <div class="horario-dia">
+                            <h2>Terça-feira</h2>
+                        </div>
+
+                        <div class="horario-periodos">
+
+                            <span>
+                                07:30 às 11:00
+                            </span>
+
+                            <span>
+                                13:30 às 20:00
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- QUARTA -->
+
+                    <div class="horario-card">
+
+                        <div class="horario-dia">
+                            <h2>Quarta-feira</h2>
+                        </div>
+
+                        <div class="horario-periodos">
+
+                            <span>
+                                07:30 às 11:00
+                            </span>
+
+                            <span>
+                                13:30 às 15:00
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- QUINTA -->
+
+                    <div class="horario-card">
+
+                        <div class="horario-dia">
+                            <h2>Quinta-feira</h2>
+                        </div>
+
+                        <div class="horario-periodos">
+
+                            <span>
+                                07:30 às 11:00
+                            </span>
+
+                            <span>
+                                13:30 às 20:00
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SEXTA -->
+
+                    <div class="horario-card">
+
+                        <div class="horario-dia">
+                            <h2>Sexta-feira</h2>
+                        </div>
+
+                        <div class="horario-periodos">
+
+                            <span>
+                                07:30 às 11:00
+                            </span>
+
+                            <span>
+                                13:30 às 20:00
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SÁBADO -->
+
+                    <div class="horario-card">
+
+                        <div class="horario-dia">
+                            <h2>Sábado</h2>
+                        </div>
+
+                        <div class="horario-periodos">
+
+                            <span>
+                                09:00 às 16:00
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- DOMINGO -->
+
+                    <div class="horario-card horario-fechado">
+
+                        <div class="horario-dia">
+                            <h2>Domingo</h2>
+                        </div>
+
+                        <div class="horario-periodos">
+
+                            <span>
+                                Fechado
+                            </span>
+
+                        </div>
+
+                    </div>
+
 
                 </div>
 
@@ -96,6 +250,198 @@
         </div>
 
     </footer>
+
+
+    <style>
+
+        /* ==================================================
+           LISTA DE HORÁRIOS
+           ================================================== */
+
+        .horarios-lista {
+
+            max-width: 900px;
+
+            margin: 55px auto 30px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 18px;
+
+        }
+
+
+        /* ==================================================
+           CARTÃO DE HORÁRIO
+           ================================================== */
+
+        .horario-card {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            min-height: 105px;
+
+            padding: 24px 28px;
+
+            background:
+                rgba(255, 255, 255, 0.92);
+
+            border:
+                1px solid
+                rgba(143, 95, 103, 0.12);
+
+            border-radius: 20px;
+
+            box-shadow:
+                0 12px 30px
+                rgba(111, 74, 80, 0.07);
+
+            box-sizing: border-box;
+
+        }
+
+
+        /* ==================================================
+           DIA
+           ================================================== */
+
+        .horario-dia h2 {
+
+            margin: 0;
+
+            color:
+                #4d3035;
+
+            font-family:
+                Georgia,
+                serif;
+
+            font-size: 21px;
+
+            font-weight: 500;
+
+        }
+
+
+        /* ==================================================
+           PERÍODOS
+           ================================================== */
+
+        .horario-periodos {
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: flex-end;
+
+            gap: 7px;
+
+        }
+
+
+        .horario-periodos span {
+
+            display: inline-block;
+
+            padding: 7px 12px;
+
+            border-radius: 20px;
+
+            background:
+                #f2e3e1;
+
+            color:
+                #8f5f67;
+
+            font-family:
+                Arial,
+                sans-serif;
+
+            font-size: 12px;
+
+            letter-spacing: 0.3px;
+
+            white-space: nowrap;
+
+        }
+
+
+        /* ==================================================
+           DOMINGO
+           ================================================== */
+
+        .horario-fechado {
+
+            opacity: 0.72;
+
+        }
+
+
+        .horario-fechado .horario-periodos span {
+
+            background:
+                #eee7e6;
+
+            color:
+                #8f5f67;
+
+        }
+
+
+        /* ==================================================
+           CELULAR
+           ================================================== */
+
+        @media (max-width: 700px) {
+
+            .horarios-lista {
+
+                grid-template-columns: 1fr;
+
+                gap: 14px;
+
+                margin-top: 40px;
+
+            }
+
+
+            .horario-card {
+
+                min-height: 95px;
+
+                padding: 20px;
+
+            }
+
+
+            .horario-dia h2 {
+
+                font-size: 19px;
+
+            }
+
+
+            .horario-periodos span {
+
+                font-size: 11px;
+
+                padding: 6px 10px;
+
+            }
+
+        }
+
+    </style>
 
 </body>
 
