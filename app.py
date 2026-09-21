@@ -379,6 +379,12 @@ def cancelar_agendamento(agendamento_id):
 # SAIR DO PAINEL
 # ==========================================================
 
+@app.route("/admin/horarios")
+@login_obrigatorio
+def admin_horarios():
+    return render_template("horarios.html")
+
+
 @app.route("/logout")
 def logout():
 
