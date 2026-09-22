@@ -974,34 +974,25 @@ def agendar():
                 )
 
 
-                # --------------------------------------------------
+                                # --------------------------------------------------
                 # PREPARAR DADOS PARA CONFIRMAÇÃO
                 # --------------------------------------------------
 
                 atendimentos_plano = []
 
-
                 for indice in range(4):
 
                     atendimentos_plano.append({
 
-                        "numero":
-                            indice + 1,
+                        "numero": indice + 1,
 
-                        "data":
-                            datas_plano[indice].strftime(
-                                "%d/%m/%Y"
-                            ),
+                        "data": datas_plano[indice].strftime(
+                            "%d/%m/%Y"
+                        ),
 
-                        "horario":
-                            horarios_plano[indice]
+                        "horario": horarios_plano[indice]
 
                     })
-
-
-                # --------------------------------------------------
-                # CONFIRMAÇÃO
-                # --------------------------------------------------
 
                 return render_template(
                     "confirmacao.html",
@@ -1014,9 +1005,7 @@ def agendar():
                     horario=horarios_plano[0],
                     observacoes=observacoes,
                     plano_mensal=True,
-                    atendimentos_plano=(
-                        atendimentos_plano
-                    )
+                    atendimentos_plano=atendimentos_plano
                 )
 
 
