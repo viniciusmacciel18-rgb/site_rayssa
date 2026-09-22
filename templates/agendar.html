@@ -328,6 +328,10 @@
 
 
 
+        /*
+            DURAÇÃO DOS SERVIÇOS
+        */
+
         const duracoes = {
 
             "Esmaltação simples": 30,
@@ -344,6 +348,47 @@
 
 
 
+        /*
+            CONVERTE HH:MM PARA MINUTOS
+        */
+
+        function paraMinutos(horario) {
+
+            const [hora, minuto] =
+                horario.split(":").map(Number);
+
+            return hora * 60 + minuto;
+
+        }
+
+
+
+        /*
+            CONVERTE MINUTOS PARA HH:MM
+        */
+
+        function paraHorario(minutos) {
+
+            const hora =
+                Math.floor(minutos / 60);
+
+            const minuto =
+                minutos % 60;
+
+            return (
+                String(hora).padStart(2, "0")
+                + ":"
+                + String(minuto).padStart(2, "0")
+            );
+
+        }
+
+
+
+        /*
+            CRIA OS HORÁRIOS DE UM PERÍODO
+        */
+
         function criarHorarios(
             inicio,
             fim,
@@ -352,55 +397,38 @@
 
             const horarios = [];
 
+            const inicioMinutos =
+                paraMinutos(inicio);
 
-            let atual = inicio;
-
-
-            while (atual < fim) {
-
-                const [hora, minuto] =
-                    atual.split(":").map(Number);
+            const fimMinutos =
+                paraMinutos(fim);
 
 
-                const minutos =
-                    hora * 60 + minuto;
+            let atual =
+                inicioMinutos;
 
+
+            while (atual < fimMinutos) {
 
                 const final =
-                    minutos + duracao;
+                    atual + duracao;
 
 
-                const [fimHora, fimMinuto] =
-                    fim.split(":").map(Number);
+                /*
+                    O serviço precisa terminar
+                    dentro do período de atendimento.
+                */
 
+                if (final <= fimMinutos) {
 
-                const limite =
-                    fimHora * 60 + fimMinuto;
-
-
-                if (final <= limite) {
-
-                    horarios.push(atual);
+                    horarios.push(
+                        paraHorario(atual)
+                    );
 
                 }
 
 
-                let proximo =
-                    minutos + 30;
-
-
-                const novaHora =
-                    Math.floor(proximo / 60);
-
-
-                const novoMinuto =
-                    proximo % 60;
-
-
-                atual =
-                    String(novaHora).padStart(2, "0")
-                    + ":"
-                    + String(novoMinuto).padStart(2, "0");
+                atual += 30;
 
             }
 
@@ -411,32 +439,87 @@
 
 
 
+        /*
+            VERIFICA SE O SERVIÇO
+            INTERSECTA UM BLOQUEIO
+        */
+
+        function horarioBloqueado(
+            inicioHorario,
+            duracao,
+            bloqueio
+        ) {
+
+            const inicioAgendamento =
+                paraMinutos(inicioHorario);
+
+
+            const fimAgendamento =
+                inicioAgendamento + duracao;
+
+
+            const inicioBloqueio =
+                paraMinutos(bloqueio.inicio);
+
+
+            const fimBloqueio =
+                paraMinutos(bloqueio.fim);
+
+
+            /*
+                Existe conflito quando:
+
+                início do serviço < fim do bloqueio
+
+                E
+
+                fim do serviço > início do bloqueio
+            */
+
+            return (
+                inicioAgendamento < fimBloqueio
+                &&
+                fimAgendamento > inicioBloqueio
+            );
+
+        }
+
+
+
+        /*
+            ATUALIZA OS HORÁRIOS DISPONÍVEIS
+        */
+
         async function atualizarHorarios() {
 
             horarioSelect.innerHTML = "";
 
+
+            /*
+                VERIFICA DATA
+            */
 
             if (!dataInput.value) {
 
                 const option =
                     document.createElement("option");
 
-
                 option.value = "";
-
 
                 option.textContent =
                     "Primeiro escolha uma data";
 
-
                 horarioSelect.appendChild(option);
-
 
                 return;
 
             }
 
 
+
+            /*
+                VERIFICA SERVIÇO
+            */
 
             const servico =
                 servicoSelect.value;
@@ -447,16 +530,12 @@
                 const option =
                     document.createElement("option");
 
-
                 option.value = "";
-
 
                 option.textContent =
                     "Primeiro escolha o serviço";
 
-
                 horarioSelect.appendChild(option);
-
 
                 return;
 
@@ -469,17 +548,32 @@
 
 
 
+            /*
+                CRIA A DATA LOCAL
+            */
+
+            const partesData =
+                dataInput.value
+                    .split("-")
+                    .map(Number);
+
+
             const data =
                 new Date(
-                    dataInput.value + "T00:00:00"
+                    partesData[0],
+                    partesData[1] - 1,
+                    partesData[2]
                 );
-
 
 
             const dia =
                 data.getDay();
 
 
+
+            /*
+                PERÍODOS NORMAIS
+            */
 
             let periodos = [];
 
@@ -552,16 +646,12 @@
                 const option =
                     document.createElement("option");
 
-
                 option.value = "";
-
 
                 option.textContent =
                     "Não há atendimento aos domingos";
 
-
                 horarioSelect.appendChild(option);
-
 
                 return;
 
@@ -570,7 +660,7 @@
 
 
             /*
-                CONSULTA OS BLOQUEIOS
+                BUSCA OS BLOQUEIOS
                 DO POSTGRESQL
             */
 
@@ -590,8 +680,20 @@
 
                 if (resposta.ok) {
 
-                    bloqueios =
+                    const dados =
                         await resposta.json();
+
+
+                    /*
+                        GARANTE QUE O RETORNO
+                        SEJA UMA LISTA
+                    */
+
+                    if (Array.isArray(dados)) {
+
+                        bloqueios = dados;
+
+                    }
 
                 }
 
@@ -609,36 +711,7 @@
 
 
             /*
-                DIA INTEIRO BLOQUEADO
-            */
-
-            if (
-                bloqueios.includes("dia")
-            ) {
-
-                const option =
-                    document.createElement("option");
-
-
-                option.value = "";
-
-
-                option.textContent =
-                    "Não há horários disponíveis nesta data";
-
-
-                horarioSelect.appendChild(option);
-
-
-                return;
-
-            }
-
-
-
-            /*
-                CRIA OS HORÁRIOS
-                RESPEITANDO OS BLOQUEIOS
+                CRIA TODOS OS HORÁRIOS
             */
 
             let horarios = [];
@@ -650,45 +723,17 @@
                     const inicio =
                         periodo[0];
 
-
                     const fim =
                         periodo[1];
 
 
-
-                    /*
-                        IDENTIFICA SE O PERÍODO
-                        ESTÁ BLOQUEADO
-                    */
-
-                    const bloqueadoManha =
-                        inicio === "07:30"
-                        &&
-                        bloqueios.includes("manha");
-
-
-                    const bloqueadoTarde =
-                        inicio !== "07:30"
-                        &&
-                        bloqueios.includes("tarde");
-
-
-
-                    if (
-                        !bloqueadoManha
-                        &&
-                        !bloqueadoTarde
-                    ) {
-
-                        horarios.push(
-                            ...criarHorarios(
-                                inicio,
-                                fim,
-                                duracao
-                            )
-                        );
-
-                    }
+                    horarios.push(
+                        ...criarHorarios(
+                            inicio,
+                            fim,
+                            duracao
+                        )
+                    );
 
                 }
             );
@@ -696,17 +741,82 @@
 
 
             /*
-                REMOVE HORÁRIOS QUE JÁ PASSARAM
-                QUANDO A DATA É HOJE
+                REMOVE HORÁRIOS QUE
+                CONFLITAM COM BLOQUEIOS
+            */
+
+            if (bloqueios.length > 0) {
+
+                horarios =
+                    horarios.filter(
+                        horario => {
+
+                            const existeConflito =
+                                bloqueios.some(
+                                    bloqueio => {
+
+                                        /*
+                                            Ignora registros
+                                            antigos/inválidos.
+                                        */
+
+                                        if (
+                                            !bloqueio.inicio
+                                            ||
+                                            !bloqueio.fim
+                                        ) {
+
+                                            return false;
+
+                                        }
+
+
+                                        return horarioBloqueado(
+                                            horario,
+                                            duracao,
+                                            bloqueio
+                                        );
+
+                                    }
+                                );
+
+
+                            return !existeConflito;
+
+                        }
+                    );
+
+            }
+
+
+
+            /*
+                REMOVE HORÁRIOS QUE
+                JÁ PASSARAM HOJE
             */
 
             const hoje =
                 new Date();
 
 
+            const anoHoje =
+                hoje.getFullYear();
+
+
+            const mesHoje =
+                String(
+                    hoje.getMonth() + 1
+                ).padStart(2, "0");
+
+
+            const diaHoje =
+                String(
+                    hoje.getDate()
+                ).padStart(2, "0");
+
+
             const dataHoje =
-                hoje.toISOString()
-                    .split("T")[0];
+                `${anoHoje}-${mesHoje}-${diaHoje}`;
 
 
             if (
@@ -722,15 +832,14 @@
                     horarios.filter(
                         horario => {
 
-                            const [h, m] =
-                                horario
-                                .split(":")
-                                .map(Number);
+                            const minutosHorario =
+                                paraMinutos(horario);
 
 
                             return (
-                                h * 60 + m
-                                >= minutosAgora
+                                minutosHorario
+                                >=
+                                minutosAgora
                             );
 
                         }
@@ -751,16 +860,12 @@
                 const option =
                     document.createElement("option");
 
-
                 option.value = "";
-
 
                 option.textContent =
                     "Nenhum horário disponível";
 
-
                 horarioSelect.appendChild(option);
-
 
                 return;
 
@@ -775,13 +880,10 @@
             const primeira =
                 document.createElement("option");
 
-
             primeira.value = "";
-
 
             primeira.textContent =
                 "Selecione o horário";
-
 
             horarioSelect.appendChild(
                 primeira
@@ -799,14 +901,11 @@
                     const option =
                         document.createElement("option");
 
-
                     option.value =
                         horario;
 
-
                     option.textContent =
                         horario;
-
 
                     horarioSelect.appendChild(
                         option
