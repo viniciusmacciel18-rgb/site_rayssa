@@ -2786,3 +2786,50 @@ CELULAR
         font-size: 34px;
     }
 }
+/* ==========================================================
+   BOTÃO APAGAR HORÁRIOS CANCELADOS
+   ========================================================== */
+
+.admin-lista-topo form {
+    margin: 0;
+}
+
+.admin-lista-topo form button {
+    background: #8f5f67;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 3px 8px rgba(111, 74, 80, 0.15);
+}
+
+.admin-lista-topo form button:hover {
+    background: #6f4a50;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba(111, 74, 80, 0.20);
+}
+
+.admin-lista-topo form button:active {
+    transform: translateY(0);
+}
+@media (max-width: 600px) {
+
+    .admin-lista-topo {
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .admin-lista-topo form {
+        width: 100%;
+    }
+
+    .admin-lista-topo form button {
+        width: 100%;
+    }
+
+}
