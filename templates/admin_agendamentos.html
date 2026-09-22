@@ -79,17 +79,27 @@
 
                         <!-- TOPO DA LISTA -->
 
-                        <div class="admin-lista-topo">
+                       <div class="admin-lista-topo">
 
-                            <span>
-                                Agendamentos
-                            </span>
+    <span>
+        Agendamentos
+    </span>
 
-                            <strong>
-                                {{ agendamentos|length }}
-                            </strong>
+    <strong>
+        {{ agendamentos|length }}
+    </strong>
 
-                        </div>
+    <form method="POST"
+          action="{{ url_for('apagar_cancelados') }}"
+          onsubmit="return confirm('Tem certeza que deseja apagar todos os horários cancelados?');">
+
+        <button type="submit">
+            🗑️ Apagar horários cancelados
+        </button>
+
+    </form>
+
+</div>
 
 
                         <!-- AGENDAMENTOS -->
