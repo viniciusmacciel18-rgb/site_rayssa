@@ -170,19 +170,28 @@
 
                                 {% for atendimento in atendimentos_plano %}
 
-                                <div style="
-                                    padding: 10px 12px;
-                                    border-radius: 8px;
-                                    background: rgba(143, 95, 103, 0.08);
-                                ">
+<div style="
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: rgba(143, 95, 103, 0.08);
+">
 
-                                    {{ atendimento.data_formatada }}
-                                    —
-                                    {{ atendimento.horario }}
+    {% if atendimento.data_formatada %}
 
-                                </div>
+        {{ atendimento.data_formatada }}
 
-                                {% endfor %}
+    {% elif atendimento.data %}
+
+        {{ atendimento.data.strftime('%d/%m/%Y') }}
+
+    {% endif %}
+
+    —
+    {{ atendimento.horario }}
+
+</div>
+
+{% endfor %}
 
                             </div>
 
