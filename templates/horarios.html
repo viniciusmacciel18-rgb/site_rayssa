@@ -169,25 +169,41 @@
 
                 <div class="bloqueio-item">
 
-                    <div class="bloqueio-info">
+    <div class="bloqueio-info">
 
-                        <strong>
-                            {{ bloqueio.data }}
-                        </strong>
+        <strong>
+            {{ bloqueio.data }}
+        </strong>
 
-                        <span>
-                            {% if bloqueio.periodo == "manha" %}
-                                Manhã
-                            {% elif bloqueio.periodo == "tarde" %}
-                                Tarde
-                            {% elif bloqueio.periodo == "dia" %}
-                                Dia inteiro
-                            {% endif %}
-                        </span>
+        <span>
+            {% if bloqueio.periodo == "manha" %}
+                Manhã
+            {% elif bloqueio.periodo == "tarde" %}
+                Tarde
+            {% elif bloqueio.periodo == "dia" %}
+                Dia inteiro
+            {% endif %}
+        </span>
 
-                    </div>
+    </div>
 
-                </div>
+
+    <form
+        action="{{ url_for('remover_bloqueio', bloqueio_id=bloqueio.id) }}"
+        method="POST"
+        onsubmit="return confirm('Deseja realmente remover este bloqueio?');"
+    >
+
+        <button
+            type="submit"
+            class="botao-remover-bloqueio"
+        >
+            Remover bloqueio
+        </button>
+
+    </form>
+
+</div>
 
             {% endfor %}
 
@@ -993,6 +1009,70 @@
     .bloqueio-info strong {
 
         font-size: 16px;
+
+    }
+
+}
+ .botao-remover-bloqueio {
+
+    height: 38px;
+
+    padding: 0 16px;
+
+    border: 1px solid
+        rgba(143, 95, 103, 0.25);
+
+    border-radius: 10px;
+
+    background: white;
+
+    color: #8f5f67;
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    font-size: 11px;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+    transition:
+        background 0.25s ease,
+        color 0.25s ease,
+        transform 0.25s ease;
+
+}
+
+
+.botao-remover-bloqueio:hover {
+
+    background: #8f5f67;
+
+    color: white;
+
+    transform: translateY(-1px);
+
+}
+
+
+@media (max-width: 700px) {
+
+    .bloqueio-item {
+
+        align-items: flex-start;
+
+        gap: 15px;
+
+    }
+
+
+    .botao-remover-bloqueio {
+
+        height: 36px;
+
+        padding: 0 12px;
 
     }
 
