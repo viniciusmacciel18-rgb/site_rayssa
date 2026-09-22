@@ -5,7 +5,10 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Agendar horário | Rayssa Lima Nail Designer</title>
 
@@ -21,7 +24,9 @@
 
 </head>
 
+
 <body>
+
 
     <!-- ==================================================
          CABEÇALHO
@@ -32,9 +37,15 @@
         <div class="header-content">
 
             <a href="/" class="logo">
+
                 Rayssa Lima
-                <span>Nail Designer</span>
+
+                <span>
+                    Nail Designer
+                </span>
+
             </a>
+
 
             <nav class="nav">
 
@@ -55,6 +66,7 @@
         </div>
 
     </header>
+
 
 
     <!-- ==================================================
@@ -88,6 +100,7 @@
                 </div>
 
 
+
                 <!-- FORMULÁRIO -->
 
                 <form
@@ -116,6 +129,7 @@
                     </div>
 
 
+
                     <!-- TELEFONE -->
 
                     <div class="form-group">
@@ -133,6 +147,7 @@
                         >
 
                     </div>
+
 
 
                     <!-- SERVIÇO -->
@@ -178,6 +193,7 @@
                     </div>
 
 
+
                     <!-- DATA -->
 
                     <div class="form-group">
@@ -194,6 +210,7 @@
                         >
 
                     </div>
+
 
 
                     <!-- HORÁRIO -->
@@ -219,13 +236,19 @@
                     </div>
 
 
+
                     <!-- OBSERVAÇÕES -->
 
                     <div class="form-group">
 
                         <label for="observacoes">
+
                             Observações
-                            <span>(opcional)</span>
+
+                            <span>
+                                (opcional)
+                            </span>
+
                         </label>
 
                         <textarea
@@ -236,6 +259,7 @@
                         ></textarea>
 
                     </div>
+
 
 
                     <!-- BOTÃO -->
@@ -249,9 +273,12 @@
 
 
                     <p class="booking-notice">
+
                         Após o envio, você verá a confirmação
                         do seu agendamento.
+
                     </p>
+
 
                 </form>
 
@@ -260,6 +287,7 @@
         </section>
 
     </main>
+
 
 
     <!-- ==================================================
@@ -279,20 +307,25 @@
     </footer>
 
 
+
     <!-- ==================================================
          HORÁRIOS
          ================================================== -->
 
     <script>
 
+
         const dataInput =
             document.getElementById("data");
+
 
         const horarioSelect =
             document.getElementById("horario");
 
+
         const servicoSelect =
             document.getElementById("servico");
+
 
 
         const duracoes = {
@@ -310,6 +343,7 @@
         };
 
 
+
         function criarHorarios(
             inicio,
             fim,
@@ -318,21 +352,27 @@
 
             const horarios = [];
 
+
             let atual = inicio;
+
 
             while (atual < fim) {
 
                 const [hora, minuto] =
                     atual.split(":").map(Number);
 
+
                 const minutos =
                     hora * 60 + minuto;
+
 
                 const final =
                     minutos + duracao;
 
+
                 const [fimHora, fimMinuto] =
                     fim.split(":").map(Number);
+
 
                 const limite =
                     fimHora * 60 + fimMinuto;
@@ -348,8 +388,10 @@
                 let proximo =
                     minutos + 30;
 
+
                 const novaHora =
                     Math.floor(proximo / 60);
+
 
                 const novoMinuto =
                     proximo % 60;
@@ -362,12 +404,14 @@
 
             }
 
+
             return horarios;
 
         }
 
 
-        function atualizarHorarios() {
+
+        async function atualizarHorarios() {
 
             horarioSelect.innerHTML = "";
 
@@ -377,16 +421,21 @@
                 const option =
                     document.createElement("option");
 
+
                 option.value = "";
+
 
                 option.textContent =
                     "Primeiro escolha uma data";
 
+
                 horarioSelect.appendChild(option);
+
 
                 return;
 
             }
+
 
 
             const servico =
@@ -398,20 +447,26 @@
                 const option =
                     document.createElement("option");
 
+
                 option.value = "";
+
 
                 option.textContent =
                     "Primeiro escolha o serviço";
 
+
                 horarioSelect.appendChild(option);
+
 
                 return;
 
             }
 
 
+
             const duracao =
                 duracoes[servico];
+
 
 
             const data =
@@ -420,12 +475,20 @@
                 );
 
 
+
             const dia =
                 data.getDay();
 
 
+
             let periodos = [];
 
+
+
+            /*
+                SEGUNDA, TERÇA,
+                QUINTA E SEXTA
+            */
 
             if (
                 dia === 1 ||
@@ -435,48 +498,145 @@
             ) {
 
                 periodos = [
+
                     ["07:30", "11:00"],
+
                     ["13:30", "20:00"]
+
                 ];
 
             }
 
+
+
+            /*
+                QUARTA-FEIRA
+            */
 
             else if (dia === 3) {
 
                 periodos = [
+
                     ["07:30", "11:00"],
+
                     ["13:30", "15:00"]
+
                 ];
 
             }
 
+
+
+            /*
+                SÁBADO
+            */
 
             else if (dia === 6) {
 
                 periodos = [
+
                     ["09:00", "16:00"]
+
                 ];
 
             }
 
+
+
+            /*
+                DOMINGO
+            */
 
             else {
 
                 const option =
                     document.createElement("option");
 
+
                 option.value = "";
+
 
                 option.textContent =
                     "Não há atendimento aos domingos";
 
+
                 horarioSelect.appendChild(option);
+
 
                 return;
 
             }
 
+
+
+            /*
+                CONSULTA OS BLOQUEIOS
+                DO POSTGRESQL
+            */
+
+            let bloqueios = [];
+
+
+            try {
+
+                const resposta =
+                    await fetch(
+                        `/bloqueios/${dataInput.value}`
+                    );
+
+
+                if (resposta.ok) {
+
+                    bloqueios =
+                        await resposta.json();
+
+                }
+
+            }
+
+            catch (erro) {
+
+                console.error(
+                    "Erro ao consultar bloqueios:",
+                    erro
+                );
+
+            }
+
+
+
+            /*
+                DIA INTEIRO BLOQUEADO
+            */
+
+            if (
+                bloqueios.includes("dia")
+            ) {
+
+                const option =
+                    document.createElement("option");
+
+
+                option.value = "";
+
+
+                option.textContent =
+                    "Não há horários disponíveis nesta data";
+
+
+                horarioSelect.appendChild(option);
+
+
+                return;
+
+            }
+
+
+
+            /*
+                CRIA OS HORÁRIOS
+                RESPEITANDO OS BLOQUEIOS
+            */
 
             let horarios = [];
 
@@ -484,20 +644,58 @@
             periodos.forEach(
                 periodo => {
 
-                    horarios.push(
-                        ...criarHorarios(
-                            periodo[0],
-                            periodo[1],
-                            duracao
-                        )
-                    );
+                    const inicio =
+                        periodo[0];
+
+
+                    const fim =
+                        periodo[1];
+
+
+
+                    /*
+                        IDENTIFICA SE O PERÍODO
+                        ESTÁ BLOQUEADO
+                    */
+
+                    const bloqueadoManha =
+                        inicio === "07:30"
+                        &&
+                        bloqueios.includes("manha");
+
+
+                    const bloqueadoTarde =
+                        inicio !== "07:30"
+                        &&
+                        bloqueios.includes("tarde");
+
+
+
+                    if (
+                        !bloqueadoManha
+                        &&
+                        !bloqueadoTarde
+                    ) {
+
+                        horarios.push(
+                            ...criarHorarios(
+                                inicio,
+                                fim,
+                                duracao
+                            )
+                        );
+
+                    }
 
                 }
             );
 
 
-            /* Remove horários que já passaram
-               quando a data escolhida é hoje */
+
+            /*
+                REMOVE HORÁRIOS QUE JÁ PASSARAM
+                QUANDO A DATA É HOJE
+            */
 
             const hoje =
                 new Date();
@@ -526,6 +724,7 @@
                                 .split(":")
                                 .map(Number);
 
+
                             return (
                                 h * 60 + m
                                 >= minutosAgora
@@ -537,33 +736,59 @@
             }
 
 
-            if (horarios.length === 0) {
+
+            /*
+                NENHUM HORÁRIO DISPONÍVEL
+            */
+
+            if (
+                horarios.length === 0
+            ) {
 
                 const option =
                     document.createElement("option");
 
+
                 option.value = "";
+
 
                 option.textContent =
                     "Nenhum horário disponível";
 
+
                 horarioSelect.appendChild(option);
+
 
                 return;
 
             }
 
 
+
+            /*
+                PRIMEIRA OPÇÃO
+            */
+
             const primeira =
                 document.createElement("option");
 
+
             primeira.value = "";
+
 
             primeira.textContent =
                 "Selecione o horário";
 
-            horarioSelect.appendChild(primeira);
 
+            horarioSelect.appendChild(
+                primeira
+            );
+
+
+
+            /*
+                MOSTRA OS HORÁRIOS
+            */
 
             horarios.forEach(
                 horario => {
@@ -571,11 +796,18 @@
                     const option =
                         document.createElement("option");
 
-                    option.value = horario;
 
-                    option.textContent = horario;
+                    option.value =
+                        horario;
 
-                    horarioSelect.appendChild(option);
+
+                    option.textContent =
+                        horario;
+
+
+                    horarioSelect.appendChild(
+                        option
+                    );
 
                 }
             );
@@ -583,11 +815,21 @@
         }
 
 
+
+        /*
+            QUANDO ALTERAR A DATA
+        */
+
         dataInput.addEventListener(
             "change",
             atualizarHorarios
         );
 
+
+
+        /*
+            QUANDO ALTERAR O SERVIÇO
+        */
 
         servicoSelect.addEventListener(
             "change",
@@ -595,18 +837,24 @@
         );
 
 
-        /* Impede escolher datas anteriores */
+
+        /*
+            IMPEDE ESCOLHER DATAS ANTERIORES
+        */
 
         const hoje =
             new Date();
 
+
         const ano =
             hoje.getFullYear();
+
 
         const mes =
             String(
                 hoje.getMonth() + 1
             ).padStart(2, "0");
+
 
         const dia =
             String(
@@ -617,7 +865,9 @@
         dataInput.min =
             `${ano}-${mes}-${dia}`;
 
+
     </script>
+
 
 </body>
 
