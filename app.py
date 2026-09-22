@@ -32,6 +32,10 @@ def conectar_banco():
 # CRIAR TABELA DE AGENDAMENTOS
 # ==========================================================
 
+# ==========================================================
+# CRIAR TABELAS
+# ==========================================================
+
 def criar_tabela():
 
     conexao = conectar_banco()
@@ -39,29 +43,19 @@ def criar_tabela():
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS agendamentos (
-
             id SERIAL PRIMARY KEY,
-
             nome TEXT NOT NULL,
-
             telefone TEXT NOT NULL,
-
             servico TEXT NOT NULL,
-
             data DATE NOT NULL,
-
             horario TIME NOT NULL,
-
             observacoes TEXT,
-
             status TEXT DEFAULT 'Confirmado',
-
             criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-
         )
     """)
 
-       cursor.execute("""
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS bloqueios_horarios (
             id SERIAL PRIMARY KEY,
             data DATE NOT NULL,
@@ -75,8 +69,7 @@ def criar_tabela():
 
     cursor.close()
     conexao.close()
-
-
+    
 # ==========================================================
 # ATUALIZAR TABELA EXISTENTE
 # ==========================================================
