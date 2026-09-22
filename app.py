@@ -61,6 +61,16 @@ def criar_tabela():
         )
     """)
 
+       cursor.execute("""
+        CREATE TABLE IF NOT EXISTS bloqueios_horarios (
+            id SERIAL PRIMARY KEY,
+            data DATE NOT NULL,
+            periodo TEXT NOT NULL,
+            criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE (data, periodo)
+        )
+    """)
+
     conexao.commit()
 
     cursor.close()
@@ -382,7 +392,76 @@ def cancelar_agendamento(agendamento_id):
 @app.route("/admin/horarios")
 @login_obrigatorio
 def admin_horarios():
-    return render_template("horarios.html")
+
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+
+    cursor.execute("""
+        SELECT
+            id,
+            data,
+            periodo
+        FROM bloqueios_horarios
+        ORDER BY data ASC
+    """)
+
+    resultados = cursor.fetchall()
+
+    cursor.close()
+    conexao.close()
+
+    bloqueios = []
+
+    for bloqueio in resultados:
+
+        bloqueios.append({
+            "id": bloqueio[0],
+            "data": bloqueio[1].strftime("%d/%m/%Y"),
+            "periodo": bloqueio[2]
+        })
+
+    return render_template(
+        "horarios.html",
+        bloqueios=bloqueios
+    )
+
+
+@app.route(
+    "/admin/horarios/bloquear",
+    methods=["POST"]
+)
+@login_obrigatorio
+def bloquear_horario():
+
+    data = request.form.get("data")
+    periodo = request.form.get("periodo")
+
+    if not data or not periodo:
+        return redirect(url_for("admin_horarios"))
+
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+
+    cursor.execute("""
+        INSERT INTO bloqueios_horarios
+        (
+            data,
+            periodo
+        )
+        VALUES (%s, %s)
+        ON CONFLICT (data, periodo)
+        DO NOTHING
+    """, (
+        data,
+        periodo
+    ))
+
+    conexao.commit()
+
+    cursor.close()
+    conexao.close()
+
+    return redirect(url_for("admin_horarios"))
 
 
 @app.route("/logout")
