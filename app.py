@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from datetime import datetime
 import os
 import psycopg2
@@ -204,7 +204,34 @@ def agendar():
 
     return render_template("agendar.html")
 
+# ==========================================================
+# CONSULTAR BLOQUEIOS DE UMA DATA
+# ==========================================================
 
+@app.route("/bloqueios/<data>")
+def consultar_bloqueios(data):
+
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+
+    cursor.execute("""
+        SELECT periodo
+        FROM bloqueios_horarios
+        WHERE data = %s
+    """, (data,))
+
+    resultados = cursor.fetchall()
+
+    cursor.close()
+    conexao.close()
+
+    bloqueios = []
+
+    for resultado in resultados:
+        bloqueios.append(resultado[0])
+
+    return jsonify(bloqueios)
+    
 # ==========================================================
 # PROTEÇÃO DO PAINEL ADMINISTRATIVO
 # ==========================================================
