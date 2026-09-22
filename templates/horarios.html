@@ -52,7 +52,6 @@
 
             <div class="container booking-container">
 
-
                 <!-- CABEÇALHO -->
 
                 <div class="section-heading">
@@ -68,165 +67,209 @@
                     <p>
                         Gerencie os horários de atendimento.
                     </p>
-                    
+
+
+                    <!-- ==========================================
+                         BLOQUEAR HORÁRIO
+                         ========================================== -->
+
                     <div class="bloqueio-box">
 
-    <h2>
-        Bloquear horário
-    </h2>
+                        <h2>
+                            Bloquear horário
+                        </h2>
 
-    <p>
-        Escolha uma data e o período que deseja bloquear.
-    </p>
-
-
-    <form
-        action="{{ url_for('bloquear_horario') }}"
-        method="POST"
-        class="bloqueio-form"
-    >
-
-        <div class="campo-bloqueio">
-
-            <label for="data">
-                Data
-            </label>
-
-            <input
-                type="date"
-                id="data"
-                name="data"
-                required
-            >
-
-        </div>
+                        <p>
+                            Escolha a data e o intervalo que deseja bloquear.
+                        </p>
 
 
-        <div class="campo-bloqueio">
-
-            <label for="periodo">
-                Período
-            </label>
-
-            <select
-                id="periodo"
-                name="periodo"
-                required
-            >
-
-                <option value="">
-                    Selecione
-                </option>
-
-                <option value="manha">
-                    Manhã
-                </option>
-
-                <option value="tarde">
-                    Tarde
-                </option>
-
-                <option value="dia">
-                    Dia inteiro
-                </option>
-
-            </select>
-
-        </div>
+                        <form
+                            action="{{ url_for('bloquear_horario') }}"
+                            method="POST"
+                            class="bloqueio-form"
+                        >
 
 
-        <button
-            type="submit"
-            class="botao-bloqueio"
-        >
-            Bloquear horário
-        </button>
+                            <!-- DATA -->
 
-    </form>
+                            <div class="campo-bloqueio">
 
-</div>
-                    
+                                <label for="data">
+                                    Data
+                                </label>
+
+                                <input
+                                    type="date"
+                                    id="data"
+                                    name="data"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <!-- HORÁRIO INICIAL -->
+
+                            <div class="campo-bloqueio">
+
+                                <label for="inicio">
+                                    De
+                                </label>
+
+                                <input
+                                    type="time"
+                                    id="inicio"
+                                    name="inicio"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <!-- HORÁRIO FINAL -->
+
+                            <div class="campo-bloqueio">
+
+                                <label for="fim">
+                                    Até
+                                </label>
+
+                                <input
+                                    type="time"
+                                    id="fim"
+                                    name="fim"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <!-- MOTIVO -->
+
+                            <div class="campo-bloqueio campo-motivo">
+
+                                <label for="motivo">
+                                    Motivo
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="motivo"
+                                    name="motivo"
+                                    placeholder="Ex.: Compromisso"
+                                    maxlength="100"
+                                >
+
+                            </div>
+
+
+                            <!-- BOTÃO -->
+
+                            <button
+                                type="submit"
+                                class="botao-bloqueio"
+                            >
+                                Bloquear horário
+                            </button>
+
+                        </form>
+
+                    </div>
+
+
+                    <!-- ==========================================
+                         BLOQUEIOS CADASTRADOS
+                         ========================================== -->
+
                     <div class="bloqueios-cadastrados">
 
-    <div class="bloqueios-titulo">
+                        <div class="bloqueios-titulo">
 
-        <h2>
-            Bloqueios cadastrados
-        </h2>
+                            <h2>
+                                Bloqueios cadastrados
+                            </h2>
 
-        <p>
-            Veja os períodos que estão bloqueados.
-        </p>
+                            <p>
+                                Veja os horários que estão bloqueados.
+                            </p>
 
-    </div>
-
-
-    {% if bloqueios %}
-
-        <div class="bloqueios-lista">
-
-            {% for bloqueio in bloqueios %}
-
-                <div class="bloqueio-item">
-
-    <div class="bloqueio-info">
-
-        <strong>
-            {{ bloqueio.data }}
-        </strong>
-
-        <span>
-            {% if bloqueio.periodo == "manha" %}
-                Manhã
-            {% elif bloqueio.periodo == "tarde" %}
-                Tarde
-            {% elif bloqueio.periodo == "dia" %}
-                Dia inteiro
-            {% endif %}
-        </span>
-
-    </div>
+                        </div>
 
 
-    <form
-        action="{{ url_for('remover_bloqueio', bloqueio_id=bloqueio.id) }}"
-        method="POST"
-        onsubmit="return confirm('Deseja realmente remover este bloqueio?');"
-    >
+                        {% if bloqueios %}
 
-        <button
-            type="submit"
-            class="botao-remover-bloqueio"
-        >
-            Remover bloqueio
-        </button>
+                            <div class="bloqueios-lista">
 
-    </form>
+                                {% for bloqueio in bloqueios %}
 
-</div>
+                                    <div class="bloqueio-item">
 
-            {% endfor %}
+                                        <div class="bloqueio-info">
 
-        </div>
+                                            <strong>
+                                                {{ bloqueio.data }}
+                                            </strong>
 
-    {% else %}
+                                            <span>
+                                                {{ bloqueio.inicio }}
+                                                às
+                                                {{ bloqueio.fim }}
+                                            </span>
 
-        <div class="bloqueios-vazio">
+                                            {% if bloqueio.motivo %}
 
-            <p>
-                Nenhum bloqueio cadastrado.
-            </p>
+                                                <small>
+                                                    {{ bloqueio.motivo }}
+                                                </small>
 
-        </div>
+                                            {% endif %}
 
-    {% endif %}
+                                        </div>
 
-</div>
+
+                                        <form
+                                            action="{{ url_for('remover_bloqueio', bloqueio_id=bloqueio.id) }}"
+                                            method="POST"
+                                            onsubmit="return confirm('Deseja realmente remover este bloqueio?');"
+                                        >
+
+                                            <button
+                                                type="submit"
+                                                class="botao-remover-bloqueio"
+                                            >
+                                                Remover bloqueio
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% else %}
+
+                            <div class="bloqueios-vazio">
+
+                                <p>
+                                    Nenhum bloqueio cadastrado.
+                                </p>
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
 
                 </div>
 
 
-                <!-- HORÁRIOS -->
+                <!-- ==========================================
+                     HORÁRIOS NORMAIS DE ATENDIMENTO
+                     ========================================== -->
 
                 <div class="horarios-lista">
 
@@ -553,6 +596,425 @@
 
 
         /* ==================================================
+           BLOQUEIO DE HORÁRIOS
+           ================================================== */
+
+        .bloqueio-box {
+
+            max-width: 900px;
+
+            margin: 30px auto 35px;
+
+            padding: 30px;
+
+            background:
+                rgba(255, 255, 255, 0.92);
+
+            border:
+                1px solid
+                rgba(143, 95, 103, 0.12);
+
+            border-radius: 24px;
+
+            box-shadow:
+                0 12px 30px
+                rgba(111, 74, 80, 0.07);
+
+            box-sizing: border-box;
+
+        }
+
+
+        .bloqueio-box h2 {
+
+            margin: 0 0 8px;
+
+            color:
+                #4d3035;
+
+            font-family:
+                Georgia,
+                serif;
+
+            font-size: 23px;
+
+            font-weight: 500;
+
+        }
+
+
+        .bloqueio-box > p {
+
+            margin: 0 0 25px;
+
+            color:
+                #8f5f67;
+
+            font-family:
+                Arial,
+                sans-serif;
+
+            font-size: 13px;
+
+        }
+
+
+        /* ==================================================
+           FORMULÁRIO
+           ================================================== */
+
+        .bloqueio-form {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr 1fr;
+
+            align-items: end;
+
+            gap: 18px;
+
+        }
+
+
+        .campo-bloqueio {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 7px;
+
+        }
+
+
+        .campo-bloqueio label {
+
+            color:
+                #4d3035;
+
+            font-family:
+                Arial,
+                sans-serif;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+        }
+
+
+        .campo-bloqueio input {
+
+            width: 100%;
+
+            height: 46px;
+
+            padding: 0 14px;
+
+            border:
+                1px solid
+                rgba(143, 95, 103, 0.20);
+
+            border-radius: 12px;
+
+            background:
+                #fff;
+
+            color:
+                #4d3035;
+
+            font-family:
+                Arial,
+                sans-serif;
+
+            font-size: 13px;
+
+            outline: none;
+
+            box-sizing: border-box;
+
+        }
+
+
+        .campo-bloqueio input:focus {
+
+            border-color:
+                #8f5f67;
+
+        }
+
+
+        .campo-motivo {
+
+            grid-column:
+                1 / 3;
+
+        }
+
+
+        /* ==================================================
+           BOTÃO BLOQUEAR
+           ================================================== */
+
+        .botao-bloqueio {
+
+            height: 46px;
+
+            padding: 0 22px;
+
+            border: none;
+
+            border-radius: 12px;
+
+            background:
+                #8f5f67;
+
+            color:
+                white;
+
+            font-family:
+                Arial,
+                sans-serif;
+
+            font-size: 12px;
+
+            cursor: pointer;
+
+            white-space: nowrap;
+
+            transition:
+                background 0.25s ease,
+                transform 0.25s ease;
+
+        }
+
+
+        .botao-bloqueio:hover {
+
+            background:
+                #6f4a50;
+
+            transform:
+                translateY(-2px);
+
+        }
+
+
+        /* ==================================================
+           BLOQUEIOS CADASTRADOS
+           ================================================== */
+
+        .bloqueios-cadastrados {
+
+            max-width: 900px;
+
+            margin: 0 auto 40px;
+
+        }
+
+
+        .bloqueios-titulo {
+
+            margin-bottom: 18px;
+
+        }
+
+
+        .bloqueios-titulo h2 {
+
+            margin: 0 0 7px;
+
+            color:
+                #4d3035;
+
+            font-family:
+                Georgia,
+                serif;
+
+            font-size: 23px;
+
+            font-weight: 500;
+
+        }
+
+
+        .bloqueios-titulo p {
+
+            margin: 0;
+
+            color:
+                #8f5f67;
+
+            font-family:
+                Arial,
+                sans-serif;
+
+            font-size: 13px;
+
+        }
+
+
+        .bloqueios-lista {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 12px;
+
+        }
+
+
+        .bloqueio-item {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding: 18px 22px;
+
+            background:
+                rgba(255, 255, 255, 0.92);
+
+            border:
+                1px solid
+                rgba(143, 95, 103, 0.12);
+
+            border-radius: 16px;
+
+            box-shadow:
+                0 8px 20px
+                rgba(111, 74, 80, 0.06);
+
+        }
+
+
+        .bloqueio-info {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+
+            flex-wrap: wrap;
+
+        }
+
+
+        .bloqueio-info strong {
+
+            color:
+                #4d3035;
+
+            font-family:
+                Georgia,
+                serif;
+
+            font-size: 17px;
+
+            font-weight: 500;
+
+        }
+
+
+        .bloqueio-info span {
+
+            padding: 7px 13px;
+
+            border-radius: 20px;
+
+            background:
+                #f2e3e1;
+
+            color:
+                #8f5f67;
+
+            font-family:
+                Arial,
+                sans-serif;
+
+            font-size: 12px;
+
+            white-space: nowrap;
+
+        }
+
+
+        .bloqueio-info small {
+
+            color:
+                #8f5f67;
+
+            font-family:
+                Arial,
+                sans-serif;
+
+            font-size: 12px;
+
+        }
+
+
+        /* ==================================================
+           BOTÃO REMOVER
+           ================================================== */
+
+        .botao-remover-bloqueio {
+
+            height: 38px;
+
+            padding: 0 16px;
+
+            border:
+                1px solid
+                rgba(143, 95, 103, 0.25);
+
+            border-radius: 10px;
+
+            background:
+                white;
+
+            color:
+                #8f5f67;
+
+            font-family:
+                Arial,
+                sans-serif;
+
+            font-size: 11px;
+
+            cursor: pointer;
+
+            white-space: nowrap;
+
+            transition:
+                background 0.25s ease,
+                color 0.25s ease,
+                transform 0.25s ease;
+
+        }
+
+
+        .botao-remover-bloqueio:hover {
+
+            background:
+                #8f5f67;
+
+            color:
+                white;
+
+            transform:
+                translateY(-1px);
+
+        }
+
+
+        /* ==================================================
            CELULAR
            ================================================== */
 
@@ -560,7 +1022,8 @@
 
             .horarios-lista {
 
-                grid-template-columns: 1fr;
+                grid-template-columns:
+                    1fr;
 
                 gap: 14px;
 
@@ -593,491 +1056,83 @@
 
             }
 
+
+            .bloqueio-box {
+
+                padding: 24px 20px;
+
+                margin-top: 25px;
+
+            }
+
+
+            .bloqueio-form {
+
+                grid-template-columns:
+                    1fr;
+
+                gap: 14px;
+
+            }
+
+
+            .campo-motivo {
+
+                grid-column:
+                    auto;
+
+            }
+
+
+            .botao-bloqueio {
+
+                width: 100%;
+
+            }
+
+
+            .bloqueio-item {
+
+                align-items:
+                    flex-start;
+
+                flex-direction:
+                    column;
+
+                padding:
+                    16px;
+
+            }
+
+
+            .bloqueio-info {
+
+                gap:
+                    10px;
+
+            }
+
+
+            .bloqueio-info strong {
+
+                font-size:
+                    16px;
+
+            }
+
+
+            .botao-remover-bloqueio {
+
+                width:
+                    100%;
+
+                height:
+                    40px;
+
+            }
+
         }
 
-        
-/* ==================================================
-   BLOQUEIO DE HORÁRIOS
-   ================================================== */
-
-.bloqueio-box {
-
-    max-width: 900px;
-
-    margin: 30px auto 35px;
-
-    padding: 30px;
-
-    background:
-        rgba(255, 255, 255, 0.92);
-
-    border:
-        1px solid
-        rgba(143, 95, 103, 0.12);
-
-    border-radius: 24px;
-
-    box-shadow:
-        0 12px 30px
-        rgba(111, 74, 80, 0.07);
-
-    box-sizing: border-box;
-
-}
-
-
-.bloqueio-box h2 {
-
-    margin: 0 0 8px;
-
-    color:
-        #4d3035;
-
-    font-family:
-        Georgia,
-        serif;
-
-    font-size: 23px;
-
-    font-weight: 500;
-
-}
-
-
-.bloqueio-box > p {
-
-    margin: 0 0 25px;
-
-    color:
-        #8f5f67;
-
-    font-family:
-        Arial,
-        sans-serif;
-
-    font-size: 13px;
-
-}
-
-
-.bloqueio-form {
-
-    display: grid;
-
-    grid-template-columns:
-        1fr 1fr auto;
-
-    align-items: end;
-
-    gap: 18px;
-
-}
-
-
-.campo-bloqueio {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 7px;
-
-}
-
-
-.campo-bloqueio label {
-
-    color:
-        #4d3035;
-
-    font-family:
-        Arial,
-        sans-serif;
-
-    font-size: 12px;
-
-    font-weight: 600;
-
-}
-
-
-.campo-bloqueio input,
-.campo-bloqueio select {
-
-    width: 100%;
-
-    height: 46px;
-
-    padding: 0 14px;
-
-    border:
-        1px solid
-        rgba(143, 95, 103, 0.20);
-
-    border-radius: 12px;
-
-    background:
-        #fff;
-
-    color:
-        #4d3035;
-
-    font-family:
-        Arial,
-        sans-serif;
-
-    font-size: 13px;
-
-    outline: none;
-
-    box-sizing: border-box;
-
-}
-
-
-.campo-bloqueio input:focus,
-.campo-bloqueio select:focus {
-
-    border-color:
-        #8f5f67;
-
-}
-
-
-.botao-bloqueio {
-
-    height: 46px;
-
-    padding: 0 22px;
-
-    border: none;
-
-    border-radius: 12px;
-
-    background:
-        #8f5f67;
-
-    color: white;
-
-    font-family:
-        Arial,
-        sans-serif;
-
-    font-size: 12px;
-
-    cursor: pointer;
-
-    white-space: nowrap;
-
-    transition:
-        background 0.25s ease,
-        transform 0.25s ease;
-
-}
-
-
-.botao-bloqueio:hover {
-
-    background:
-        #6f4a50;
-
-    transform:
-        translateY(-2px);
-
-}
-
-
-@media (max-width: 700px) {
-
-    .bloqueio-box {
-
-        padding: 24px 20px;
-
-        margin-top: 25px;
-
-    }
-
-
-    .bloqueio-form {
-
-        grid-template-columns: 1fr;
-
-        gap: 14px;
-
-    }
-
-
-    .botao-bloqueio {
-
-        width: 100%;
-
-    }
-
-}
-
-/* ==================================================
-   BLOQUEIOS CADASTRADOS
-   ================================================== */
-
-.bloqueios-cadastrados {
-
-    max-width: 900px;
-
-    margin: 0 auto 40px;
-
-}
-
-
-.bloqueios-titulo {
-
-    margin-bottom: 18px;
-
-}
-
-
-.bloqueios-titulo h2 {
-
-    margin: 0 0 7px;
-
-    color:
-        #4d3035;
-
-    font-family:
-        Georgia,
-        serif;
-
-    font-size: 23px;
-
-    font-weight: 500;
-
-}
-
-
-.bloqueios-titulo p {
-
-    margin: 0;
-
-    color:
-        #8f5f67;
-
-    font-family:
-        Arial,
-        sans-serif;
-
-    font-size: 13px;
-
-}
-
-
-.bloqueios-lista {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 12px;
-
-}
-
-
-.bloqueio-item {
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    padding: 18px 22px;
-
-    background:
-        rgba(255, 255, 255, 0.92);
-
-    border:
-        1px solid
-        rgba(143, 95, 103, 0.12);
-
-    border-radius: 16px;
-
-    box-shadow:
-        0 8px 20px
-        rgba(111, 74, 80, 0.06);
-
-}
-
-
-.bloqueio-info {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 18px;
-
-}
-
-
-.bloqueio-info strong {
-
-    color:
-        #4d3035;
-
-    font-family:
-        Georgia,
-        serif;
-
-    font-size: 17px;
-
-    font-weight: 500;
-
-}
-
-
-.bloqueio-info span {
-
-    padding: 7px 13px;
-
-    border-radius: 20px;
-
-    background:
-        #f2e3e1;
-
-    color:
-        #8f5f67;
-
-    font-family:
-        Arial,
-        sans-serif;
-
-    font-size: 12px;
-
-}
-
-
-.bloqueios-vazio {
-
-    padding: 25px;
-
-    text-align: center;
-
-    background:
-        rgba(255, 255, 255, 0.70);
-
-    border:
-        1px dashed
-        rgba(143, 95, 103, 0.20);
-
-    border-radius: 16px;
-
-}
-
-
-.bloqueios-vazio p {
-
-    margin: 0;
-
-    color:
-        #8f5f67;
-
-    font-family:
-        Arial,
-        sans-serif;
-
-    font-size: 13px;
-
-}
-
-
-@media (max-width: 700px) {
-
-    .bloqueio-item {
-
-        padding: 16px;
-
-    }
-
-
-    .bloqueio-info {
-
-        gap: 10px;
-
-        flex-wrap: wrap;
-
-    }
-
-
-    .bloqueio-info strong {
-
-        font-size: 16px;
-
-    }
-
-}
- .botao-remover-bloqueio {
-
-    height: 38px;
-
-    padding: 0 16px;
-
-    border: 1px solid
-        rgba(143, 95, 103, 0.25);
-
-    border-radius: 10px;
-
-    background: white;
-
-    color: #8f5f67;
-
-    font-family:
-        Arial,
-        sans-serif;
-
-    font-size: 11px;
-
-    cursor: pointer;
-
-    white-space: nowrap;
-
-    transition:
-        background 0.25s ease,
-        color 0.25s ease,
-        transform 0.25s ease;
-
-}
-
-
-.botao-remover-bloqueio:hover {
-
-    background: #8f5f67;
-
-    color: white;
-
-    transform: translateY(-1px);
-
-}
-
-
-@media (max-width: 700px) {
-
-    .bloqueio-item {
-
-        align-items: flex-start;
-
-        gap: 15px;
-
-    }
-
-
-    .botao-remover-bloqueio {
-
-        height: 36px;
-
-        padding: 0 12px;
-
-    }
-
-}
-        
     </style>
 
 </body>
