@@ -800,20 +800,22 @@ def agendar():
                 # PREPARAR DADOS PARA CONFIRMAÇÃO
                 # --------------------------------------------------
 
-                atendimentos_plano = []
+               atendimentos_plano = []
 
-                for indice in range(4):
+               for indice in range(4):
 
-                    atendimentos_plano.append({
+                   data_formatada = datetime.strptime(
+                       datas_plano[indice],
+                       "%Y-%m-%d"
+                   ).strftime("%d/%m/%Y")
 
-                        "numero": indice + 1,
+                   atendimentos_plano.append({
 
-                        "data": datas_plano[indice].strftime(
-                            "%d/%m/%Y"
-                        ),
+                       "numero": indice + 1,
 
-                        "horario": horarios_plano[indice]
+                       "data": data_formatada,
 
+                       "horario": horarios_plano[indice]
                     })
 
                 return render_template(
