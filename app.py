@@ -456,7 +456,28 @@ def bloquear_horario():
 
     return redirect(url_for("admin_horarios"))
 
+@app.route(
+    "/admin/horarios/remover/<int:bloqueio_id>",
+    methods=["POST"]
+)
+@login_obrigatorio
+def remover_bloqueio(bloqueio_id):
 
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+
+    cursor.execute("""
+        DELETE FROM bloqueios_horarios
+        WHERE id = %s
+    """, (bloqueio_id,))
+
+    conexao.commit()
+
+    cursor.close()
+    conexao.close()
+
+    return redirect(url_for("admin_horarios"))
+    
 @app.route("/logout")
 def logout():
 
