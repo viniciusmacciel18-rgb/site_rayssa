@@ -68,6 +68,83 @@
                     <p>
                         Gerencie os horários de atendimento.
                     </p>
+                    
+                    <div class="bloqueio-box">
+
+    <h2>
+        Bloquear horário
+    </h2>
+
+    <p>
+        Escolha uma data e o período que deseja bloquear.
+    </p>
+
+
+    <form
+        action="{{ url_for('bloquear_horario') }}"
+        method="POST"
+        class="bloqueio-form"
+    >
+
+        <div class="campo-bloqueio">
+
+            <label for="data">
+                Data
+            </label>
+
+            <input
+                type="date"
+                id="data"
+                name="data"
+                required
+            >
+
+        </div>
+
+
+        <div class="campo-bloqueio">
+
+            <label for="periodo">
+                Período
+            </label>
+
+            <select
+                id="periodo"
+                name="periodo"
+                required
+            >
+
+                <option value="">
+                    Selecione
+                </option>
+
+                <option value="manha">
+                    Manhã
+                </option>
+
+                <option value="tarde">
+                    Tarde
+                </option>
+
+                <option value="dia">
+                    Dia inteiro
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <button
+            type="submit"
+            class="botao-bloqueio"
+        >
+            Bloquear horário
+        </button>
+
+    </form>
+
+</div>
 
                 </div>
 
@@ -441,6 +518,227 @@
 
         }
 
+        
+/* ==================================================
+   BLOQUEIO DE HORÁRIOS
+   ================================================== */
+
+.bloqueio-box {
+
+    max-width: 900px;
+
+    margin: 30px auto 35px;
+
+    padding: 30px;
+
+    background:
+        rgba(255, 255, 255, 0.92);
+
+    border:
+        1px solid
+        rgba(143, 95, 103, 0.12);
+
+    border-radius: 24px;
+
+    box-shadow:
+        0 12px 30px
+        rgba(111, 74, 80, 0.07);
+
+    box-sizing: border-box;
+
+}
+
+
+.bloqueio-box h2 {
+
+    margin: 0 0 8px;
+
+    color:
+        #4d3035;
+
+    font-family:
+        Georgia,
+        serif;
+
+    font-size: 23px;
+
+    font-weight: 500;
+
+}
+
+
+.bloqueio-box > p {
+
+    margin: 0 0 25px;
+
+    color:
+        #8f5f67;
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    font-size: 13px;
+
+}
+
+
+.bloqueio-form {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr auto;
+
+    align-items: end;
+
+    gap: 18px;
+
+}
+
+
+.campo-bloqueio {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+
+}
+
+
+.campo-bloqueio label {
+
+    color:
+        #4d3035;
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+}
+
+
+.campo-bloqueio input,
+.campo-bloqueio select {
+
+    width: 100%;
+
+    height: 46px;
+
+    padding: 0 14px;
+
+    border:
+        1px solid
+        rgba(143, 95, 103, 0.20);
+
+    border-radius: 12px;
+
+    background:
+        #fff;
+
+    color:
+        #4d3035;
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    font-size: 13px;
+
+    outline: none;
+
+    box-sizing: border-box;
+
+}
+
+
+.campo-bloqueio input:focus,
+.campo-bloqueio select:focus {
+
+    border-color:
+        #8f5f67;
+
+}
+
+
+.botao-bloqueio {
+
+    height: 46px;
+
+    padding: 0 22px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background:
+        #8f5f67;
+
+    color: white;
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    font-size: 12px;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+    transition:
+        background 0.25s ease,
+        transform 0.25s ease;
+
+}
+
+
+.botao-bloqueio:hover {
+
+    background:
+        #6f4a50;
+
+    transform:
+        translateY(-2px);
+
+}
+
+
+@media (max-width: 700px) {
+
+    .bloqueio-box {
+
+        padding: 24px 20px;
+
+        margin-top: 25px;
+
+    }
+
+
+    .bloqueio-form {
+
+        grid-template-columns: 1fr;
+
+        gap: 14px;
+
+    }
+
+
+    .botao-bloqueio {
+
+        width: 100%;
+
+    }
+
+}
+
+        
     </style>
 
 </body>
