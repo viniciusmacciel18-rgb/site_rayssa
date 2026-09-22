@@ -275,39 +275,62 @@ def obter_periodos(data_agendamento):
 # VERIFICAR SE O HORÁRIO ESTÁ DENTRO DO FUNCIONAMENTO
 # ==========================================================
 
-def horario_dentro_do_funcionamento(data_agendamento, horario, duracao):
+def horario_dentro_do_funcionamento(
+    data_agendamento,
+    horario,
+    duracao
+):
 
-    periodos = obter_periodos(data_agendamento)
+    try:
 
-    inicio_agendamento = datetime.combine(
-        data_agendamento,
-        datetime.strptime(horario, "%H:%M").time()
-    )
+        periodos = obter_periodos(
+            data_agendamento
+        )
 
-    fim_agendamento = (
-        inicio_agendamento +
-        timedelta(minutes=duracao)
-    )
+        inicio_agendamento = datetime.combine(
+            data_agendamento,
+            datetime.strptime(
+                horario,
+                "%H:%M"
+            ).time()
+        )
+
+        fim_agendamento = (
+            inicio_agendamento
+            + timedelta(minutes=duracao)
+        )
+
+    except (ValueError, TypeError):
+
+        return False
+
 
     for inicio, fim in periodos:
 
         inicio_periodo = datetime.combine(
             data_agendamento,
-            datetime.strptime(inicio, "%H:%M").time()
+            datetime.strptime(
+                inicio,
+                "%H:%M"
+            ).time()
         )
 
         fim_periodo = datetime.combine(
             data_agendamento,
-            datetime.strptime(fim, "%H:%M").time()
+            datetime.strptime(
+                fim,
+                "%H:%M"
+            ).time()
         )
 
-        # Permite ultrapassar o fechamento em até 30 minutos
-        fim_permitido = fim_periodo + timedelta(minutes=30)
+        # O atendimento precisa terminar
+        # dentro do período de funcionamento.
 
         if (
             inicio_agendamento >= inicio_periodo
-            and fim_agendamento <= fim_permitido
+            and fim_agendamento <= fim_periodo
         ):
+
             return True
 
     return False
@@ -338,12 +361,15 @@ def existe_conflito_agendamento(
 
     novo_inicio = datetime.combine(
         data_agendamento,
-        datetime.strptime(horario, "%H:%M").time()
+        datetime.strptime(
+            horario,
+            "%H:%M"
+        ).time()
     )
 
     novo_fim = (
-        novo_inicio +
-        timedelta(minutes=duracao)
+        novo_inicio
+        + timedelta(minutes=duracao)
     )
 
     for agendamento in agendamentos:
@@ -360,15 +386,17 @@ def existe_conflito_agendamento(
         )
 
         fim_existente = (
-            inicio_existente +
-            timedelta(minutes=duracao_existente)
+            inicio_existente
+            + timedelta(minutes=duracao_existente)
         )
 
-        # Verifica sobreposição real
+        # Verifica sobreposição real.
+
         if (
             novo_inicio < fim_existente
             and novo_fim > inicio_existente
         ):
+
             return True
 
     return False
@@ -400,12 +428,15 @@ def existe_conflito_bloqueio(
 
     novo_inicio = datetime.combine(
         data_agendamento,
-        datetime.strptime(horario, "%H:%M").time()
+        datetime.strptime(
+            horario,
+            "%H:%M"
+        ).time()
     )
 
     novo_fim = (
-        novo_inicio +
-        timedelta(minutes=duracao)
+        novo_inicio
+        + timedelta(minutes=duracao)
     )
 
     for bloqueio in bloqueios:
@@ -420,7 +451,8 @@ def existe_conflito_bloqueio(
             bloqueio[1]
         )
 
-        # Verifica sobreposição real
+        # Verifica sobreposição real.
+
         if (
             novo_inicio < fim_bloqueio
             and novo_fim > inicio_bloqueio
@@ -454,11 +486,15 @@ def validar_horario(
             "%H:%M"
         )
 
-    except ValueError:
+    except (ValueError, TypeError):
 
         return "Data ou horário inválido."
 
-    duracao = obter_duracao(servico)
+
+    duracao = obter_duracao(
+        servico
+    )
+
 
     # ------------------------------------------------------
     # FUNCIONAMENTO
@@ -470,7 +506,11 @@ def validar_horario(
         duracao
     ):
 
-        return "Este horário está fora do horário de atendimento."
+        return (
+            "Este horário está fora "
+            "do horário de atendimento."
+        )
+
 
     # ------------------------------------------------------
     # OUTRO AGENDAMENTO
@@ -484,6 +524,7 @@ def validar_horario(
     ):
 
         return "Este horário já está ocupado."
+
 
     # ------------------------------------------------------
     # BLOQUEIO
@@ -504,6 +545,7 @@ def validar_horario(
             f"às {bloqueio[1].strftime('%H:%M')}."
         )
 
+
     return None
 
 
@@ -514,35 +556,67 @@ def validar_horario(
 @app.route("/")
 def inicio():
 
-    return render_template("index.html")
+    return render_template(
+        "index.html"
+    )
 
 
 # ==========================================================
 # PÁGINA DE AGENDAMENTO
 # ==========================================================
 
-@app.route("/agendar", methods=["GET", "POST"])
+@app.route(
+    "/agendar",
+    methods=["GET", "POST"]
+)
 def agendar():
 
     if request.method == "POST":
 
-        nome = request.form.get("nome")
-        telefone = request.form.get("telefone")
-        servico = request.form.get("servico")
-        data = request.form.get("data")
-        horario = request.form.get("horario")
-        observacoes = request.form.get("observacoes")
+        nome = request.form.get(
+            "nome"
+        )
+
+        telefone = request.form.get(
+            "telefone"
+        )
+
+        servico = request.form.get(
+            "servico"
+        )
+
+        data = request.form.get(
+            "data"
+        )
+
+        horario = request.form.get(
+            "horario"
+        )
+
+        observacoes = request.form.get(
+            "observacoes"
+        )
+
 
         # ==================================================
         # VERIFICAR DADOS BÁSICOS
         # ==================================================
 
-        if not nome or not telefone or not servico or not data:
+        if (
+            not nome
+            or not telefone
+            or not servico
+            or not data
+        ):
 
             return render_template(
                 "agendar.html",
-                erro="Preencha todos os campos obrigatórios."
+                erro=(
+                    "Preencha todos os "
+                    "campos obrigatórios."
+                )
             )
+
 
         if servico not in SERVICOS:
 
@@ -551,12 +625,14 @@ def agendar():
                 erro="Serviço inválido."
             )
 
+
         # ==================================================
         # CONECTAR BANCO
         # ==================================================
 
         conexao = conectar_banco()
         cursor = conexao.cursor()
+
 
         try:
 
@@ -567,17 +643,16 @@ def agendar():
             if servico == "Plano mensal":
 
                 # --------------------------------------------------
-                # O HTML poderá enviar os 4 horários em JSON.
-                # Exemplo:
-                #
-                # ["14:00", "14:00", "15:00", "14:30"]
+                # RECEBER OS 4 HORÁRIOS DO HTML
                 # --------------------------------------------------
 
                 horarios_plano_raw = request.form.get(
                     "horarios_plano"
                 )
 
+
                 horarios_plano = []
+
 
                 if horarios_plano_raw:
 
@@ -587,14 +662,28 @@ def agendar():
                             horarios_plano_raw
                         )
 
-                    except (ValueError, TypeError):
+                    except (
+                        ValueError,
+                        TypeError
+                    ):
 
                         horarios_plano = []
 
+
                 # --------------------------------------------------
-                # Compatibilidade:
-                # se o novo HTML ainda não enviou os 4 horários,
-                # usa o horário normal como base para as 4 semanas.
+                # GARANTIR QUE SEJA UMA LISTA
+                # --------------------------------------------------
+
+                if not isinstance(
+                    horarios_plano,
+                    list
+                ):
+
+                    horarios_plano = []
+
+
+                # --------------------------------------------------
+                # COMPATIBILIDADE COM HTML ANTIGO
                 # --------------------------------------------------
 
                 if not horarios_plano:
@@ -611,6 +700,7 @@ def agendar():
                             )
                         )
 
+
                     horarios_plano = [
                         horario,
                         horario,
@@ -618,8 +708,9 @@ def agendar():
                         horario
                     ]
 
+
                 # --------------------------------------------------
-                # PRECISA TER EXATAMENTE 4 HORÁRIOS
+                # PRECISA TER EXATAMENTE 4
                 # --------------------------------------------------
 
                 if len(horarios_plano) != 4:
@@ -634,6 +725,7 @@ def agendar():
                         )
                     )
 
+
                 # --------------------------------------------------
                 # DATA INICIAL
                 # --------------------------------------------------
@@ -645,7 +737,10 @@ def agendar():
                         "%Y-%m-%d"
                     ).date()
 
-                except ValueError:
+                except (
+                    ValueError,
+                    TypeError
+                ):
 
                     conexao.rollback()
 
@@ -653,6 +748,7 @@ def agendar():
                         "agendar.html",
                         erro="Data inválida."
                     )
+
 
                 # --------------------------------------------------
                 # GERAR AS 4 DATAS
@@ -662,49 +758,86 @@ def agendar():
 
                     data_inicial,
 
-                    data_inicial + timedelta(days=7),
+                    data_inicial
+                    + timedelta(days=7),
 
-                    data_inicial + timedelta(days=14),
+                    data_inicial
+                    + timedelta(days=14),
 
-                    data_inicial + timedelta(days=21)
+                    data_inicial
+                    + timedelta(days=21)
 
                 ]
+
 
                 # --------------------------------------------------
                 # IDENTIFICADOR ÚNICO DO PLANO
                 # --------------------------------------------------
 
-                grupo_plano = str(uuid.uuid4())
+                grupo_plano = str(
+                    uuid.uuid4()
+                )
+
 
                 # --------------------------------------------------
-                # VALIDAR OS 4 ATENDIMENTOS ANTES DE SALVAR
+                # VALIDAR OS 4 ATENDIMENTOS
                 # --------------------------------------------------
 
                 erros_plano = []
 
+
                 for indice in range(4):
 
-                    data_atendimento = datas_plano[indice]
+                    data_atendimento = (
+                        datas_plano[indice]
+                    )
 
-                    horario_atendimento = horarios_plano[indice]
+                    horario_atendimento = (
+                        horarios_plano[indice]
+                    )
+
+
+                    # Garantir que o horário
+                    # seja texto.
+
+                    if not isinstance(
+                        horario_atendimento,
+                        str
+                    ):
+
+                        erros_plano.append(
+                            f"{indice + 1}º atendimento "
+                            f"possui horário inválido."
+                        )
+
+                        continue
+
 
                     erro = validar_horario(
                         cursor,
-                        data_atendimento.strftime("%Y-%m-%d"),
+                        data_atendimento.strftime(
+                            "%Y-%m-%d"
+                        ),
                         horario_atendimento,
                         servico
                     )
+
 
                     if erro:
 
                         erros_plano.append(
                             f"{indice + 1}º atendimento "
-                            f"({data_atendimento.strftime('%d/%m/%Y')} "
-                            f"às {horario_atendimento}): {erro}"
+                            f"("
+                            f"{data_atendimento.strftime('%d/%m/%Y')}"
+                            f" às "
+                            f"{horario_atendimento}"
+                            f"): "
+                            f"{erro}"
                         )
 
+
                 # --------------------------------------------------
-                # SE ALGUM DOS 4 FALHAR, NÃO SALVA NENHUM
+                # SE ALGUM FALHAR, NÃO SALVA NENHUM
                 # --------------------------------------------------
 
                 if erros_plano:
@@ -714,16 +847,19 @@ def agendar():
                     return render_template(
                         "agendar.html",
                         erro=(
-                            "Não foi possível reservar o plano mensal. "
+                            "Não foi possível reservar "
+                            "o plano mensal. "
                             + " ".join(erros_plano)
                         )
                     )
+
 
                 # --------------------------------------------------
                 # SALVAR OS 4 AGENDAMENTOS
                 # --------------------------------------------------
 
                 ids_criados = []
+
 
                 for indice in range(4):
 
@@ -764,59 +900,108 @@ def agendar():
                         indice + 1
                     ))
 
+
                     novo_id = cursor.fetchone()[0]
+
 
                     ids_criados.append(
                         novo_id
                     )
 
+
                 conexao.commit()
+
 
                 # --------------------------------------------------
                 # LOG
                 # --------------------------------------------------
 
-                print("\n==============================")
-                print("NOVO PLANO MENSAL")
-                print("==============================")
-                print("Nome:", nome)
-                print("Telefone:", telefone)
-                print("Grupo:", grupo_plano)
+                print(
+                    "\n=============================="
+                )
+
+                print(
+                    "NOVO PLANO MENSAL"
+                )
+
+                print(
+                    "=============================="
+                )
+
+                print(
+                    "Nome:",
+                    nome
+                )
+
+                print(
+                    "Telefone:",
+                    telefone
+                )
+
+                print(
+                    "Grupo:",
+                    grupo_plano
+                )
+
 
                 for indice in range(4):
 
                     print(
                         f"{indice + 1}º atendimento:",
-                        datas_plano[indice].strftime("%d/%m/%Y"),
+                        datas_plano[indice].strftime(
+                            "%d/%m/%Y"
+                        ),
                         horarios_plano[indice]
                     )
 
-                print("IDs:", ids_criados)
-                print("STATUS: Confirmado")
-                print("PLANO MENSAL SALVO NO POSTGRESQL")
-                print("==============================\n")
+
+                print(
+                    "IDs:",
+                    ids_criados
+                )
+
+                print(
+                    "STATUS: Confirmado"
+                )
+
+                print(
+                    "PLANO MENSAL SALVO "
+                    "NO POSTGRESQL"
+                )
+
+                print(
+                    "==============================\n"
+                )
+
 
                 # --------------------------------------------------
                 # PREPARAR DADOS PARA CONFIRMAÇÃO
                 # --------------------------------------------------
 
-               atendimentos_plano = []
+                atendimentos_plano = []
 
-               for indice in range(4):
 
-                   data_formatada = datetime.strptime(
-                       datas_plano[indice],
-                       "%Y-%m-%d"
-                   ).strftime("%d/%m/%Y")
+                for indice in range(4):
 
-                   atendimentos_plano.append({
+                    atendimentos_plano.append({
 
-                       "numero": indice + 1,
+                        "numero":
+                            indice + 1,
 
-                       "data": data_formatada,
+                        "data":
+                            datas_plano[indice].strftime(
+                                "%d/%m/%Y"
+                            ),
 
-                       "horario": horarios_plano[indice]
+                        "horario":
+                            horarios_plano[indice]
+
                     })
+
+
+                # --------------------------------------------------
+                # CONFIRMAÇÃO
+                # --------------------------------------------------
 
                 return render_template(
                     "confirmacao.html",
@@ -829,8 +1014,11 @@ def agendar():
                     horario=horarios_plano[0],
                     observacoes=observacoes,
                     plano_mensal=True,
-                    atendimentos_plano=atendimentos_plano
+                    atendimentos_plano=(
+                        atendimentos_plano
+                    )
                 )
+
 
             # ==================================================
             # SERVIÇOS NORMAIS
@@ -843,6 +1031,7 @@ def agendar():
                 servico
             )
 
+
             if erro:
 
                 conexao.rollback()
@@ -851,6 +1040,7 @@ def agendar():
                     "agendar.html",
                     erro=erro
                 )
+
 
             # --------------------------------------------------
             # SALVAR AGENDAMENTO NORMAL
@@ -867,7 +1057,15 @@ def agendar():
                     observacoes,
                     status
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                VALUES (
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s,
+                    %s
+                )
             """, (
                 nome,
                 telefone,
@@ -878,24 +1076,69 @@ def agendar():
                 "Confirmado"
             ))
 
+
             conexao.commit()
+
 
             # --------------------------------------------------
             # LOG
             # --------------------------------------------------
 
-            print("\n==============================")
-            print("NOVO AGENDAMENTO")
-            print("==============================")
-            print("Nome:", nome)
-            print("Telefone:", telefone)
-            print("Serviço:", servico)
-            print("Data:", data)
-            print("Horário:", horario)
-            print("Observações:", observacoes)
-            print("Status: Confirmado")
-            print("AGENDAMENTO SALVO NO POSTGRESQL")
-            print("==============================\n")
+            print(
+                "\n=============================="
+            )
+
+            print(
+                "NOVO AGENDAMENTO"
+            )
+
+            print(
+                "=============================="
+            )
+
+            print(
+                "Nome:",
+                nome
+            )
+
+            print(
+                "Telefone:",
+                telefone
+            )
+
+            print(
+                "Serviço:",
+                servico
+            )
+
+            print(
+                "Data:",
+                data
+            )
+
+            print(
+                "Horário:",
+                horario
+            )
+
+            print(
+                "Observações:",
+                observacoes
+            )
+
+            print(
+                "Status: Confirmado"
+            )
+
+            print(
+                "AGENDAMENTO SALVO "
+                "NO POSTGRESQL"
+            )
+
+            print(
+                "==============================\n"
+            )
+
 
             # --------------------------------------------------
             # FORMATAR DATA
@@ -904,7 +1147,10 @@ def agendar():
             data_formatada = datetime.strptime(
                 data,
                 "%Y-%m-%d"
-            ).strftime("%d/%m/%Y")
+            ).strftime(
+                "%d/%m/%Y"
+            )
+
 
             # --------------------------------------------------
             # CONFIRMAÇÃO
@@ -920,6 +1166,7 @@ def agendar():
                 observacoes=observacoes
             )
 
+
         except Exception as erro:
 
             conexao.rollback()
@@ -932,17 +1179,22 @@ def agendar():
             return render_template(
                 "agendar.html",
                 erro=(
-                    "Não foi possível concluir o agendamento. "
+                    "Não foi possível concluir "
+                    "o agendamento. "
                     "Tente novamente."
                 )
             )
+
 
         finally:
 
             cursor.close()
             conexao.close()
 
-    return render_template("agendar.html")
+
+    return render_template(
+        "agendar.html"
+    )
 
 
 # ==========================================================
@@ -974,19 +1226,30 @@ def consultar_bloqueios(data):
 
     bloqueios = []
 
+
     for resultado in resultados:
 
         bloqueios.append({
 
-            "inicio": resultado[0].strftime("%H:%M"),
+            "inicio":
+                resultado[0].strftime(
+                    "%H:%M"
+                ),
 
-            "fim": resultado[1].strftime("%H:%M"),
+            "fim":
+                resultado[1].strftime(
+                    "%H:%M"
+                ),
 
-            "motivo": resultado[2] or ""
+            "motivo":
+                resultado[2] or ""
 
         })
 
-    return jsonify(bloqueios)
+
+    return jsonify(
+        bloqueios
+    )
 
 
 # ==========================================================
@@ -996,15 +1259,23 @@ def consultar_bloqueios(data):
 def login_obrigatorio(funcao):
 
     @wraps(funcao)
-    def verificar_login(*args, **kwargs):
+    def verificar_login(
+        *args,
+        **kwargs
+    ):
 
-        if not session.get("admin_logado"):
+        if not session.get(
+            "admin_logado"
+        ):
 
             return redirect(
                 url_for("login")
             )
 
-        return funcao(*args, **kwargs)
+        return funcao(
+            *args,
+            **kwargs
+        )
 
     return verificar_login
 
@@ -1013,14 +1284,21 @@ def login_obrigatorio(funcao):
 # LOGIN ADMINISTRATIVO
 # ==========================================================
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route(
+    "/login",
+    methods=["GET", "POST"]
+)
 def login():
 
     if request.method == "POST":
 
-        usuario = request.form.get("usuario")
+        usuario = request.form.get(
+            "usuario"
+        )
 
-        senha = request.form.get("senha")
+        senha = request.form.get(
+            "senha"
+        )
 
         usuario_correto = os.environ.get(
             "ADMIN_USERNAME"
@@ -1029,6 +1307,7 @@ def login():
         senha_correta = os.environ.get(
             "ADMIN_PASSWORD"
         )
+
 
         if (
             usuario == usuario_correto
@@ -1041,10 +1320,14 @@ def login():
                 url_for("admin")
             )
 
+
         return render_template(
             "login.html",
-            erro="Usuário ou senha incorretos."
+            erro=(
+                "Usuário ou senha incorretos."
+            )
         )
+
 
     return render_template(
         "login.html"
@@ -1098,35 +1381,48 @@ def admin_agendamentos():
 
     agendamentos = []
 
+
     for agendamento in resultados:
 
         agendamentos.append({
 
-            "id": agendamento[0],
+            "id":
+                agendamento[0],
 
-            "nome": agendamento[1],
+            "nome":
+                agendamento[1],
 
-            "telefone": agendamento[2],
+            "telefone":
+                agendamento[2],
 
-            "servico": agendamento[3],
+            "servico":
+                agendamento[3],
 
-            "data": agendamento[4].strftime(
-                "%d/%m/%Y"
-            ),
+            "data":
+                agendamento[4].strftime(
+                    "%d/%m/%Y"
+                ),
 
-            "horario": agendamento[5].strftime(
-                "%H:%M"
-            ),
+            "horario":
+                agendamento[5].strftime(
+                    "%H:%M"
+                ),
 
-            "observacoes": agendamento[6],
+            "observacoes":
+                agendamento[6],
 
-            "status": agendamento[7] or "Confirmado",
+            "status":
+                agendamento[7]
+                or "Confirmado",
 
-            "grupo_plano": agendamento[8],
+            "grupo_plano":
+                agendamento[8],
 
-            "numero_plano": agendamento[9]
+            "numero_plano":
+                agendamento[9]
 
         })
+
 
     return render_template(
         "admin_agendamentos.html",
@@ -1143,7 +1439,9 @@ def admin_agendamentos():
     methods=["POST"]
 )
 @login_obrigatorio
-def cancelar_agendamento(agendamento_id):
+def cancelar_agendamento(
+    agendamento_id
+):
 
     conexao = conectar_banco()
     cursor = conexao.cursor()
@@ -1152,7 +1450,9 @@ def cancelar_agendamento(agendamento_id):
         UPDATE agendamentos
         SET status = 'Cancelado'
         WHERE id = %s
-    """, (agendamento_id,))
+    """, (
+        agendamento_id,
+    ))
 
     conexao.commit()
 
@@ -1160,7 +1460,9 @@ def cancelar_agendamento(agendamento_id):
     conexao.close()
 
     return redirect(
-        url_for("admin_agendamentos")
+        url_for(
+            "admin_agendamentos"
+        )
     )
 
 
@@ -1195,27 +1497,35 @@ def admin_horarios():
 
     bloqueios = []
 
+
     for bloqueio in resultados:
 
         bloqueios.append({
 
-            "id": bloqueio[0],
+            "id":
+                bloqueio[0],
 
-            "data": bloqueio[1].strftime(
-                "%d/%m/%Y"
-            ),
+            "data":
+                bloqueio[1].strftime(
+                    "%d/%m/%Y"
+                ),
 
-            "inicio": bloqueio[2].strftime(
-                "%H:%M"
-            ),
+            "inicio":
+                bloqueio[2].strftime(
+                    "%H:%M"
+                ),
 
-            "fim": bloqueio[3].strftime(
-                "%H:%M"
-            ),
+            "fim":
+                bloqueio[3].strftime(
+                    "%H:%M"
+                ),
 
-            "motivo": bloqueio[4] or "Sem motivo"
+            "motivo":
+                bloqueio[4]
+                or "Sem motivo"
 
         })
+
 
     return render_template(
         "horarios.html",
@@ -1234,23 +1544,39 @@ def admin_horarios():
 @login_obrigatorio
 def bloquear_horario():
 
-    data = request.form.get("data")
+    data = request.form.get(
+        "data"
+    )
 
-    inicio = request.form.get("inicio")
+    inicio = request.form.get(
+        "inicio"
+    )
 
-    fim = request.form.get("fim")
+    fim = request.form.get(
+        "fim"
+    )
 
-    motivo = request.form.get("motivo")
+    motivo = request.form.get(
+        "motivo"
+    )
+
 
     # ------------------------------------------------------
     # VERIFICAR CAMPOS
     # ------------------------------------------------------
 
-    if not data or not inicio or not fim:
+    if (
+        not data
+        or not inicio
+        or not fim
+    ):
 
         return redirect(
-            url_for("admin_horarios")
+            url_for(
+                "admin_horarios"
+            )
         )
+
 
     # ------------------------------------------------------
     # VERIFICAR HORÁRIOS
@@ -1271,8 +1597,11 @@ def bloquear_horario():
     except ValueError:
 
         return redirect(
-            url_for("admin_horarios")
+            url_for(
+                "admin_horarios"
+            )
         )
+
 
     # ------------------------------------------------------
     # HORÁRIO FINAL PRECISA SER MAIOR
@@ -1281,8 +1610,11 @@ def bloquear_horario():
     if fim_obj <= inicio_obj:
 
         return redirect(
-            url_for("admin_horarios")
+            url_for(
+                "admin_horarios"
+            )
         )
+
 
     # ------------------------------------------------------
     # CONECTAR BANCO
@@ -1290,6 +1622,7 @@ def bloquear_horario():
 
     conexao = conectar_banco()
     cursor = conexao.cursor()
+
 
     # ------------------------------------------------------
     # VERIFICAR BLOQUEIO SOBREPOSTO
@@ -1310,7 +1643,9 @@ def bloquear_horario():
         inicio
     ))
 
+
     bloqueio_existente = cursor.fetchone()
+
 
     if bloqueio_existente:
 
@@ -1318,8 +1653,11 @@ def bloquear_horario():
         conexao.close()
 
         return redirect(
-            url_for("admin_horarios")
+            url_for(
+                "admin_horarios"
+            )
         )
+
 
     # ------------------------------------------------------
     # SALVAR NOVO BLOQUEIO
@@ -1333,7 +1671,12 @@ def bloquear_horario():
             fim,
             motivo
         )
-        VALUES (%s, %s, %s, %s)
+        VALUES (
+            %s,
+            %s,
+            %s,
+            %s
+        )
     """, (
         data,
         inicio,
@@ -1341,13 +1684,17 @@ def bloquear_horario():
         motivo
     ))
 
+
     conexao.commit()
 
     cursor.close()
     conexao.close()
 
+
     return redirect(
-        url_for("admin_horarios")
+        url_for(
+            "admin_horarios"
+        )
     )
 
 
@@ -1360,7 +1707,9 @@ def bloquear_horario():
     methods=["POST"]
 )
 @login_obrigatorio
-def remover_bloqueio(bloqueio_id):
+def remover_bloqueio(
+    bloqueio_id
+):
 
     conexao = conectar_banco()
     cursor = conexao.cursor()
@@ -1368,7 +1717,9 @@ def remover_bloqueio(bloqueio_id):
     cursor.execute("""
         DELETE FROM bloqueios_horarios
         WHERE id = %s
-    """, (bloqueio_id,))
+    """, (
+        bloqueio_id,
+    ))
 
     conexao.commit()
 
@@ -1376,7 +1727,9 @@ def remover_bloqueio(bloqueio_id):
     conexao.close()
 
     return redirect(
-        url_for("admin_horarios")
+        url_for(
+            "admin_horarios"
+        )
     )
 
 
@@ -1401,7 +1754,10 @@ def logout():
 @app.route("/meus-agendamentos")
 def meus_agendamentos():
 
-    telefone = request.args.get("telefone")
+    telefone = request.args.get(
+        "telefone"
+    )
+
 
     # ------------------------------------------------------
     # SE NÃO INFORMOU TELEFONE
@@ -1413,6 +1769,7 @@ def meus_agendamentos():
             "meus_agendamentos.html",
             agendamentos=[]
         )
+
 
     # ------------------------------------------------------
     # BUSCAR AGENDAMENTOS
@@ -1436,12 +1793,15 @@ def meus_agendamentos():
         FROM agendamentos
         WHERE telefone = %s
         ORDER BY data ASC, horario ASC
-    """, (telefone,))
+    """, (
+        telefone,
+    ))
 
     resultados = cursor.fetchall()
 
     cursor.close()
     conexao.close()
+
 
     # ------------------------------------------------------
     # TRANSFORMAR RESULTADOS
@@ -1449,35 +1809,48 @@ def meus_agendamentos():
 
     agendamentos = []
 
+
     for agendamento in resultados:
 
         agendamentos.append({
 
-            "id": agendamento[0],
+            "id":
+                agendamento[0],
 
-            "nome": agendamento[1],
+            "nome":
+                agendamento[1],
 
-            "telefone": agendamento[2],
+            "telefone":
+                agendamento[2],
 
-            "servico": agendamento[3],
+            "servico":
+                agendamento[3],
 
-            "data": agendamento[4].strftime(
-                "%d/%m/%Y"
-            ),
+            "data":
+                agendamento[4].strftime(
+                    "%d/%m/%Y"
+                ),
 
-            "horario": agendamento[5].strftime(
-                "%H:%M"
-            ),
+            "horario":
+                agendamento[5].strftime(
+                    "%H:%M"
+                ),
 
-            "observacoes": agendamento[6],
+            "observacoes":
+                agendamento[6],
 
-            "status": agendamento[7] or "Confirmado",
+            "status":
+                agendamento[7]
+                or "Confirmado",
 
-            "grupo_plano": agendamento[8],
+            "grupo_plano":
+                agendamento[8],
 
-            "numero_plano": agendamento[9]
+            "numero_plano":
+                agendamento[9]
 
         })
+
 
     # ------------------------------------------------------
     # MOSTRAR RESULTADOS
