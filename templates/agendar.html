@@ -581,7 +581,10 @@
 
                 const resposta =
                     await fetch(
-                        `/bloqueios/${dataInput.value}`
+                        `/bloqueios/${dataInput.value}?t=${Date.now()}`,
+                        {
+                            cache: "no-store"
+                        }
                     );
 
 
