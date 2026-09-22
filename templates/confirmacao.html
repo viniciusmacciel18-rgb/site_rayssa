@@ -146,6 +146,58 @@
                     </div>
 
 
+                    <!-- ==================================================
+                         PLANO MENSAL
+                         ================================================== -->
+
+                    {% if plano_mensal %}
+
+                    <div class="confirmation-item">
+
+                        <span>
+                            Seus 4 atendimentos
+                        </span>
+
+                        <strong>
+
+                            <div style="
+                                margin-top: 10px;
+                                display: flex;
+                                flex-direction: column;
+                                gap: 8px;
+                                font-weight: 500;
+                            ">
+
+                                {% for atendimento in atendimentos_plano %}
+
+                                <div style="
+                                    padding: 10px 12px;
+                                    border-radius: 8px;
+                                    background: rgba(143, 95, 103, 0.08);
+                                ">
+
+                                    {{ atendimento.data_formatada }}
+                                    —
+                                    {{ atendimento.horario }}
+
+                                </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        </strong>
+
+                    </div>
+
+
+                    {% else %}
+
+
+                    <!-- ==================================================
+                         AGENDAMENTO NORMAL
+                         ================================================== -->
+
                     <div class="confirmation-item">
 
                         <span>
@@ -170,6 +222,9 @@
                         </strong>
 
                     </div>
+
+
+                    {% endif %}
 
 
                     {% if observacoes %}
@@ -258,3 +313,7 @@
         </div>
 
     </footer>
+
+</body>
+
+</html>
