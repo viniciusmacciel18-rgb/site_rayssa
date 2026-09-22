@@ -82,29 +82,12 @@ def criar_tabela():
 # ==========================================================
 
 def atualizar_tabela():
-
     conexao = conectar_banco()
     cursor = conexao.cursor()
 
-    # ------------------------------------------------------
-    # GARANTIR STATUS DOS AGENDAMENTOS
-    # ------------------------------------------------------
-
-    cursor.execute("""
-        ALTER TABLE agendamentos
-        ADD COLUMN IF NOT EXISTS status
-        TEXT DEFAULT 'Confirmado'
-    """)
-
-    cursor.execute("""
-        UPDATE agendamentos
-        SET status = 'Confirmado'
-        WHERE status IS NULL
-    """)
-
-    # ------------------------------------------------------
-    # GARANTIR NOVAS COLUNAS DOS BLOQUEIOS
-    # ------------------------------------------------------
+    # ==========================================================
+    # ADICIONA AS COLUNAS NOVAS PARA BLOQUEIOS POR INTERVALO
+    # ==========================================================
 
     cursor.execute("""
         ALTER TABLE bloqueios_horarios
@@ -121,50 +104,66 @@ def atualizar_tabela():
         ADD COLUMN IF NOT EXISTS motivo TEXT
     """)
 
-    # ------------------------------------------------------
-    # MIGRAR BLOQUEIOS ANTIGOS
-    #
-    # Caso existam bloqueios antigos usando:
-    # manha / tarde / dia
-    #
-    # eles serão convertidos para intervalos.
-    # ------------------------------------------------------
+    # ==========================================================
+    # A COLUNA "periodo" É ANTIGA.
+    # AGORA ELA NÃO É MAIS OBRIGATÓRIA.
+    # ==========================================================
+
+    cursor.execute("""
+        ALTER TABLE bloqueios_horarios
+        ALTER COLUMN periodo DROP NOT NULL
+    """)
+
+    # ==========================================================
+    # CONVERTE BLOQUEIOS ANTIGOS PARA O NOVO FORMATO
+    # ==========================================================
 
     cursor.execute("""
         UPDATE bloqueios_horarios
         SET
             inicio = '07:30',
-            fim = '11:00'
+            fim = '11:00',
+            motivo = COALESCE(motivo, 'Bloqueio antigo')
         WHERE periodo = 'manha'
           AND inicio IS NULL
+          AND fim IS NULL
     """)
 
     cursor.execute("""
         UPDATE bloqueios_horarios
         SET
             inicio = '13:30',
-            fim = '20:00'
+            fim = '20:00',
+            motivo = COALESCE(motivo, 'Bloqueio antigo')
         WHERE periodo = 'tarde'
           AND inicio IS NULL
+          AND fim IS NULL
     """)
 
     cursor.execute("""
         UPDATE bloqueios_horarios
         SET
             inicio = '00:00',
-            fim = '23:59'
+            fim = '23:59',
+            motivo = COALESCE(motivo, 'Bloqueio antigo')
         WHERE periodo = 'dia'
           AND inicio IS NULL
+          AND fim IS NULL
     """)
 
-    # ------------------------------------------------------
-    # MOTIVO PADRÃO PARA BLOQUEIOS ANTIGOS
-    # ------------------------------------------------------
+    # ==========================================================
+    # GARANTE STATUS DOS AGENDAMENTOS
+    # ==========================================================
 
     cursor.execute("""
-        UPDATE bloqueios_horarios
-        SET motivo = 'Bloqueio antigo'
-        WHERE motivo IS NULL
+        ALTER TABLE agendamentos
+        ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'Confirmado'
+    """)
+
+    cursor.execute("""
+        UPDATE agendamentos
+        SET status = 'Confirmado'
+        WHERE status IS NULL
     """)
 
     conexao.commit()
