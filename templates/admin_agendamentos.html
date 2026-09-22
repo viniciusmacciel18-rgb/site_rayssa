@@ -15,7 +15,9 @@
 
 </head>
 
+
 <body>
+
 
     <header class="header">
 
@@ -28,6 +30,7 @@
                 <small>Nail Designer</small>
 
             </a>
+
 
             <nav class="nav">
 
@@ -44,6 +47,7 @@
         </div>
 
     </header>
+
 
 
     <main>
@@ -72,182 +76,434 @@
                 </div>
 
 
+
                 {% if agendamentos %}
+
 
                     <div class="admin-lista">
 
 
                         <!-- TOPO DA LISTA -->
 
-                       <div class="admin-lista-topo">
+                        <div class="admin-lista-topo">
 
-    <span>
-        Agendamentos
-    </span>
+                            <div class="admin-lista-titulo">
 
-    <strong>
-        {{ agendamentos|length }}
-    </strong>
+                                <span>
+                                    Agendamentos
+                                </span>
 
-    <form method="POST"
-          action="{{ url_for('apagar_cancelados') }}"
-          onsubmit="return confirm('Tem certeza que deseja apagar todos os horários cancelados?');">
+                                <strong>
+                                    {{ agendamentos|length }}
+                                </strong>
 
-        <button type="submit">
-            🗑️ Apagar horários cancelados
-        </button>
-
-    </form>
-
-</div>
+                            </div>
 
 
-                        <!-- AGENDAMENTOS -->
+                            <!-- APAGAR CANCELADOS -->
+
+                            <form method="POST"
+                                  action="{{ url_for('apagar_cancelados') }}"
+                                  onsubmit="return confirm('Tem certeza que deseja apagar todos os horários cancelados?');">
+
+                                <button type="submit"
+                                        class="admin-btn-apagar">
+
+                                    🗑️ Apagar horários cancelados
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+
+
+                        <!-- ==================================================
+                             CONTROLE DOS GRUPOS DE PLANO MENSAL
+                             ================================================== -->
+
+                        {% set grupos_planos = namespace(ids=[]) %}
+
+
+
+                        <!-- ==================================================
+                             AGENDAMENTOS
+                             ================================================== -->
 
                         {% for agendamento in agendamentos %}
 
-                            <div class="admin-card">
+
+                            <!-- ==================================================
+                                 PLANO MENSAL
+                                 ================================================== -->
+
+                            {% if agendamento.servico == "Plano mensal"
+                                  and agendamento.grupo_plano %}
 
 
-                                <div class="admin-card-topo">
+                                {% if agendamento.grupo_plano not in grupos_planos.ids %}
 
-                                    <div>
 
-                                        <span class="admin-label">
-                                            Cliente
-                                        </span>
+                                    {% set grupos_planos.ids = grupos_planos.ids + [agendamento.grupo_plano] %}
 
-                                        <h2>
-                                            {{ agendamento.nome }}
-                                        </h2>
+
+                                    <div class="admin-card admin-card-plano">
+
+
+                                        <!-- CABEÇALHO -->
+
+                                        <div class="admin-card-topo">
+
+                                            <div>
+
+                                                <span class="admin-label">
+                                                    Plano mensal
+                                                </span>
+
+                                                <h2>
+                                                    {{ agendamento.nome }}
+                                                </h2>
+
+                                            </div>
+
+
+                                            <span class="admin-status">
+                                                Confirmado
+                                            </span>
+
+                                        </div>
+
+
+
+                                        <!-- INFORMAÇÕES DO CLIENTE -->
+
+                                        <div class="admin-detalhes admin-detalhes-plano">
+
+
+                                            <div>
+
+                                                <span>
+                                                    WhatsApp / Telefone
+                                                </span>
+
+                                                <strong>
+                                                    {{ agendamento.telefone }}
+                                                </strong>
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <span>
+                                                    Serviço
+                                                </span>
+
+                                                <strong>
+                                                    Plano mensal
+                                                </strong>
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <span>
+                                                    Atendimentos
+                                                </span>
+
+                                                <strong>
+                                                    4 sessões
+                                                </strong>
+
+                                            </div>
+
+
+                                        </div>
+
+
+
+                                        <!-- ==================================================
+                                             QUATRO ATENDIMENTOS
+                                             ================================================== -->
+
+                                        <div class="plano-atendimentos">
+
+                                            <div class="plano-titulo">
+
+                                                <span>
+                                                    Seus 4 atendimentos
+                                                </span>
+
+                                            </div>
+
+
+
+                                            {% for atendimento in agendamentos %}
+
+
+                                                {% if atendimento.grupo_plano == agendamento.grupo_plano %}
+
+
+                                                    <div class="plano-atendimento">
+
+                                                        <div class="plano-numero">
+
+                                                            <span>
+                                                                {{ atendimento.numero_plano }}º
+                                                            </span>
+
+                                                        </div>
+
+
+                                                        <div class="plano-info">
+
+                                                            <span>
+                                                                Data
+                                                            </span>
+
+                                                            <strong>
+                                                                {{ atendimento.data }}
+                                                            </strong>
+
+                                                        </div>
+
+
+                                                        <div class="plano-info">
+
+                                                            <span>
+                                                                Horário
+                                                            </span>
+
+                                                            <strong>
+                                                                {{ atendimento.horario }}
+                                                            </strong>
+
+                                                        </div>
+
+
+                                                    </div>
+
+
+                                                {% endif %}
+
+
+                                            {% endfor %}
+
+
+                                        </div>
+
+
+
+                                        <!-- OBSERVAÇÕES -->
+
+                                        {% if agendamento.observacoes %}
+
+                                            <div class="admin-observacoes">
+
+                                                <span>
+                                                    Observações
+                                                </span>
+
+                                                <p>
+                                                    {{ agendamento.observacoes }}
+                                                </p>
+
+                                            </div>
+
+                                        {% endif %}
+
+
+
+                                        <!-- BOTÃO -->
+
+                                        <div class="admin-acoes">
+
+                                            <form method="POST"
+                                                  action="{{ url_for('cancelar_plano', grupo_plano=agendamento.grupo_plano) }}"
+                                                  onsubmit="return confirm('Tem certeza que deseja cancelar os 4 atendimentos deste plano mensal?');">
+
+                                                <button type="submit"
+                                                        class="admin-btn admin-btn-cancelar">
+
+                                                    Cancelar plano mensal
+
+                                                </button>
+
+                                            </form>
+
+                                        </div>
+
 
                                     </div>
 
-
-                                    <span class="admin-status
-                                        {% if agendamento.status == 'Cancelado' %}
-                                            admin-status-cancelado
-                                        {% endif %}">
-
-                                        {{ agendamento.status }}
-
-                                    </span>
-
-                                </div>
-
-
-                                <div class="admin-detalhes">
-
-
-                                    <div>
-
-                                        <span>
-                                            Data
-                                        </span>
-
-                                        <strong>
-                                            {{ agendamento.data }}
-                                        </strong>
-
-                                    </div>
-
-
-                                    <div>
-
-                                        <span>
-                                            Horário
-                                        </span>
-
-                                        <strong>
-                                            {{ agendamento.horario }}
-                                        </strong>
-
-                                    </div>
-
-
-                                    <div>
-
-                                        <span>
-                                            Serviço
-                                        </span>
-
-                                        <strong>
-                                            {{ agendamento.servico }}
-                                        </strong>
-
-                                    </div>
-
-
-                                    <div>
-
-                                        <span>
-                                            WhatsApp / Telefone
-                                        </span>
-
-                                        <strong>
-                                            {{ agendamento.telefone }}
-                                        </strong>
-
-                                    </div>
-
-
-                                </div>
-
-
-                                {% if agendamento.observacoes %}
-
-                                    <div class="admin-observacoes">
-
-                                        <span>
-                                            Observações
-                                        </span>
-
-                                        <p>
-                                            {{ agendamento.observacoes }}
-                                        </p>
-
-                                    </div>
 
                                 {% endif %}
 
 
-                                <!-- BOTÃO DE CANCELAMENTO -->
 
-                                <div class="admin-acoes">
+                            <!-- ==================================================
+                                 AGENDAMENTO NORMAL
+                                 ================================================== -->
 
-                                    {% if agendamento.status != 'Cancelado' %}
+                            {% else %}
 
-                                        <form
-                                            method="POST"
-                                            action="{{ url_for('cancelar_agendamento', agendamento_id=agendamento.id) }}"
-                                            onsubmit="return confirm('Deseja realmente cancelar este agendamento?');">
 
-                                            <button
-                                                type="submit"
-                                                class="admin-btn admin-btn-cancelar">
+                                <div class="admin-card">
 
-                                                Cancelar agendamento
 
-                                            </button>
+                                    <!-- CABEÇALHO -->
 
-                                        </form>
+                                    <div class="admin-card-topo">
 
-                                    {% else %}
+                                        <div>
 
-                                        <span class="admin-cancelado-texto">
-                                            Agendamento cancelado
+                                            <span class="admin-label">
+                                                Cliente
+                                            </span>
+
+                                            <h2>
+                                                {{ agendamento.nome }}
+                                            </h2>
+
+                                        </div>
+
+
+                                        <span class="admin-status">
+
+                                            {% if agendamento.status == "Cancelado" %}
+
+                                                Cancelado
+
+                                            {% else %}
+
+                                                Confirmado
+
+                                            {% endif %}
+
                                         </span>
 
+                                    </div>
+
+
+
+                                    <!-- DETALHES -->
+
+                                    <div class="admin-detalhes">
+
+
+                                        <div>
+
+                                            <span>
+                                                Data
+                                            </span>
+
+                                            <strong>
+                                                {{ agendamento.data }}
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <span>
+                                                Horário
+                                            </span>
+
+                                            <strong>
+                                                {{ agendamento.horario }}
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <span>
+                                                Serviço
+                                            </span>
+
+                                            <strong>
+                                                {{ agendamento.servico }}
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <span>
+                                                WhatsApp / Telefone
+                                            </span>
+
+                                            <strong>
+                                                {{ agendamento.telefone }}
+                                            </strong>
+
+                                        </div>
+
+
+                                    </div>
+
+
+
+                                    <!-- OBSERVAÇÕES -->
+
+                                    {% if agendamento.observacoes %}
+
+                                        <div class="admin-observacoes">
+
+                                            <span>
+                                                Observações
+                                            </span>
+
+                                            <p>
+                                                {{ agendamento.observacoes }}
+                                            </p>
+
+                                        </div>
+
                                     {% endif %}
+
+
+
+                                    <!-- BOTÕES -->
+
+                                    {% if agendamento.status != "Cancelado" %}
+
+                                        <div class="admin-acoes">
+
+                                            <form method="POST"
+                                                  action="{{ url_for('cancelar_agendamento', agendamento_id=agendamento.id) }}"
+                                                  onsubmit="return confirm('Tem certeza que deseja cancelar este agendamento?');">
+
+                                                <button type="submit"
+                                                        class="admin-btn admin-btn-cancelar">
+
+                                                    Cancelar agendamento
+
+                                                </button>
+
+                                            </form>
+
+                                        </div>
+
+                                    {% endif %}
+
 
                                 </div>
 
 
-                            </div>
+                            {% endif %}
+
 
                         {% endfor %}
 
+
                     </div>
+
 
 
                 {% else %}
@@ -281,6 +537,7 @@
     </main>
 
 
+
     <footer class="footer">
 
         <div class="container">
@@ -294,20 +551,22 @@
     </footer>
 
 
+
     <style>
 
+
         /* ==================================================
-           LISTA DE AGENDAMENTOS
+           LISTA
            ================================================== */
 
         .admin-lista {
 
             width: 100%;
-
             max-width: 910px;
 
             margin: 55px auto 20px;
         }
+
 
 
         /* ==================================================
@@ -321,6 +580,8 @@
             align-items: center;
 
             justify-content: space-between;
+
+            gap: 20px;
 
             margin-bottom: 18px;
 
@@ -337,6 +598,17 @@
         }
 
 
+        .admin-lista-titulo {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+        }
+
+
         .admin-lista-topo strong {
 
             display: flex;
@@ -346,7 +618,6 @@
             justify-content: center;
 
             width: 38px;
-
             height: 38px;
 
             border-radius: 50%;
@@ -364,8 +635,65 @@
         }
 
 
+
         /* ==================================================
-           CARTÃO DO CLIENTE
+           BOTÃO APAGAR CANCELADOS
+           ================================================== */
+
+        .admin-lista-topo form {
+
+            margin: 0;
+
+        }
+
+
+        .admin-btn-apagar {
+
+            border: none;
+
+            border-radius: 10px;
+
+            padding: 11px 17px;
+
+            background: #8f5f67;
+
+            color: white;
+
+            font-family:
+                Arial,
+                sans-serif;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                background 0.2s ease;
+
+        }
+
+
+        .admin-btn-apagar:hover {
+
+            background: #6f4a50;
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 7px 15px
+                rgba(111, 74, 80, 0.15);
+
+        }
+
+
+
+        /* ==================================================
+           CARTÃO
            ================================================== */
 
         .admin-card {
@@ -392,8 +720,9 @@
         }
 
 
+
         /* ==================================================
-           CABEÇALHO DO CARTÃO
+           CABEÇALHO
            ================================================== */
 
         .admin-card-topo {
@@ -453,6 +782,7 @@
         }
 
 
+
         /* ==================================================
            STATUS
            ================================================== */
@@ -484,14 +814,6 @@
         }
 
 
-        .admin-status-cancelado {
-
-            background: #ead6d5;
-
-            color: #8f4f59;
-
-        }
-
 
         /* ==================================================
            DETALHES
@@ -511,6 +833,14 @@
             border-bottom:
                 1px solid
                 rgba(143, 95, 103, 0.10);
+
+        }
+
+
+        .admin-detalhes-plano {
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
 
         }
 
@@ -562,6 +892,133 @@
         }
 
 
+
+        /* ==================================================
+           PLANO MENSAL
+           ================================================== */
+
+        .plano-atendimentos {
+
+            padding: 24px 0;
+
+            border-bottom:
+                1px solid
+                rgba(143, 95, 103, 0.10);
+
+        }
+
+
+        .plano-titulo {
+
+            margin-bottom: 15px;
+
+            color: #9a7076;
+
+            font-family:
+                Arial,
+                sans-serif;
+
+            font-size: 11px;
+
+            letter-spacing: 1px;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .plano-atendimento {
+
+            display: grid;
+
+            grid-template-columns:
+                50px
+                1fr
+                1fr;
+
+            align-items: center;
+
+            gap: 20px;
+
+            padding: 14px 0;
+
+            border-bottom:
+                1px solid
+                rgba(143, 95, 103, 0.07);
+
+        }
+
+
+        .plano-atendimento:last-child {
+
+            border-bottom: none;
+
+            padding-bottom: 0;
+
+        }
+
+
+        .plano-numero {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            width: 38px;
+            height: 38px;
+
+            border-radius: 50%;
+
+            background: #f2e3e1;
+
+            color: #8f5f67;
+
+            font-family:
+                Georgia,
+                serif;
+
+            font-size: 14px;
+
+        }
+
+
+        .plano-info span {
+
+            display: block;
+
+            margin-bottom: 5px;
+
+            color: #9a7076;
+
+            font-family:
+                Arial,
+                sans-serif;
+
+            font-size: 10px;
+
+            letter-spacing: 1px;
+
+            text-transform: uppercase;
+
+        }
+
+
+        .plano-info strong {
+
+            color: #4d3035;
+
+            font-family:
+                Georgia,
+                serif;
+
+            font-size: 16px;
+
+        }
+
+
+
         /* ==================================================
            OBSERVAÇÕES
            ================================================== */
@@ -609,6 +1066,7 @@
             line-height: 1.6;
 
         }
+
 
 
         /* ==================================================
@@ -686,28 +1144,6 @@
         }
 
 
-        .admin-cancelado-texto {
-
-            display: inline-flex;
-
-            align-items: center;
-
-            padding: 12px 20px;
-
-            border-radius: 10px;
-
-            background: #f2e3e1;
-
-            color: #8f5f67;
-
-            font-family:
-                Arial,
-                sans-serif;
-
-            font-size: 12px;
-
-        }
-
 
         /* ==================================================
            SEM AGENDAMENTOS
@@ -778,8 +1214,9 @@
         }
 
 
+
         /* ==================================================
-           CELULAR
+           TABLET
            ================================================== */
 
         @media (max-width: 800px) {
@@ -791,14 +1228,50 @@
 
             }
 
+
+            .admin-detalhes-plano {
+
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+
+            }
+
         }
 
+
+
+        /* ==================================================
+           CELULAR
+           ================================================== */
 
         @media (max-width: 600px) {
 
             .admin-lista {
 
                 margin-top: 40px;
+
+            }
+
+
+            .admin-lista-topo {
+
+                flex-direction: column;
+
+                align-items: stretch;
+
+            }
+
+
+            .admin-lista-topo form {
+
+                width: 100%;
+
+            }
+
+
+            .admin-btn-apagar {
+
+                width: 100%;
 
             }
 
@@ -828,11 +1301,41 @@
             }
 
 
-            .admin-detalhes {
+            .admin-detalhes,
+            .admin-detalhes-plano {
 
                 grid-template-columns: 1fr 1fr;
 
                 gap: 22px 15px;
+
+            }
+
+
+            .plano-atendimento {
+
+                grid-template-columns:
+                    42px
+                    1fr
+                    1fr;
+
+                gap: 12px;
+
+            }
+
+
+            .plano-numero {
+
+                width: 34px;
+                height: 34px;
+
+                font-size: 12px;
+
+            }
+
+
+            .plano-info strong {
+
+                font-size: 14px;
 
             }
 
@@ -844,31 +1347,15 @@
             }
 
 
-            .admin-acoes form {
-
-                width: 100%;
-
-            }
-
-
+            .admin-acoes form,
             .admin-btn {
 
                 width: 100%;
 
             }
 
-
-            .admin-cancelado-texto {
-
-                width: 100%;
-
-                box-sizing: border-box;
-
-                justify-content: center;
-
-            }
-
         }
+
 
     </style>
 
