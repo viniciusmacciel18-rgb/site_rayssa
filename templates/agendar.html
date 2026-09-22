@@ -107,6 +107,7 @@
                     action="/agendar"
                     method="POST"
                     class="booking-form"
+                    id="bookingForm"
                 >
 
 
@@ -194,7 +195,7 @@
 
 
 
-                    <!-- DATA -->
+                    <!-- DATA INICIAL -->
 
                     <div class="form-group">
 
@@ -213,9 +214,14 @@
 
 
 
-                    <!-- HORÁRIO -->
+                    <!-- ==================================================
+                         HORÁRIO NORMAL
+                         ================================================== -->
 
-                    <div class="form-group">
+                    <div
+                        class="form-group"
+                        id="horario-normal-container"
+                    >
 
                         <label for="horario">
                             Horário
@@ -232,6 +238,174 @@
                             </option>
 
                         </select>
+
+                    </div>
+
+
+
+                    <!-- ==================================================
+                         PLANO MENSAL
+                         ================================================== -->
+
+                    <div
+                        id="plano-mensal-container"
+                        style="display: none;"
+                    >
+
+                        <div
+                            class="form-group"
+                            style="margin-bottom: 12px;"
+                        >
+
+                            <p
+                                style="
+                                    margin: 0;
+                                    font-weight: 600;
+                                "
+                            >
+                                Seus 4 horários do Plano Mensal
+                            </p>
+
+                            <p
+                                style="
+                                    margin: 6px 0 18px;
+                                    font-size: 14px;
+                                    line-height: 1.5;
+                                "
+                            >
+                                O sistema sugere o mesmo horário a cada semana.
+                                Você pode alterar qualquer semana antes de confirmar.
+                            </p>
+
+                        </div>
+
+
+                        <!-- SEMANA 1 -->
+
+                        <div class="form-group">
+
+                            <label for="horario-plano-1">
+                                1º atendimento
+                            </label>
+
+                            <input
+                                type="text"
+                                id="data-plano-1"
+                                readonly
+                                style="margin-bottom: 10px;"
+                            >
+
+                            <select
+                                id="horario-plano-1"
+                                class="horario-plano"
+                            >
+
+                                <option value="">
+                                    Selecione o horário
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+
+                        <!-- SEMANA 2 -->
+
+                        <div class="form-group">
+
+                            <label for="horario-plano-2">
+                                2º atendimento
+                            </label>
+
+                            <input
+                                type="text"
+                                id="data-plano-2"
+                                readonly
+                                style="margin-bottom: 10px;"
+                            >
+
+                            <select
+                                id="horario-plano-2"
+                                class="horario-plano"
+                            >
+
+                                <option value="">
+                                    Selecione o horário
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+
+                        <!-- SEMANA 3 -->
+
+                        <div class="form-group">
+
+                            <label for="horario-plano-3">
+                                3º atendimento
+                            </label>
+
+                            <input
+                                type="text"
+                                id="data-plano-3"
+                                readonly
+                                style="margin-bottom: 10px;"
+                            >
+
+                            <select
+                                id="horario-plano-3"
+                                class="horario-plano"
+                            >
+
+                                <option value="">
+                                    Selecione o horário
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+
+                        <!-- SEMANA 4 -->
+
+                        <div class="form-group">
+
+                            <label for="horario-plano-4">
+                                4º atendimento
+                            </label>
+
+                            <input
+                                type="text"
+                                id="data-plano-4"
+                                readonly
+                                style="margin-bottom: 10px;"
+                            >
+
+                            <select
+                                id="horario-plano-4"
+                                class="horario-plano"
+                            >
+
+                                <option value="">
+                                    Selecione o horário
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- CAMPO ESCONDIDO -->
+
+                        <input
+                            type="hidden"
+                            name="horarios_plano"
+                            id="horarios_plano"
+                        >
 
                     </div>
 
@@ -309,11 +483,15 @@
 
 
     <!-- ==================================================
-         HORÁRIOS
+         JAVASCRIPT
          ================================================== -->
 
     <script>
 
+
+        /* ==================================================
+           ELEMENTOS
+           ================================================== */
 
         const dataInput =
             document.getElementById("data");
@@ -327,10 +505,40 @@
             document.getElementById("servico");
 
 
+        const horarioNormalContainer =
+            document.getElementById(
+                "horario-normal-container"
+            );
 
-        /*
-            DURAÇÃO DOS SERVIÇOS
-        */
+
+        const planoMensalContainer =
+            document.getElementById(
+                "plano-mensal-container"
+            );
+
+
+        const horariosPlano =
+            document.querySelectorAll(
+                ".horario-plano"
+            );
+
+
+        const campoHorariosPlano =
+            document.getElementById(
+                "horarios_plano"
+            );
+
+
+        const form =
+            document.getElementById(
+                "bookingForm"
+            );
+
+
+
+        /* ==================================================
+           DURAÇÃO DOS SERVIÇOS
+           ================================================== */
 
         const duracoes = {
 
@@ -348,24 +556,27 @@
 
 
 
-        /*
-            CONVERTE HH:MM PARA MINUTOS
-        */
+        /* ==================================================
+           CONVERTE HH:MM PARA MINUTOS
+           ================================================== */
 
         function paraMinutos(horario) {
 
-            const [hora, minuto] =
+            const partes =
                 horario.split(":").map(Number);
 
-            return hora * 60 + minuto;
+            return (
+                partes[0] * 60
+                + partes[1]
+            );
 
         }
 
 
 
-        /*
-            CONVERTE MINUTOS PARA HH:MM
-        */
+        /* ==================================================
+           CONVERTE MINUTOS PARA HH:MM
+           ================================================== */
 
         function paraHorario(minutos) {
 
@@ -385,9 +596,9 @@
 
 
 
-        /*
-            CRIA OS HORÁRIOS DE UM PERÍODO
-        */
+        /* ==================================================
+           CRIA HORÁRIOS DE UM PERÍODO
+           ================================================== */
 
         function criarHorarios(
             inicio,
@@ -414,11 +625,6 @@
                     atual + duracao;
 
 
-                /*
-                    O serviço precisa terminar
-                    dentro do período de atendimento.
-                */
-
                 if (final <= fimMinutos) {
 
                     horarios.push(
@@ -439,10 +645,9 @@
 
 
 
-        /*
-            VERIFICA SE O SERVIÇO
-            INTERSECTA UM BLOQUEIO
-        */
+        /* ==================================================
+           VERIFICA BLOQUEIO
+           ================================================== */
 
         function horarioBloqueado(
             inicioHorario,
@@ -466,16 +671,6 @@
                 paraMinutos(bloqueio.fim);
 
 
-            /*
-                Existe conflito quando:
-
-                início do serviço < fim do bloqueio
-
-                E
-
-                fim do serviço > início do bloqueio
-            */
-
             return (
                 inicioAgendamento < fimBloqueio
                 &&
@@ -486,83 +681,101 @@
 
 
 
-        /*
-            ATUALIZA OS HORÁRIOS DISPONÍVEIS
-        */
+        /* ==================================================
+           FORMATA DATA PARA EXIBIÇÃO
+           ================================================== */
 
-        async function atualizarHorarios() {
+        function formatarData(dataString) {
 
-            horarioSelect.innerHTML = "";
+            const partes =
+                dataString.split("-");
 
 
-            /*
-                VERIFICA DATA
-            */
+            return (
+                partes[2]
+                + "/"
+                + partes[1]
+                + "/"
+                + partes[0]
+            );
 
-            if (!dataInput.value) {
-
-                const option =
-                    document.createElement("option");
-
-                option.value = "";
-
-                option.textContent =
-                    "Primeiro escolha uma data";
-
-                horarioSelect.appendChild(option);
-
-                return;
-
-            }
+        }
 
 
 
-            /*
-                VERIFICA SERVIÇO
-            */
+        /* ==================================================
+           ADICIONA DIAS À DATA
+           ================================================== */
 
-            const servico =
-                servicoSelect.value;
+        function adicionarDias(
+            dataString,
+            quantidade
+        ) {
 
-
-            if (!servico) {
-
-                const option =
-                    document.createElement("option");
-
-                option.value = "";
-
-                option.textContent =
-                    "Primeiro escolha o serviço";
-
-                horarioSelect.appendChild(option);
-
-                return;
-
-            }
-
-
-
-            const duracao =
-                duracoes[servico];
-
-
-
-            /*
-                CRIA A DATA LOCAL
-            */
-
-            const partesData =
-                dataInput.value
+            const partes =
+                dataString
                     .split("-")
                     .map(Number);
 
 
             const data =
                 new Date(
-                    partesData[0],
-                    partesData[1] - 1,
-                    partesData[2]
+                    partes[0],
+                    partes[1] - 1,
+                    partes[2]
+                );
+
+
+            data.setDate(
+                data.getDate() + quantidade
+            );
+
+
+            const ano =
+                data.getFullYear();
+
+
+            const mes =
+                String(
+                    data.getMonth() + 1
+                ).padStart(2, "0");
+
+
+            const dia =
+                String(
+                    data.getDate()
+                ).padStart(2, "0");
+
+
+            return (
+                ano
+                + "-"
+                + mes
+                + "-"
+                + dia
+            );
+
+        }
+
+
+
+        /* ==================================================
+           DESCOBRE OS PERÍODOS DE ATENDIMENTO
+           ================================================== */
+
+        function obterPeriodos(dataString) {
+
+            const partes =
+                dataString
+                    .split("-")
+                    .map(Number);
+
+
+            const data =
+                new Date(
+                    partes[0],
+                    partes[1] - 1,
+                    partes[2]
                 );
 
 
@@ -570,18 +783,9 @@
                 data.getDay();
 
 
-
             /*
-                PERÍODOS NORMAIS
-            */
-
-            let periodos = [];
-
-
-
-            /*
-                SEGUNDA, TERÇA,
-                QUINTA E SEXTA
+                Segunda, terça,
+                quinta e sexta
             */
 
             if (
@@ -591,7 +795,7 @@
                 dia === 5
             ) {
 
-                periodos = [
+                return [
 
                     ["07:30", "11:00"],
 
@@ -604,12 +808,12 @@
 
 
             /*
-                QUARTA-FEIRA
+                Quarta-feira
             */
 
-            else if (dia === 3) {
+            if (dia === 3) {
 
-                periodos = [
+                return [
 
                     ["07:30", "11:00"],
 
@@ -622,12 +826,12 @@
 
 
             /*
-                SÁBADO
+                Sábado
             */
 
-            else if (dia === 6) {
+            if (dia === 6) {
 
-                periodos = [
+                return [
 
                     ["09:00", "16:00"]
 
@@ -638,162 +842,23 @@
 
 
             /*
-                DOMINGO
+                Domingo
             */
 
-            else {
+            return [];
 
-                const option =
-                    document.createElement("option");
-
-                option.value = "";
-
-                option.textContent =
-                    "Não há atendimento aos domingos";
-
-                horarioSelect.appendChild(option);
-
-                return;
-
-            }
+        }
 
 
 
-            /*
-                BUSCA OS BLOQUEIOS
-                DO POSTGRESQL
-            */
+        /* ==================================================
+           VERIFICA HORÁRIOS QUE JÁ PASSARAM HOJE
+           ================================================== */
 
-            let bloqueios = [];
-
-
-            try {
-
-                const resposta =
-                    await fetch(
-                        `/bloqueios/${dataInput.value}?t=${Date.now()}`,
-                        {
-                            cache: "no-store"
-                        }
-                    );
-
-
-                if (resposta.ok) {
-
-                    const dados =
-                        await resposta.json();
-
-
-                    /*
-                        GARANTE QUE O RETORNO
-                        SEJA UMA LISTA
-                    */
-
-                    if (Array.isArray(dados)) {
-
-                        bloqueios = dados;
-
-                    }
-
-                }
-
-            }
-
-            catch (erro) {
-
-                console.error(
-                    "Erro ao consultar bloqueios:",
-                    erro
-                );
-
-            }
-
-
-
-            /*
-                CRIA TODOS OS HORÁRIOS
-            */
-
-            let horarios = [];
-
-
-            periodos.forEach(
-                periodo => {
-
-                    const inicio =
-                        periodo[0];
-
-                    const fim =
-                        periodo[1];
-
-
-                    horarios.push(
-                        ...criarHorarios(
-                            inicio,
-                            fim,
-                            duracao
-                        )
-                    );
-
-                }
-            );
-
-
-
-            /*
-                REMOVE HORÁRIOS QUE
-                CONFLITAM COM BLOQUEIOS
-            */
-
-            if (bloqueios.length > 0) {
-
-                horarios =
-                    horarios.filter(
-                        horario => {
-
-                            const existeConflito =
-                                bloqueios.some(
-                                    bloqueio => {
-
-                                        /*
-                                            Ignora registros
-                                            antigos/inválidos.
-                                        */
-
-                                        if (
-                                            !bloqueio.inicio
-                                            ||
-                                            !bloqueio.fim
-                                        ) {
-
-                                            return false;
-
-                                        }
-
-
-                                        return horarioBloqueado(
-                                            horario,
-                                            duracao,
-                                            bloqueio
-                                        );
-
-                                    }
-                                );
-
-
-                            return !existeConflito;
-
-                        }
-                    );
-
-            }
-
-
-
-            /*
-                REMOVE HORÁRIOS QUE
-                JÁ PASSARAM HOJE
-            */
+        function filtrarHorariosDeHoje(
+            horarios,
+            dataString
+        ) {
 
             const hoje =
                 new Date();
@@ -820,52 +885,230 @@
 
 
             if (
-                dataInput.value === dataHoje
+                dataString !== dataHoje
             ) {
 
-                const minutosAgora =
-                    hoje.getHours() * 60
-                    + hoje.getMinutes();
+                return horarios;
+
+            }
 
 
-                horarios =
-                    horarios.filter(
-                        horario => {
-
-                            const minutosHorario =
-                                paraMinutos(horario);
+            const minutosAgora =
+                hoje.getHours() * 60
+                + hoje.getMinutes();
 
 
-                            return (
-                                minutosHorario
-                                >=
-                                minutosAgora
-                            );
+            return horarios.filter(
+                horario => {
 
+                    return (
+                        paraMinutos(horario)
+                        >=
+                        minutosAgora
+                    );
+
+                }
+            );
+
+        }
+
+
+
+        /* ==================================================
+           BUSCA HORÁRIOS DISPONÍVEIS DE UMA DATA
+           ================================================== */
+
+        async function buscarHorariosDisponiveis(
+            dataString,
+            duracao
+        ) {
+
+            const periodos =
+                obterPeriodos(dataString);
+
+
+            if (
+                periodos.length === 0
+            ) {
+
+                return [];
+
+            }
+
+
+
+            let bloqueios = [];
+
+
+            try {
+
+                const resposta =
+                    await fetch(
+                        `/bloqueios/${dataString}?t=${Date.now()}`,
+                        {
+                            cache: "no-store"
                         }
                     );
+
+
+                if (resposta.ok) {
+
+                    const dados =
+                        await resposta.json();
+
+
+                    if (
+                        Array.isArray(dados)
+                    ) {
+
+                        bloqueios = dados;
+
+                    }
+
+                }
+
+            }
+
+            catch (erro) {
+
+                console.error(
+                    "Erro ao consultar bloqueios:",
+                    erro
+                );
 
             }
 
 
 
             /*
-                NENHUM HORÁRIO DISPONÍVEL
+                Cria horários
             */
+
+            let horarios = [];
+
+
+            periodos.forEach(
+                periodo => {
+
+                    horarios.push(
+                        ...criarHorarios(
+                            periodo[0],
+                            periodo[1],
+                            duracao
+                        )
+                    );
+
+                }
+            );
+
+
+
+            /*
+                Remove bloqueios
+            */
+
+            horarios =
+                horarios.filter(
+                    horario => {
+
+                        return !bloqueios.some(
+                            bloqueio => {
+
+                                if (
+                                    !bloqueio.inicio
+                                    ||
+                                    !bloqueio.fim
+                                ) {
+
+                                    return false;
+
+                                }
+
+
+                                return horarioBloqueado(
+                                    horario,
+                                    duracao,
+                                    bloqueio
+                                );
+
+                            }
+                        );
+
+                    }
+                );
+
+
+
+            /*
+                Remove horários
+                que já passaram hoje
+            */
+
+            horarios =
+                filtrarHorariosDeHoje(
+                    horarios,
+                    dataString
+                );
+
+
+            return horarios;
+
+        }
+
+
+
+        /* ==================================================
+           MOSTRA MENSAGEM EM SELECT
+           ================================================== */
+
+        function colocarMensagem(
+            select,
+            mensagem
+        ) {
+
+            select.innerHTML = "";
+
+
+            const option =
+                document.createElement("option");
+
+
+            option.value = "";
+
+
+            option.textContent =
+                mensagem;
+
+
+            select.appendChild(
+                option
+            );
+
+        }
+
+
+
+        /* ==================================================
+           PREENCHE UM SELECT DE HORÁRIO
+           ================================================== */
+
+        function preencherSelectHorario(
+            select,
+            horarios,
+            horarioPreferido = ""
+        ) {
+
+            select.innerHTML = "";
+
 
             if (
                 horarios.length === 0
             ) {
 
-                const option =
-                    document.createElement("option");
-
-                option.value = "";
-
-                option.textContent =
-                    "Nenhum horário disponível";
-
-                horarioSelect.appendChild(option);
+                colocarMensagem(
+                    select,
+                    "Nenhum horário disponível"
+                );
 
                 return;
 
@@ -873,27 +1116,22 @@
 
 
 
-            /*
-                PRIMEIRA OPÇÃO
-            */
-
             const primeira =
                 document.createElement("option");
 
+
             primeira.value = "";
+
 
             primeira.textContent =
                 "Selecione o horário";
 
-            horarioSelect.appendChild(
+
+            select.appendChild(
                 primeira
             );
 
 
-
-            /*
-                MOSTRA OS HORÁRIOS
-            */
 
             horarios.forEach(
                 horario => {
@@ -901,13 +1139,26 @@
                     const option =
                         document.createElement("option");
 
+
                     option.value =
                         horario;
+
 
                     option.textContent =
                         horario;
 
-                    horarioSelect.appendChild(
+
+                    if (
+                        horario === horarioPreferido
+                    ) {
+
+                        option.selected =
+                            true;
+
+                    }
+
+
+                    select.appendChild(
                         option
                     );
 
@@ -918,31 +1169,518 @@
 
 
 
-        /*
-            QUANDO ALTERAR A DATA
-        */
+        /* ==================================================
+           ATUALIZA AGENDAMENTO NORMAL
+           ================================================== */
+
+        async function atualizarHorarioNormal() {
+
+            colocarMensagem(
+                horarioSelect,
+                "Carregando horários..."
+            );
+
+
+            if (
+                !dataInput.value
+            ) {
+
+                colocarMensagem(
+                    horarioSelect,
+                    "Primeiro escolha uma data"
+                );
+
+                return;
+
+            }
+
+
+            const servico =
+                servicoSelect.value;
+
+
+            if (!servico) {
+
+                colocarMensagem(
+                    horarioSelect,
+                    "Primeiro escolha o serviço"
+                );
+
+                return;
+
+            }
+
+
+            const duracao =
+                duracoes[servico];
+
+
+            const horarios =
+                await buscarHorariosDisponiveis(
+                    dataInput.value,
+                    duracao
+                );
+
+
+            if (
+                horarios.length === 0
+            ) {
+
+                colocarMensagem(
+                    horarioSelect,
+                    "Nenhum horário disponível"
+                );
+
+                return;
+
+            }
+
+
+            preencherSelectHorario(
+                horarioSelect,
+                horarios
+            );
+
+        }
+
+
+
+        /* ==================================================
+           ATUALIZA PLANO MENSAL
+           ================================================== */
+
+        async function atualizarPlanoMensal() {
+
+            if (
+                !dataInput.value
+            ) {
+
+                return;
+
+            }
+
+
+            const duracao =
+                duracoes["Plano mensal"];
+
+
+            /*
+                As quatro datas:
+                semana 1
+                semana 2
+                semana 3
+                semana 4
+            */
+
+            const datas = [
+
+                dataInput.value,
+
+                adicionarDias(
+                    dataInput.value,
+                    7
+                ),
+
+                adicionarDias(
+                    dataInput.value,
+                    14
+                ),
+
+                adicionarDias(
+                    dataInput.value,
+                    21
+                )
+
+            ];
+
+
+
+            /*
+                Mostra as datas
+            */
+
+            for (
+                let i = 0;
+                i < 4;
+                i++
+            ) {
+
+                const campoData =
+                    document.getElementById(
+                        `data-plano-${i + 1}`
+                    );
+
+
+                campoData.value =
+                    formatarData(
+                        datas[i]
+                    );
+
+            }
+
+
+
+            /*
+                Busca os horários
+                das quatro semanas
+            */
+
+            for (
+                let i = 0;
+                i < 4;
+                i++
+            ) {
+
+                const select =
+                    document.getElementById(
+                        `horario-plano-${i + 1}`
+                    );
+
+
+                colocarMensagem(
+                    select,
+                    "Carregando horários..."
+                );
+
+
+                const horarios =
+                    await buscarHorariosDisponiveis(
+                        datas[i],
+                        duracao
+                    );
+
+
+                preencherSelectHorario(
+                    select,
+                    horarios
+                );
+
+            }
+
+
+
+            /*
+                Sugere o mesmo horário
+                para as quatro semanas
+            */
+
+            await aplicarHorarioSemanal();
+
+        }
+
+
+
+        /* ==================================================
+           TENTA REPETIR O MESMO HORÁRIO
+           ================================================== */
+
+        async function aplicarHorarioSemanal() {
+
+            const primeiroSelect =
+                document.getElementById(
+                    "horario-plano-1"
+                );
+
+
+            const primeiroHorario =
+                primeiroSelect.value;
+
+
+            if (!primeiroHorario) {
+
+                return;
+
+            }
+
+
+            for (
+                let i = 1;
+                i < 4;
+                i++
+            ) {
+
+                const select =
+                    document.getElementById(
+                        `horario-plano-${i + 1}`
+                    );
+
+
+                const existe =
+                    Array.from(
+                        select.options
+                    ).some(
+                        option =>
+                            option.value ===
+                            primeiroHorario
+                    );
+
+
+                if (existe) {
+
+                    select.value =
+                        primeiroHorario;
+
+                }
+
+            }
+
+        }
+
+
+
+        /* ==================================================
+           QUANDO O PRIMEIRO HORÁRIO DO PLANO MUDA
+           ================================================== */
+
+        document
+            .getElementById(
+                "horario-plano-1"
+            )
+            .addEventListener(
+                "change",
+                aplicarHorarioSemanal
+            );
+
+
+
+        /* ==================================================
+           MOSTRA / ESCONDE O PLANO MENSAL
+           ================================================== */
+
+        async function atualizarTipoAgendamento() {
+
+            const servico =
+                servicoSelect.value;
+
+
+            const planoMensal =
+                servico === "Plano mensal";
+
+
+            if (planoMensal) {
+
+                horarioNormalContainer.style.display =
+                    "none";
+
+
+                horarioSelect.required =
+                    false;
+
+
+                planoMensalContainer.style.display =
+                    "block";
+
+
+                horariosPlano.forEach(
+                    select => {
+
+                        select.required =
+                            true;
+
+                    }
+                );
+
+
+                await atualizarPlanoMensal();
+
+            }
+
+            else {
+
+                planoMensalContainer.style.display =
+                    "none";
+
+
+                horarioNormalContainer.style.display =
+                    "block";
+
+
+                horarioSelect.required =
+                    true;
+
+
+                horariosPlano.forEach(
+                    select => {
+
+                        select.required =
+                            false;
+
+                    }
+                );
+
+
+                campoHorariosPlano.value =
+                    "";
+
+
+                await atualizarHorarioNormal();
+
+            }
+
+        }
+
+
+
+        /* ==================================================
+           DATA ALTERADA
+           ================================================== */
 
         dataInput.addEventListener(
             "change",
-            atualizarHorarios
+            async function() {
+
+                if (
+                    servicoSelect.value ===
+                    "Plano mensal"
+                ) {
+
+                    await atualizarPlanoMensal();
+
+                }
+
+                else {
+
+                    await atualizarHorarioNormal();
+
+                }
+
+            }
         );
 
 
 
-        /*
-            QUANDO ALTERAR O SERVIÇO
-        */
+        /* ==================================================
+           SERVIÇO ALTERADO
+           ================================================== */
 
         servicoSelect.addEventListener(
             "change",
-            atualizarHorarios
+            atualizarTipoAgendamento
         );
 
 
 
-        /*
-            IMPEDE ESCOLHER DATAS ANTERIORES
-        */
+        /* ==================================================
+           QUANDO ALTERAR UM DOS HORÁRIOS
+           ================================================== */
+
+        horariosPlano.forEach(
+            select => {
+
+                select.addEventListener(
+                    "change",
+                    function() {
+
+                        /*
+                            Atualiza o campo escondido
+                            imediatamente.
+                        */
+
+                        const valores = [];
+
+
+                        horariosPlano.forEach(
+                            campo => {
+
+                                valores.push(
+                                    campo.value
+                                );
+
+                            }
+                        );
+
+
+                        campoHorariosPlano.value =
+                            JSON.stringify(
+                                valores
+                            );
+
+                    }
+                );
+
+            }
+        );
+
+
+
+        /* ==================================================
+           ENVIO DO FORMULÁRIO
+           ================================================== */
+
+        form.addEventListener(
+            "submit",
+            function(event) {
+
+                /*
+                    Se for Plano Mensal,
+                    envia os quatro horários.
+                */
+
+                if (
+                    servicoSelect.value ===
+                    "Plano mensal"
+                ) {
+
+                    const valores = [];
+
+
+                    horariosPlano.forEach(
+                        select => {
+
+                            valores.push(
+                                select.value
+                            );
+
+                        }
+                    );
+
+
+                    /*
+                        Verifica se os quatro
+                        horários foram escolhidos.
+                    */
+
+                    if (
+                        valores.length !== 4
+                        ||
+                        valores.some(
+                            horario => !horario
+                        )
+                    ) {
+
+                        event.preventDefault();
+
+
+                        alert(
+                            "Escolha os horários das 4 semanas do Plano Mensal."
+                        );
+
+
+                        return;
+
+                    }
+
+
+                    /*
+                        Envia os quatro horários
+                        para o Flask.
+                    */
+
+                    campoHorariosPlano.value =
+                        JSON.stringify(
+                            valores
+                        );
+
+                }
+
+            }
+        );
+
+
+
+        /* ==================================================
+           IMPEDE DATAS ANTERIORES
+           ================================================== */
 
         const hoje =
             new Date();
