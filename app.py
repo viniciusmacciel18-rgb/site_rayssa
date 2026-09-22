@@ -29,10 +29,6 @@ def conectar_banco():
 
 
 # ==========================================================
-# CRIAR TABELA DE AGENDAMENTOS
-# ==========================================================
-
-# ==========================================================
 # CRIAR TABELAS
 # ==========================================================
 
@@ -40,6 +36,10 @@ def criar_tabela():
 
     conexao = conectar_banco()
     cursor = conexao.cursor()
+
+    # ------------------------------------------------------
+    # AGENDAMENTOS
+    # ------------------------------------------------------
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS agendamentos (
@@ -55,13 +55,19 @@ def criar_tabela():
         )
     """)
 
+    # ------------------------------------------------------
+    # BLOQUEIOS DE HORÁRIOS
+    # ------------------------------------------------------
+
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS bloqueios_horarios (
             id SERIAL PRIMARY KEY,
             data DATE NOT NULL,
-            periodo TEXT NOT NULL,
-            criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            UNIQUE (data, periodo)
+            periodo TEXT,
+            inicio TIME,
+            fim TIME,
+            motivo TEXT,
+            criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
 
@@ -69,15 +75,20 @@ def criar_tabela():
 
     cursor.close()
     conexao.close()
-    
+
+
 # ==========================================================
-# ATUALIZAR TABELA EXISTENTE
+# ATUALIZAR TABELAS EXISTENTES
 # ==========================================================
 
 def atualizar_tabela():
 
     conexao = conectar_banco()
     cursor = conexao.cursor()
+
+    # ------------------------------------------------------
+    # GARANTIR STATUS DOS AGENDAMENTOS
+    # ------------------------------------------------------
 
     cursor.execute("""
         ALTER TABLE agendamentos
@@ -89,6 +100,71 @@ def atualizar_tabela():
         UPDATE agendamentos
         SET status = 'Confirmado'
         WHERE status IS NULL
+    """)
+
+    # ------------------------------------------------------
+    # GARANTIR NOVAS COLUNAS DOS BLOQUEIOS
+    # ------------------------------------------------------
+
+    cursor.execute("""
+        ALTER TABLE bloqueios_horarios
+        ADD COLUMN IF NOT EXISTS inicio TIME
+    """)
+
+    cursor.execute("""
+        ALTER TABLE bloqueios_horarios
+        ADD COLUMN IF NOT EXISTS fim TIME
+    """)
+
+    cursor.execute("""
+        ALTER TABLE bloqueios_horarios
+        ADD COLUMN IF NOT EXISTS motivo TEXT
+    """)
+
+    # ------------------------------------------------------
+    # MIGRAR BLOQUEIOS ANTIGOS
+    #
+    # Caso existam bloqueios antigos usando:
+    # manha / tarde / dia
+    #
+    # eles serão convertidos para intervalos.
+    # ------------------------------------------------------
+
+    cursor.execute("""
+        UPDATE bloqueios_horarios
+        SET
+            inicio = '07:30',
+            fim = '11:00'
+        WHERE periodo = 'manha'
+          AND inicio IS NULL
+    """)
+
+    cursor.execute("""
+        UPDATE bloqueios_horarios
+        SET
+            inicio = '13:30',
+            fim = '20:00'
+        WHERE periodo = 'tarde'
+          AND inicio IS NULL
+    """)
+
+    cursor.execute("""
+        UPDATE bloqueios_horarios
+        SET
+            inicio = '00:00',
+            fim = '23:59'
+        WHERE periodo = 'dia'
+          AND inicio IS NULL
+    """)
+
+    # ------------------------------------------------------
+    # MOTIVO PADRÃO PARA BLOQUEIOS ANTIGOS
+    # ------------------------------------------------------
+
+    cursor.execute("""
+        UPDATE bloqueios_horarios
+        SET motivo = 'Bloqueio antigo'
+        WHERE motivo IS NULL
     """)
 
     conexao.commit()
@@ -123,13 +199,49 @@ def agendar():
         horario = request.form.get("horario")
         observacoes = request.form.get("observacoes")
 
-
         # --------------------------------------------------
-        # SALVAR NO POSTGRESQL
+        # VERIFICAR SE O HORÁRIO ESTÁ BLOQUEADO
         # --------------------------------------------------
 
         conexao = conectar_banco()
         cursor = conexao.cursor()
+
+        cursor.execute("""
+            SELECT
+                inicio,
+                fim
+            FROM bloqueios_horarios
+            WHERE data = %s
+              AND inicio IS NOT NULL
+              AND fim IS NOT NULL
+              AND %s::time >= inicio
+              AND %s::time < fim
+            LIMIT 1
+        """, (
+            data,
+            horario,
+            horario
+        ))
+
+        bloqueio = cursor.fetchone()
+
+        if bloqueio:
+
+            cursor.close()
+            conexao.close()
+
+            return render_template(
+                "agendar.html",
+                erro=(
+                    f"Este horário está bloqueado "
+                    f"das {bloqueio[0].strftime('%H:%M')} "
+                    f"às {bloqueio[1].strftime('%H:%M')}."
+                )
+            )
+
+        # --------------------------------------------------
+        # SALVAR AGENDAMENTO
+        # --------------------------------------------------
 
         cursor.execute("""
             INSERT INTO agendamentos
@@ -158,7 +270,6 @@ def agendar():
         cursor.close()
         conexao.close()
 
-
         # --------------------------------------------------
         # LOG
         # --------------------------------------------------
@@ -176,7 +287,6 @@ def agendar():
         print("AGENDAMENTO SALVO NO POSTGRESQL")
         print("==============================\n")
 
-
         # --------------------------------------------------
         # FORMATAR DATA
         # --------------------------------------------------
@@ -185,7 +295,6 @@ def agendar():
             data,
             "%Y-%m-%d"
         ).strftime("%d/%m/%Y")
-
 
         # --------------------------------------------------
         # CONFIRMAÇÃO
@@ -201,8 +310,8 @@ def agendar():
             observacoes=observacoes
         )
 
-
     return render_template("agendar.html")
+
 
 # ==========================================================
 # CONSULTAR BLOQUEIOS DE UMA DATA
@@ -215,9 +324,15 @@ def consultar_bloqueios(data):
     cursor = conexao.cursor()
 
     cursor.execute("""
-        SELECT periodo
+        SELECT
+            inicio,
+            fim,
+            motivo
         FROM bloqueios_horarios
         WHERE data = %s
+          AND inicio IS NOT NULL
+          AND fim IS NOT NULL
+        ORDER BY inicio ASC
     """, (data,))
 
     resultados = cursor.fetchall()
@@ -228,10 +343,16 @@ def consultar_bloqueios(data):
     bloqueios = []
 
     for resultado in resultados:
-        bloqueios.append(resultado[0])
+
+        bloqueios.append({
+            "inicio": resultado[0].strftime("%H:%M"),
+            "fim": resultado[1].strftime("%H:%M"),
+            "motivo": resultado[2] or ""
+        })
 
     return jsonify(bloqueios)
-    
+
+
 # ==========================================================
 # PROTEÇÃO DO PAINEL ADMINISTRATIVO
 # ==========================================================
@@ -262,7 +383,6 @@ def login():
         usuario = request.form.get("usuario")
         senha = request.form.get("senha")
 
-
         usuario_correto = os.environ.get(
             "ADMIN_USERNAME"
         )
@@ -270,7 +390,6 @@ def login():
         senha_correta = os.environ.get(
             "ADMIN_PASSWORD"
         )
-
 
         if (
             usuario == usuario_correto
@@ -283,12 +402,10 @@ def login():
                 url_for("admin")
             )
 
-
         return render_template(
             "login.html",
             erro="Usuário ou senha incorretos."
         )
-
 
     return render_template(
         "login.html"
@@ -338,11 +455,6 @@ def admin_agendamentos():
     cursor.close()
     conexao.close()
 
-
-    # ------------------------------------------------------
-    # TRANSFORMAR OS RESULTADOS
-    # ------------------------------------------------------
-
     agendamentos = []
 
     for agendamento in resultados:
@@ -366,7 +478,6 @@ def admin_agendamentos():
             "status": agendamento[7] or "Confirmado"
 
         })
-
 
     return render_template(
         "admin_agendamentos.html",
@@ -399,14 +510,13 @@ def cancelar_agendamento(agendamento_id):
     cursor.close()
     conexao.close()
 
-
     return redirect(
         url_for("admin_agendamentos")
     )
 
 
 # ==========================================================
-# SAIR DO PAINEL
+# HORÁRIOS / BLOQUEIOS
 # ==========================================================
 
 @app.route("/admin/horarios")
@@ -420,9 +530,13 @@ def admin_horarios():
         SELECT
             id,
             data,
-            periodo
+            inicio,
+            fim,
+            motivo
         FROM bloqueios_horarios
-        ORDER BY data ASC
+        WHERE inicio IS NOT NULL
+          AND fim IS NOT NULL
+        ORDER BY data ASC, inicio ASC
     """)
 
     resultados = cursor.fetchall()
@@ -435,9 +549,17 @@ def admin_horarios():
     for bloqueio in resultados:
 
         bloqueios.append({
+
             "id": bloqueio[0],
+
             "data": bloqueio[1].strftime("%d/%m/%Y"),
-            "periodo": bloqueio[2]
+
+            "inicio": bloqueio[2].strftime("%H:%M"),
+
+            "fim": bloqueio[3].strftime("%H:%M"),
+
+            "motivo": bloqueio[4] or "Sem motivo"
+
         })
 
     return render_template(
@@ -445,6 +567,10 @@ def admin_horarios():
         bloqueios=bloqueios
     )
 
+
+# ==========================================================
+# CRIAR BLOQUEIO DE HORÁRIO
+# ==========================================================
 
 @app.route(
     "/admin/horarios/bloquear",
@@ -454,26 +580,107 @@ def admin_horarios():
 def bloquear_horario():
 
     data = request.form.get("data")
-    periodo = request.form.get("periodo")
+    inicio = request.form.get("inicio")
+    fim = request.form.get("fim")
+    motivo = request.form.get("motivo")
 
-    if not data or not periodo:
-        return redirect(url_for("admin_horarios"))
+    # ------------------------------------------------------
+    # VERIFICAR CAMPOS
+    # ------------------------------------------------------
+
+    if not data or not inicio or not fim:
+
+        return redirect(
+            url_for("admin_horarios")
+        )
+
+    # ------------------------------------------------------
+    # VERIFICAR HORÁRIOS
+    # ------------------------------------------------------
+
+    try:
+
+        inicio_obj = datetime.strptime(
+            inicio,
+            "%H:%M"
+        )
+
+        fim_obj = datetime.strptime(
+            fim,
+            "%H:%M"
+        )
+
+    except ValueError:
+
+        return redirect(
+            url_for("admin_horarios")
+        )
+
+    # ------------------------------------------------------
+    # HORÁRIO FINAL PRECISA SER MAIOR
+    # ------------------------------------------------------
+
+    if fim_obj <= inicio_obj:
+
+        return redirect(
+            url_for("admin_horarios")
+        )
+
+    # ------------------------------------------------------
+    # CONECTAR BANCO
+    # ------------------------------------------------------
 
     conexao = conectar_banco()
     cursor = conexao.cursor()
+
+    # ------------------------------------------------------
+    # VERIFICAR SE JÁ EXISTE BLOQUEIO SOBREPOSTO
+    # ------------------------------------------------------
+
+    cursor.execute("""
+        SELECT id
+        FROM bloqueios_horarios
+        WHERE data = %s
+          AND inicio IS NOT NULL
+          AND fim IS NOT NULL
+          AND inicio < %s::time
+          AND fim > %s::time
+        LIMIT 1
+    """, (
+        data,
+        fim,
+        inicio
+    ))
+
+    bloqueio_existente = cursor.fetchone()
+
+    if bloqueio_existente:
+
+        cursor.close()
+        conexao.close()
+
+        return redirect(
+            url_for("admin_horarios")
+        )
+
+    # ------------------------------------------------------
+    # SALVAR NOVO BLOQUEIO
+    # ------------------------------------------------------
 
     cursor.execute("""
         INSERT INTO bloqueios_horarios
         (
             data,
-            periodo
+            inicio,
+            fim,
+            motivo
         )
-        VALUES (%s, %s)
-        ON CONFLICT (data, periodo)
-        DO NOTHING
+        VALUES (%s, %s, %s, %s)
     """, (
         data,
-        periodo
+        inicio,
+        fim,
+        motivo
     ))
 
     conexao.commit()
@@ -481,7 +688,14 @@ def bloquear_horario():
     cursor.close()
     conexao.close()
 
-    return redirect(url_for("admin_horarios"))
+    return redirect(
+        url_for("admin_horarios")
+    )
+
+
+# ==========================================================
+# REMOVER BLOQUEIO
+# ==========================================================
 
 @app.route(
     "/admin/horarios/remover/<int:bloqueio_id>",
@@ -503,8 +717,15 @@ def remover_bloqueio(bloqueio_id):
     cursor.close()
     conexao.close()
 
-    return redirect(url_for("admin_horarios"))
-    
+    return redirect(
+        url_for("admin_horarios")
+    )
+
+
+# ==========================================================
+# SAIR DO PAINEL
+# ==========================================================
+
 @app.route("/logout")
 def logout():
 
@@ -524,7 +745,6 @@ def meus_agendamentos():
 
     telefone = request.args.get("telefone")
 
-
     # ------------------------------------------------------
     # SE NÃO INFORMOU TELEFONE
     # ------------------------------------------------------
@@ -535,7 +755,6 @@ def meus_agendamentos():
             "meus_agendamentos.html",
             agendamentos=[]
         )
-
 
     # ------------------------------------------------------
     # BUSCAR AGENDAMENTOS
@@ -559,12 +778,10 @@ def meus_agendamentos():
         ORDER BY data ASC, horario ASC
     """, (telefone,))
 
-
     resultados = cursor.fetchall()
 
     cursor.close()
     conexao.close()
-
 
     # ------------------------------------------------------
     # TRANSFORMAR RESULTADOS
@@ -593,7 +810,6 @@ def meus_agendamentos():
             "status": agendamento[7] or "Confirmado"
 
         })
-
 
     # ------------------------------------------------------
     # MOSTRAR RESULTADOS
