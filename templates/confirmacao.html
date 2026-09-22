@@ -168,7 +168,7 @@
                                 font-weight: 500;
                             ">
 
-                                {% for atendimento in atendimentos_plano %}
+                          {% for atendimento in atendimentos_plano %}
 
 <div style="
     padding: 10px 12px;
@@ -176,18 +176,10 @@
     background: rgba(143, 95, 103, 0.08);
 ">
 
-    {% if atendimento.data_formatada %}
-
-        {{ atendimento.data_formatada }}
-
-    {% elif atendimento.data %}
-
-        {{ atendimento.data.strftime('%d/%m/%Y') }}
-
-    {% endif %}
-
+    {{ atendimento.data }}
     —
     {{ atendimento.horario }}
+
 
 </div>
 
