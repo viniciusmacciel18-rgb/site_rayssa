@@ -1454,7 +1454,51 @@ def cancelar_agendamento(
         )
     )
 
+# ==========================================================
+# APAGAR TODOS OS AGENDAMENTOS CANCELADOS
+# ==========================================================
 
+@app.route("/admin/apagar-cancelados", methods=["POST"])
+@login_obrigatorio
+def apagar_cancelados():
+
+    conn = conectar_banco()
+    cur = conn.cursor()
+
+    try:
+
+        cur.execute("""
+            DELETE FROM agendamentos
+            WHERE status = 'Cancelado'
+        """)
+
+        quantidade = cur.rowcount
+
+        conn.commit()
+
+        flash(
+            f"{quantidade} horário(s) cancelado(s) foram apagados.",
+            "sucesso"
+        )
+
+    except Exception as erro:
+
+        conn.rollback()
+
+        print("ERRO AO APAGAR CANCELADOS:", erro)
+
+        flash(
+            "Não foi possível apagar os horários cancelados.",
+            "erro"
+        )
+
+    finally:
+
+        cur.close()
+        conn.close()
+
+    return redirect(url_for("admin_agendamentos"))
+    
 # ==========================================================
 # HORÁRIOS / BLOQUEIOS
 # ==========================================================
