@@ -83,7 +83,9 @@
                     <div class="admin-lista">
 
 
-                        <!-- TOPO DA LISTA -->
+                        <!-- ==================================================
+                             TOPO DA LISTA
+                             ================================================== -->
 
                         <div class="admin-lista-topo">
 
@@ -120,7 +122,7 @@
 
 
                         <!-- ==================================================
-                             CONTROLE DOS GRUPOS DE PLANO MENSAL
+                             CONTROLE DOS PLANOS JÁ EXIBIDOS
                              ================================================== -->
 
                         {% set grupos_planos = namespace(ids=[]) %}
@@ -128,7 +130,7 @@
 
 
                         <!-- ==================================================
-                             AGENDAMENTOS
+                             LISTA DE AGENDAMENTOS
                              ================================================== -->
 
                         {% for agendamento in agendamentos %}
@@ -151,7 +153,7 @@
                                     <div class="admin-card admin-card-plano">
 
 
-                                        <!-- CABEÇALHO -->
+                                        <!-- CABEÇALHO DO PLANO -->
 
                                         <div class="admin-card-topo">
 
@@ -169,7 +171,7 @@
 
 
                                             <span class="admin-status">
-                                                Confirmado
+                                                4 atendimentos
                                             </span>
 
                                         </div>
@@ -210,7 +212,7 @@
                                             <div>
 
                                                 <span>
-                                                    Atendimentos
+                                                    Quantidade
                                                 </span>
 
                                                 <strong>
@@ -233,7 +235,7 @@
                                             <div class="plano-titulo">
 
                                                 <span>
-                                                    Seus 4 atendimentos
+                                                    Atendimentos do plano
                                                 </span>
 
                                             </div>
@@ -248,6 +250,9 @@
 
                                                     <div class="plano-atendimento">
 
+
+                                                        <!-- NÚMERO -->
+
                                                         <div class="plano-numero">
 
                                                             <span>
@@ -256,6 +261,9 @@
 
                                                         </div>
 
+
+
+                                                        <!-- DATA -->
 
                                                         <div class="plano-info">
 
@@ -270,6 +278,9 @@
                                                         </div>
 
 
+
+                                                        <!-- HORÁRIO -->
+
                                                         <div class="plano-info">
 
                                                             <span>
@@ -279,6 +290,48 @@
                                                             <strong>
                                                                 {{ atendimento.horario }}
                                                             </strong>
+
+                                                        </div>
+
+
+
+                                                        <!-- STATUS / BOTÃO -->
+
+                                                        <div class="plano-acao">
+
+
+                                                            {% if atendimento.status == "Cancelado" %}
+
+
+                                                                <span class="plano-status-cancelado">
+                                                                    Cancelado
+                                                                </span>
+
+
+                                                            {% else %}
+
+
+                                                                <span class="plano-status-confirmado">
+                                                                    Confirmado
+                                                                </span>
+
+
+                                                                <form method="POST"
+                                                                      action="{{ url_for('cancelar_agendamento', agendamento_id=atendimento.id) }}"
+                                                                      onsubmit="return confirm('Tem certeza que deseja cancelar este atendimento?');">
+
+                                                                    <button type="submit"
+                                                                            class="plano-btn-cancelar">
+
+                                                                        Cancelar
+
+                                                                    </button>
+
+                                                                </form>
+
+
+                                                            {% endif %}
+
 
                                                         </div>
 
@@ -313,27 +366,6 @@
                                             </div>
 
                                         {% endif %}
-
-
-
-                                        <!-- BOTÃO -->
-
-                                        <div class="admin-acoes">
-
-                                            <form method="POST"
-                                                  action="{{ url_for('cancelar_plano', grupo_plano=agendamento.grupo_plano) }}"
-                                                  onsubmit="return confirm('Tem certeza que deseja cancelar os 4 atendimentos deste plano mensal?');">
-
-                                                <button type="submit"
-                                                        class="admin-btn admin-btn-cancelar">
-
-                                                    Cancelar plano mensal
-
-                                                </button>
-
-                                            </form>
-
-                                        </div>
 
 
                                     </div>
@@ -469,7 +501,7 @@
 
 
 
-                                    <!-- BOTÕES -->
+                                    <!-- BOTÃO CANCELAR -->
 
                                     {% if agendamento.status != "Cancelado" %}
 
@@ -657,7 +689,7 @@
 
             background: #8f5f67;
 
-            color: white;
+            color: #ffffff;
 
             font-family:
                 Arial,
@@ -894,7 +926,7 @@
 
 
         /* ==================================================
-           PLANO MENSAL
+           ATENDIMENTOS DO PLANO
            ================================================== */
 
         .plano-atendimentos {
@@ -934,13 +966,14 @@
             grid-template-columns:
                 50px
                 1fr
-                1fr;
+                1fr
+                auto;
 
             align-items: center;
 
             gap: 20px;
 
-            padding: 14px 0;
+            padding: 15px 0;
 
             border-bottom:
                 1px solid
@@ -1020,6 +1053,119 @@
 
 
         /* ==================================================
+           AÇÕES INDIVIDUAIS DO PLANO
+           ================================================== */
+
+        .plano-acao {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            justify-content: flex-end;
+
+        }
+
+
+        .plano-acao form {
+
+            margin: 0;
+
+        }
+
+
+        .plano-status-confirmado {
+
+            color: #8f5f67;
+
+            font-family:
+                Arial,
+                sans-serif;
+
+            font-size: 10px;
+
+            letter-spacing: 0.8px;
+
+            text-transform: uppercase;
+
+            white-space: nowrap;
+
+        }
+
+
+        .plano-status-cancelado {
+
+            padding: 8px 11px;
+
+            border-radius: 20px;
+
+            background: #f1e4e2;
+
+            color: #9a7076;
+
+            font-family:
+                Arial,
+                sans-serif;
+
+            font-size: 10px;
+
+            letter-spacing: 0.8px;
+
+            text-transform: uppercase;
+
+            white-space: nowrap;
+
+        }
+
+
+        .plano-btn-cancelar {
+
+            border: none;
+
+            border-radius: 9px;
+
+            padding: 9px 13px;
+
+            background: #ead6d5;
+
+            color: #8f4f59;
+
+            font-family:
+                Arial,
+                sans-serif;
+
+            font-size: 11px;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                opacity 0.2s ease;
+
+            white-space: nowrap;
+
+        }
+
+
+        .plano-btn-cancelar:hover {
+
+            transform:
+                translateY(-1px);
+
+            box-shadow:
+                0 5px 10px
+                rgba(111, 74, 80, 0.10);
+
+            opacity: 0.9;
+
+        }
+
+
+
+        /* ==================================================
            OBSERVAÇÕES
            ================================================== */
 
@@ -1070,7 +1216,7 @@
 
 
         /* ==================================================
-           BOTÕES
+           BOTÕES DOS AGENDAMENTOS NORMAIS
            ================================================== */
 
         .admin-acoes {
@@ -1236,6 +1382,27 @@
 
             }
 
+
+            .plano-atendimento {
+
+                grid-template-columns:
+                    45px
+                    1fr
+                    1fr;
+
+            }
+
+
+            .plano-acao {
+
+                grid-column: 2 / -1;
+
+                justify-content: flex-start;
+
+                padding-top: 4px;
+
+            }
+
         }
 
 
@@ -1314,8 +1481,7 @@
             .plano-atendimento {
 
                 grid-template-columns:
-                    42px
-                    1fr
+                    40px
                     1fr;
 
                 gap: 12px;
@@ -1336,6 +1502,28 @@
             .plano-info strong {
 
                 font-size: 14px;
+
+            }
+
+
+            .plano-acao {
+
+                grid-column: 2;
+
+                display: flex;
+
+                align-items: flex-start;
+
+                justify-content: flex-start;
+
+                flex-wrap: wrap;
+
+            }
+
+
+            .plano-btn-cancelar {
+
+                padding: 9px 15px;
 
             }
 
